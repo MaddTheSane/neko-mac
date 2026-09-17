@@ -20,5 +20,6 @@
 }
 
 + (BOOL)isSupported;
+@property (class, readonly, getter=isSupported) BOOL supported;
 
 @end

@@ -75,8 +75,7 @@ static const NSUInteger NekoWordsMost = 300;
 			continue;
 		NSMutableArray *means = [NSMutableArray array];
 		NSEnumerator *parts = [[rest componentsSeparatedByString:@","] objectEnumerator];
-		NSString *part;
-		while((part = [parts nextObject]) != nil) {
+		for(NSString *part in parts) {
 			part = [[part stringByTrimmingCharactersInSet:
 				[NSCharacterSet whitespaceCharacterSet]] lowercaseString];
 			if([part length] > 0)
@@ -94,9 +93,7 @@ static const NSUInteger NekoWordsMost = 300;
 		@"# again next time. A word with nothing after it was asked about once and\n"
 		@"# nothing was found, and is not asked about again.\n"];
 	NSArray *words = [[table allKeys] sortedArrayUsingSelector:@selector(compare:)];
-	NSEnumerator *e = [words objectEnumerator];
-	NSString *word;
-	while((word = [e nextObject]) != nil)
+	for(NSString *word in words)
 		[text appendFormat:@"%@: %@\n", word,
 			[[table objectForKey:word] componentsJoinedByString:@", "]];
 	[text writeToURL:[self file] atomically:YES
@@ -120,19 +117,17 @@ static const NSUInteger NekoWordsMost = 300;
 /* The one word in a question most likely to be the reason nothing was found: the
    heaviest word of substance that the diary does not already use and that has not
    been asked about before. */
-- (NSString *)wordWorthAsking:(NSString *)question among:(NSArray *)vocabulary
+- (NSString *)wordWorthAsking:(NSString *)question among:(NSArray<NSString*> *)vocabulary
 {
-	NSDictionary *asked = [NekoRecall askedIn:question];
-	NSSet *known = [NSSet setWithArray:vocabulary];
+	NSDictionary<NSString*,NSNumber*> *asked = [NekoRecall askedIn:question];
+	NSSet<NSString*> *known = [NSSet setWithArray:vocabulary];
 
 	/* Two words of substance, at least. One is not a shortage of vocabulary, it
 	   is a short sentence — and the tagger is fallible in exactly that case:
 	   measured, NLTagger reads the "stai" of "come stai?" as a **noun** with the
 	   full weight of one, which would have spent a model call on a greeting. */
 	NSUInteger substantial = 0;
-	NSEnumerator *count = [asked keyEnumerator];
-	NSString *each;
-	while((each = [count nextObject]) != nil)
+	for(NSString *each in asked)
 		if([[asked objectForKey:each] doubleValue] >= 0.8)
 			substantial++;
 	if(substantial < 2)
@@ -140,9 +135,7 @@ static const NSUInteger NekoWordsMost = 300;
 
 	NSString *best = nil;
 	double bestWeight = 0.0;
-	NSEnumerator *e = [asked keyEnumerator];
-	NSString *word;
-	while((word = [e nextObject]) != nil) {
+	for(NSString *word in asked) {
 		if([table objectForKey:word] != nil)
 			continue;                       /* asked about once already */
 		if([known containsObject:word])
@@ -220,12 +213,10 @@ static const NSUInteger NekoWordsMost = 300;
 
 /* The candidates, rarest first: a word in every line of the diary says nothing
    about which line, so it is no use as a synonym either. */
-- (NSArray *)candidatesFrom:(NSArray *)vocabulary without:(NSString *)word
+- (NSArray<NSString*> *)candidatesFrom:(NSArray<NSString*> *)vocabulary without:(NSString *)word
 {
 	NSMutableArray *worth = [NSMutableArray array];
-	NSEnumerator *e = [vocabulary objectEnumerator];
-	NSString *one;
-	while((one = [e nextObject]) != nil)
+	for(NSString *one in vocabulary)
 		if([one length] >= 4 && ![one isEqualToString:word]
 		   && ![worth containsObject:one])
 			[worth addObject:one];

@@ -19,17 +19,17 @@
 	NSString *shortcutName;
 	NSTimer *poll;
 	NSInteger baseline;          /* clipboard change count before running */
-	NSArray *saved;             /* what was on the clipboard, to put back */
+	NSArray<NSPasteboardItem*> *saved;             /* what was on the clipboard, to put back */
 	NSDate *deadline;
 	void (^pending)(NSString *, NSError *);
 }
 
 - (id)initWithShortcutName:(NSString *)name;
-- (NSString *)shortcutName;
+@property (readonly, copy) NSString *shortcutName;
 
-/* Every Shortcut the user has, by name, or nil when they cannot be listed.
+/*! Every Shortcut the user has, by name, or nil when they cannot be listed.
    Asked of /usr/bin/shortcuts, which works inside the sandbox. */
-+ (NSArray *)availableShortcutNames;
++ (NSArray<NSString*> *)availableShortcutNames;
 
 /* Whether the named one is among them. YES when the list is unavailable, so a
    working setup is never blocked by a failed check. */

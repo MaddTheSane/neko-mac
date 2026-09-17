@@ -313,7 +313,7 @@ static const CGFloat NekoFleeFar  = 4.0f;
 		spot = NSMakePoint(NSMinX(bounds) + frame.size.width / 2.0f
 		                   + (CGFloat)arc4random_uniform((unsigned)roomX),
 		                   NSMinY(bounds) + (CGFloat)arc4random_uniform((unsigned)roomY));
-		if(hypotf(spot.x - here.x, spot.y - here.y) >= wanted)
+		if(hypot(spot.x - here.x, spot.y - here.y) >= wanted)
 			break;
 	}
 
@@ -499,7 +499,7 @@ static const CGFloat NekoTurnStep = 30.0f;
 	CGFloat reach = stopRadius + MAX(wanted, speed);
 
 	double away = atan2(dy, dx);
-	if(distance < 1.0f || isnan(away))
+	if(distance < 1.0 || isnan(away))
 		away = (double)arc4random_uniform(360) * M_PI / 180.0;
 
 	NSRect bounds = [self nekoBounds];
@@ -515,7 +515,7 @@ static const CGFloat NekoTurnStep = 30.0f;
 		   || target.y < NSMinY(bounds)
 		   || target.y > NSMaxY(bounds) - side)
 			continue;
-		if(hypotf(target.x - mouse.x, target.y - mouse.y) <= distance)
+		if(hypot(target.x - mouse.x, target.y - mouse.y) <= distance)
 			continue;
 		return target;
 	}
@@ -694,9 +694,7 @@ static const CGFloat NekoTurnStep = 30.0f;
 	if(!windowsMode)
 		return floor;
 
-	NSEnumerator *e = [shelves objectEnumerator];
-	NSValue *value;
-	for(NSValue *value in e) {
+	for(NSValue *value in shelves) {
 		NSRect shelf = [value rectValue];
 		if(centre < NSMinX(shelf) || centre > NSMaxX(shelf))
 			continue;
@@ -724,8 +722,6 @@ NSPoint NekoOriginOnAScreen(NSPoint origin, CGFloat side, NSArray<NSValue*> *vis
 	NSRect nearest = NSZeroRect;
 	CGFloat nearestDistance = 0.0f;
 
-	NSEnumerator *e = [visibleFrames objectEnumerator];
-	NSValue *value;
 	for(NSValue *value in visibleFrames) {
 		NSRect visible = [value rectValue];
 		if(NSIntersectsRect(sprite, visible))
@@ -815,10 +811,10 @@ NSPoint NekoOriginOnAScreen(NSPoint origin, CGFloat side, NSArray<NSValue*> *vis
 	MouseX = p.x;
 	MouseY = p.y;
 	
-	DeltaX = floor(MouseX - x - [self frame].size.width / 2.0f);
+	DeltaX = floor(MouseX - x - [self frame].size.width / 2.0);
 	DeltaY = floor(MouseY - y);
 	
-	Length = hypotf(DeltaX, DeltaY);
+	Length = hypot(DeltaX, DeltaY);
 	
 	/* The cat keeps stopRadius points between itself and the pointer. Capping
 	   the step by whatever distance is left over that ring makes it settle on

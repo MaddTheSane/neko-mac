@@ -48,9 +48,6 @@ static const NSTimeInterval NekoAnticsAway = 150.0;
 	[[NSNotificationCenter defaultCenter] removeObserver:self];
 	[heartbeat invalidate];
 	[arrival invalidate];
-	[lastAntic release];
-	[pendingLine release];
-	[super dealloc];
 }
 
 - (void)settingsChanged:(NSNotification *)note
@@ -137,13 +134,13 @@ static const NSTimeInterval NekoAnticsAway = 150.0;
 
 /* An arm's length for a cat: near enough to be nosy, far enough not to be on the
    caret. Varied through the pink-noise stream so it is not the same spot twice. */
-static const CGFloat NekoAnticsNear = 60.0f;
-static const CGFloat NekoAnticsFar = 90.0f;
+static const CGFloat NekoAnticsNear = 60.0;
+static const CGFloat NekoAnticsFar = 90.0;
 
 /* And off the line it walked in on, by this much: 40 to 70 degrees puts it
    beside the thing rather than in front of it. */
-static const CGFloat NekoAnticsSideMin = 40.0f;
-static const CGFloat NekoAnticsSideMax = 70.0f;
+static const CGFloat NekoAnticsSideMin = 40.0;
+static const CGFloat NekoAnticsSideMax = 70.0;
 
 - (NSPoint)spotBeside:(NSPoint)what from:(NSPoint)cat within:(NSRect)bounds
 {
@@ -173,7 +170,7 @@ static const CGFloat NekoAnticsSideMax = 70.0f;
 	return spot;
 }
 
-/* Where the cat should stand to be nosy: beside the pointer, which is where the
+/*! Where the cat should stand to be nosy: beside the pointer, which is where the
    caret usually is and, more to the point, where you are looking. */
 - (NSPoint)pointerSpot
 {
@@ -187,7 +184,7 @@ static const CGFloat NekoAnticsSideMax = 70.0f;
 	                 within:[panel nekoScreenBounds]];
 }
 
-/* It came over because somebody was typing hard, and somebody typing hard when
+/*! It came over because somebody was typing hard, and somebody typing hard when
    it arrives has not stopped for it. Then the polite thing is the thing a
    colleague does: notice, and not say it. */
 - (BOOL)shouldWithdrawInstead
@@ -195,7 +192,7 @@ static const CGFloat NekoAnticsSideMax = 70.0f;
 	return [[NekoDesktop sharedDesktop] keysPerMinute] > 40;
 }
 
-/* The walk covers the latency: the cat sets off at once and the model is asked
+/*! The walk covers the latency: the cat sets off at once and the model is asked
    while it crosses the desk, so a question that takes a second to write arrives
    just as the cat sits down. If no engine is set up, or it fails, or it takes
    longer than the walk plus a moment, the written-in line is used instead — the
@@ -225,7 +222,6 @@ static const CGFloat NekoAnticsSideMax = 70.0f;
 		   which is why pendingLine was set before asking. */
 		if(![NekoSense isWorthSaying:line])
 			return;
-		[pendingLine release];
 		pendingLine = [line copy];
 	}];
 }
@@ -258,12 +254,10 @@ static const CGFloat NekoAnticsSideMax = 70.0f;
 		line = nil;
 
 	MyPanel *panel = [[NekoController sharedController] panel];
-	[lastAntic release];
-	lastAntic = [[NSDate date] retain];
+	lastAntic = [NSDate date];
 	cooldown = NekoAnticsMinWait + (NSTimeInterval)arc4random_uniform(
 		(unsigned)NekoAnticsWaitSpread);
 
-	[pendingLine release];
 	pendingLine = [line copy];
 	[panel errandTo:spot thenState:pose forTicks:ticks];
 	if(line != nil)
@@ -299,7 +293,6 @@ static const CGFloat NekoAnticsSideMax = 70.0f;
 		/* It came over, saw the typing had not stopped, and went away without
 		   saying anything. Nothing is spoken, so nothing counts against the
 		   day's remarks either — this was a visit, not an interruption. */
-		[pendingLine release];
 		pendingLine = nil;
 		[self withdrawFrom:[NSEvent mouseLocation]];
 		return;
@@ -307,7 +300,6 @@ static const CGFloat NekoAnticsSideMax = 70.0f;
 
 	if([pendingLine length] > 0)
 		[[NekoAsk sharedAsk] sayUnprompted:pendingLine];
-	[pendingLine release];
 	pendingLine = nil;
 }
 

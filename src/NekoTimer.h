@@ -38,6 +38,7 @@ extern NSNotificationName const NekoTimerDidChangeNotification;
 }
 
 + (NekoTimer *)sharedTimer;
+@property (readonly, class, retain) NekoTimer *sharedTimer;
 
 /* How long the question asks for, or 0 when it is not asking for a timer. A
    duration on its own is not enough: "ho dormito otto ore" is not a request. */

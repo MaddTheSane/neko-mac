@@ -223,9 +223,9 @@ NSString *NekoWithoutMarkdown(NSString *line)
 		return [NSArray array];
 	NekoFolderAccess *access = [NekoFolderAccess sharedAccess];
 	NSMutableArray *missing = [NSMutableArray array];
-	if(![access hasAccessTo:extra])
+	if(![access hasAccessToFolderKey:extra])
 		[missing addObject:extra];
-	if(![access hasAccessTo:other])
+	if(![access hasAccessToFolderKey:other])
 		[missing addObject:other];
 	return missing;
 }
@@ -299,10 +299,10 @@ NSString *NekoWithoutMarkdown(NSString *line)
 	NekoFolderAccess *access = [NekoFolderAccess sharedAccess];
 	if([verb isEqualToString:@"copy"])
 		return [NSString stringWithFormat:NSLocalizedString(@"Copy “%@” from %@ to %@?", @"Copy “%@” from %@ to %@?"),
-			target, [access displayNameFor:extra], [access displayNameFor:other]];
+			target, [access displayNameForKey:extra], [access displayNameForKey:other]];
 	if([verb isEqualToString:@"move"])
 		return [NSString stringWithFormat:NSLocalizedString(@"Move “%@” from %@ to %@?", @"Move “%@” from %@ to %@?"),
-			target, [access displayNameFor:extra], [access displayNameFor:other]];
+			target, [access displayNameForKey:extra], [access displayNameForKey:other]];
 	return nil;
 }
 
@@ -353,8 +353,8 @@ NSString *NekoWithoutMarkdown(NSString *line)
 - (BOOL)moveOrCopy:(NSError **)error
 {
 	NekoFolderAccess *access = [NekoFolderAccess sharedAccess];
-	NSURL *from = [access beginUsing:extra];
-	NSURL *to = [access beginUsing:other];
+	NSURL *from = [access beginUsingFolderKey:extra];
+	NSURL *to = [access beginUsingFolderKey:other];
 	BOOL done = NO;
 	NSString *complaint = nil;
 
@@ -388,8 +388,8 @@ NSString *NekoWithoutMarkdown(NSString *line)
 		}
 	}
 
-	if(from != nil) [access doneWith:from];
-	if(to != nil) [access doneWith:to];
+	if(from != nil) [access doneWithURL:from];
+	if(to != nil) [access doneWithURL:to];
 	if(!done && error != NULL)
 		*error = [NSError errorWithDomain:NekoAskErrorDomain
 		                             code:NekoAskErrorTransport

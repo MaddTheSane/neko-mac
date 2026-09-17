@@ -20,14 +20,9 @@ static const NSTimeInterval NekoShortcutPollInterval = 0.08;
 - (void)dealloc
 {
 	[self cancel];
-	[shortcutName release];
-	[super dealloc];
 }
 
-- (NSString *)shortcutName
-{
-	return shortcutName;
-}
+@synthesize shortcutName;
 
 - (NSString *)name
 {
@@ -49,7 +44,7 @@ static const NSTimeInterval NekoShortcutPollInterval = 0.08;
 
 #pragma mark What the user actually has
 
-+ (NSArray *)availableShortcutNames
++ (NSArray<NSString*> *)availableShortcutNames
 {
 	static NSArray *cached = nil;
 	static NSDate *asked = nil;
@@ -57,7 +52,7 @@ static const NSTimeInterval NekoShortcutPollInterval = 0.08;
 	if(cached != nil && [asked timeIntervalSinceNow] > -5.0)
 		return cached;
 
-	NSTask *task = [[[NSTask alloc] init] autorelease];
+	NSTask *task = [[NSTask alloc] init];
 	[task setLaunchPath:@"/usr/bin/shortcuts"];
 	[task setArguments:[NSArray arrayWithObject:@"list"]];
 	NSPipe *output = [NSPipe pipe];
@@ -75,22 +70,19 @@ static const NSTimeInterval NekoShortcutPollInterval = 0.08;
 	if([task terminationStatus] != 0)
 		return nil;
 
-	NSString *text = [[[NSString alloc] initWithData:data
-	                                       encoding:NSUTF8StringEncoding] autorelease];
+	NSString *text = [[NSString alloc] initWithData:data
+										   encoding:NSUTF8StringEncoding];
 	NSMutableArray *names = [NSMutableArray array];
 	NSEnumerator *e = [[text componentsSeparatedByString:@"\n"] objectEnumerator];
-	NSString *line;
-	while((line = [e nextObject]) != nil) {
+	for(NSString *line in e) {
 		NSString *name = [line stringByTrimmingCharactersInSet:
 			[NSCharacterSet whitespaceAndNewlineCharacterSet]];
 		if([name length] > 0)
 			[names addObject:name];
 	}
 
-	[cached release];
-	[asked release];
 	cached = [names copy];
-	asked = [[NSDate date] retain];
+	asked = [NSDate date];
 	return cached;
 }
 
@@ -99,9 +91,7 @@ static const NSTimeInterval NekoShortcutPollInterval = 0.08;
 	NSArray *names = [NekoShortcutProvider availableShortcutNames];
 	if(names == nil)
 		return YES;              /* cannot tell: let it try */
-	NSEnumerator *e = [names objectEnumerator];
-	NSString *name;
-	while((name = [e nextObject]) != nil)
+	for(NSString *name in names)
 		if([name caseInsensitiveCompare:shortcutName] == NSOrderedSame)
 			return YES;
 	return NO;
@@ -134,10 +124,10 @@ static const NSTimeInterval NekoShortcutPollInterval = 0.08;
 	}
 
 	NSPasteboard *board = [NSPasteboard generalPasteboard];
-	saved = [[self contentsOfPasteboard:board] retain];
+	saved = [self contentsOfPasteboard:board];
 	baseline = [board changeCount];
-	pending = Block_copy(completion);
-	deadline = [[NSDate dateWithTimeIntervalSinceNow:NekoShortcutTimeout] retain];
+	pending = [completion copy];
+	deadline = [NSDate dateWithTimeIntervalSinceNow:NekoShortcutTimeout];
 
 	/* The Shortcut owns its own prompt, so who is answering has to travel
 	   inside the question. */
@@ -152,11 +142,11 @@ static const NSTimeInterval NekoShortcutPollInterval = 0.08;
 		return;
 	}
 
-	poll = [[NSTimer scheduledTimerWithTimeInterval:NekoShortcutPollInterval
-	                                         target:self
-	                                       selector:@selector(checkClipboard:)
-	                                       userInfo:nil
-	                                        repeats:YES] retain];
+	poll = [NSTimer scheduledTimerWithTimeInterval:NekoShortcutPollInterval
+											target:self
+			selector:@selector(checkClipboard:)
+			userInfo:nil
+			 repeats:YES];
 }
 
 - (NSURL *)urlForQuestion:(NSString *)question
@@ -207,14 +197,13 @@ static const NSTimeInterval NekoShortcutPollInterval = 0.08;
 	[self stopPolling];
 	if(completion != NULL) {
 		completion(answer, error);
-		Block_release(completion);
+		completion = nil;
 	}
 }
 
 - (void)cancel
 {
 	if(pending != NULL) {
-		Block_release(pending);
 		pending = NULL;
 	}
 	[self stopPolling];
@@ -223,26 +212,19 @@ static const NSTimeInterval NekoShortcutPollInterval = 0.08;
 - (void)stopPolling
 {
 	[poll invalidate];
-	[poll release];
 	poll = nil;
-	[deadline release];
 	deadline = nil;
-	[saved release];
 	saved = nil;
 }
 
 #pragma mark Leaving the clipboard as it was found
 
-- (NSArray *)contentsOfPasteboard:(NSPasteboard *)board
+- (NSArray<NSPasteboardItem*> *)contentsOfPasteboard:(NSPasteboard *)board
 {
 	NSMutableArray *items = [NSMutableArray array];
-	NSEnumerator *e = [[board pasteboardItems] objectEnumerator];
-	NSPasteboardItem *item;
-	while((item = [e nextObject]) != nil) {
-		NSPasteboardItem *copy = [[[NSPasteboardItem alloc] init] autorelease];
-		NSEnumerator *types = [[item types] objectEnumerator];
-		NSString *type;
-		while((type = [types nextObject]) != nil) {
+	for(NSPasteboardItem *item in [board pasteboardItems]) {
+		NSPasteboardItem *copy = [[NSPasteboardItem alloc] init];
+		for(NSPasteboardType type in item.types) {
 			NSData *data = [item dataForType:type];
 			if(data != nil)
 				[copy setData:data forType:type];

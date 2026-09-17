@@ -175,7 +175,7 @@ static BOOL NekoSumEvaluate(NSString *text, double *answer)
 
 #pragma mark Turning a sentence into something the parser can read
 
-static NSString *NekoReplacingWholeWords(NSString *text, NSDictionary *swaps)
+static NSString *NekoReplacingWholeWords(NSString *text, NSDictionary<NSString*,NSString*> *swaps)
 {
 	NSMutableString *out = [NSMutableString stringWithString:text];
 	/* Longest first, so "elevato a" beats "a" and "per cento" beats "per". */
@@ -185,9 +185,7 @@ static NSString *NekoReplacingWholeWords(NSString *text, NSDictionary *swaps)
 			if([b length] < [a length]) return NSOrderedAscending;
 			return NSOrderedSame;
 		}];
-	NSEnumerator *e = [keys objectEnumerator];
-	NSString *word;
-	while((word = [e nextObject]) != nil) {
+	for(NSString *word in keys) {
 		NSString *pattern = [NSString stringWithFormat:@"(?<![\\p{L}\\p{N}])%@(?![\\p{L}\\p{N}])",
 			[NSRegularExpression escapedPatternForString:word]];
 		NSRegularExpression *regex = [NSRegularExpression
@@ -253,9 +251,7 @@ static NSString *NekoAsArithmetic(NSString *lowered)
 	   language writes with a point — in that order, since each undoes the
 	   ambiguity the next one would otherwise inherit. */
 	NSMutableDictionary *numbers = [NSMutableDictionary dictionary];
-	NSEnumerator *spelled = [[NekoWhen writtenNumbers] keyEnumerator];
-	NSString *one;
-	while((one = [spelled nextObject]) != nil) {
+	for(NSString *one in [NekoWhen writtenNumbers]) {
 		/* "a" and "an" are articles far more often than they are one. */
 		if([one isEqualToString:@"a"] || [one isEqualToString:@"an"] ||
 		   [one isEqualToString:@"un"] || [one isEqualToString:@"una"] ||
@@ -264,8 +260,7 @@ static NSString *NekoAsArithmetic(NSString *lowered)
 		[numbers setObject:[[NekoWhen writtenNumbers] objectForKey:one] forKey:one];
 	}
 	NSMutableDictionary *asText = [NSMutableDictionary dictionary];
-	NSEnumerator *each = [numbers keyEnumerator];
-	while((one = [each nextObject]) != nil)
+	for(NSString *one in numbers)
 		[asText setObject:[[numbers objectForKey:one] stringValue] forKey:one];
 	text = NekoReplacingWholeWords(text, asText);
 
@@ -297,7 +292,7 @@ static BOOL NekoLooksLikeASum(NSString *text)
 
 #pragma mark Units
 
-/* Word, unit, and what kind of thing it measures — two units of different kinds
+/*! Word, unit, and what kind of thing it measures — two units of different kinds
    are a sentence this says nothing about. The words are whole words, longest
    first when they overlap, so "chilometri" is never read as "metri". */
 static NSArray *NekoKnownUnits(void)
@@ -310,7 +305,6 @@ static NSArray *NekoKnownUnits(void)
 	void (^add)(NSString *, NSString *, NSUnit *) =
 		^(NSString *kind, NSString *words, NSUnit *unit) {
 		NSArray *seperated = [words componentsSeparatedByString:@","];
-		NSString *word;
 		for(NSString *word in seperated)
 			[all addObject:@[word, kind, unit]];
 	};
@@ -367,7 +361,8 @@ static NSArray *NekoKnownUnits(void)
 		if(left < right) return NSOrderedDescending;
 		return NSOrderedSame;
 	}];
-	units = all;
+	units = [all copy];
+	[all release];
 	return units;
 }
 
@@ -405,9 +400,7 @@ static BOOL NekoWholeWordAt(NSString *text, NSRange found)
 	NSMutableArray *seen = [NSMutableArray array];
 	NSMutableIndexSet *taken = [NSMutableIndexSet indexSet];
 	[taken addIndexesInRange:numberAt];
-	NSEnumerator *known = [NekoKnownUnits() objectEnumerator];
-	NSArray *entry;
-	while((entry = [known nextObject]) != nil) {
+	for(NSArray *entry in NekoKnownUnits()) {
 		NSString *word = [entry objectAtIndex:0];
 		NSRange search = NSMakeRange(0, [lowered length]);
 		for(;;) {
@@ -471,17 +464,14 @@ static BOOL NekoWholeWordAt(NSString *text, NSRange found)
 {
 	/* The phrase that asks, when there is one. A sum can also arrive on its own
 	   — "12*7" is not a sentence about anything else — so this is not required. */
-	NSArray *triggers = [NSArray arrayWithObjects:
+	NSArray *triggers = @[
 		@"quanto fa", @"quanto fanno", @"quanto è", @"quanto e'", @"quant'è",
 		@"quanto viene", @"calcola", @"calcolami",
 		@"how much is", @"what is", @"what's", @"calculate", @"work out",
 		@"combien font", @"combien fait", @"calcule",
-		@"cuánto es", @"cuanto es", @"cuánto son", @"cuanto son", @"calcula",
-		nil];
+		@"cuánto es", @"cuanto es", @"cuánto son", @"cuanto son", @"calcula"];
 	NSString *text = lowered;
-	NSEnumerator *e = [triggers objectEnumerator];
-	NSString *trigger;
-	while((trigger = [e nextObject]) != nil) {
+	for(NSString *trigger in triggers) {
 		NSRange at = [text rangeOfString:trigger];
 		if(at.location == NSNotFound)
 			continue;

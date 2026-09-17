@@ -100,7 +100,7 @@
 + (NSArray *)wordsOf:(NSString *)text;
 
 /* The words of a question, each with what its word class is worth. */
-+ (NSDictionary *)askedIn:(NSString *)question;
++ (NSDictionary<NSString*,NSNumber*> *)askedIn:(NSString *)question;
 
 /* The same, with what somebody's diary calls those words added at a discount.
    `synonyms` maps a word to the words that mean it; nil is the plain version. */

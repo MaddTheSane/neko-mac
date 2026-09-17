@@ -124,8 +124,6 @@ static NSArray<NSArray<NSString*>*> *NekoUnseenClasses(void)
 + (NSString *)wantedFor:(NSString *)question
 {
 	NSString *text = [question lowercaseString];
-	NSEnumerator *groups = [NekoUnseenClasses() objectEnumerator];
-	NSArray *group;
 	for(NSArray<NSString*> *group in NekoUnseenClasses()) {
 		NSString *kind = [group objectAtIndex:0];
 

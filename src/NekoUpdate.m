@@ -154,9 +154,7 @@ static NSString * const NekoUpdateSaidKey  = @"NekoUpdateAnnounced";
 	   they are not what anybody wants here. */
 	NSString *where = nil;
 	long long size = 0;
-	NSEnumerator *e = [[release objectForKey:@"assets"] objectEnumerator];
-	NSDictionary *asset;
-	while((asset = [e nextObject]) != nil) {
+	for(NSDictionary *asset in [release objectForKey:@"assets"]) {
 		if(![asset isKindOfClass:[NSDictionary class]])
 			continue;
 		NSString *name = [asset objectForKey:@"name"];

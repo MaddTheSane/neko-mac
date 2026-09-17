@@ -2,7 +2,7 @@
 
 #import <Cocoa/Cocoa.h>
 
-/* The curious half of roaming.
+/*! The curious half of roaming.
 
    Wandering from place to place is what the cat does; this is what makes it
    look interested in you. Every so often it drops what it was doing, comes over
@@ -19,24 +19,25 @@
 @interface NekoAntics : NSObject
 {
 	NSTimer *heartbeat;
-	NSTimer *arrival;            /* watches for the cat reaching the pointer */
+	NSTimer *arrival;            /*!< watches for the cat reaching the pointer */
 	NSDate *lastAntic;
-	NSTimeInterval cooldown;     /* seconds until it is allowed to be curious */
-	NSString *pendingLine;       /* what it will say once it arrives */
+	NSTimeInterval cooldown;     /*!< seconds until it is allowed to be curious */
+	NSString *pendingLine;       /*!< what it will say once it arrives */
 }
 
 + (NekoAntics *)sharedAntics;
+@property (class, readonly, retain) NekoAntics *sharedAntics;
 
-/* Runs in the roaming behaviour and stops in the other two. Safe to call
+/*! Runs in the roaming behaviour and stops in the other two. Safe to call
    whenever the settings change. */
 - (void)applySettings;
 
-/* One antic now, whatever the timers think — the preferences use it so the
+/*! One antic now, whatever the timers think — the preferences use it so the
    thing can be watched once instead of waited for. Returns what it decided to
    do, for the status line. */
 - (NSString *)anticNow;
 
-/* Where to stand when it comes over to be nosy: beside whatever it is looking
+/*! Where to stand when it comes over to be nosy: beside whatever it is looking
    at rather than on top of it, and off the line it walked in on.
 
    People keep a distance from an agent that attends to them, and the closer and

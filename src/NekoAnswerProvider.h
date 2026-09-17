@@ -11,7 +11,7 @@
 @protocol NekoAnswerProvider <NSObject>
 
 /*! Shown in the preferences. */
-- (NSString *)name;
+@property (readonly, copy) NSString *name;
 
 /*! `NO` sends the caller to the canned reply instead. */
 - (BOOL)isConfigured;

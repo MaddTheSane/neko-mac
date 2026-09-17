@@ -56,7 +56,7 @@ extern NSNotificationName const NekoPluginsDidChangeNotification;
 - (void)remove:(NekoPlugin *)plugin;
 
 /* Every feed every enabled plugin adds, as NekoWeb wants them. */
-- (NSArray *)feeds;
+- (NSArray<NSDictionary*> *)feeds;
 
 /* Copies the plugins that ship inside the app into the container, and switches
    them on the first time each one arrives.

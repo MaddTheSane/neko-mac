@@ -60,16 +60,15 @@ static NSArray *NekoCharacterCache = nil;
 							 contentsOfDirectoryAtPath:root error:NULL]) {
 		if(![[entry pathExtension] isEqualToString:NekoCharacterExtension])
 			continue;
-		NekoCharacter *character = [[[NekoCharacter alloc]
-			initWithPath:[root stringByAppendingPathComponent:entry]] autorelease];
+		NekoCharacter *character = [[NekoCharacter alloc]
+									initWithPath:[root stringByAppendingPathComponent:entry]];
 		if(character == nil || [taken containsObject:[character identifier]])
 			continue;
 		[taken addObject:[character identifier]];
 		[characters addObject:character];
 	}
 
-	NSEnumerator<NekoPlugin*> *plugins = [[[NekoPlugins sharedPlugins] enabled] objectEnumerator];
-	for(NekoPlugin *plugin in plugins) {
+	for(NekoPlugin *plugin in [[NekoPlugins sharedPlugins] enabled]) {
 		for(NSString *path in [plugin characterPaths]) {
 			NekoCharacter *character = [[NekoCharacter alloc]
 				initWithPath:path];
@@ -77,7 +76,6 @@ static NSArray *NekoCharacterCache = nil;
 				continue;
 			[taken addObject:[character identifier]];
 			[characters addObject:character];
-			[character release];
 		}
 	}
 
@@ -90,7 +88,6 @@ static NSArray *NekoCharacterCache = nil;
    cached — so it is thrown away rather than left saying yesterday's answer. */
 + (void)forgetTheList
 {
-	[NekoCharacterCache release];
 	NekoCharacterCache = nil;
 }
 
@@ -121,7 +118,6 @@ static NSArray *NekoCharacterCache = nil;
 	NSDictionary *manifest = [NSDictionary dictionaryWithContentsOfFile:manifestPath];
 	if(manifest == nil) {
 		NSLog(@"Neko: %@ has no readable character.plist", path);
-		[self release];
 		return nil;
 	}
 
@@ -135,22 +131,21 @@ static NSArray *NekoCharacterCache = nil;
 
 	CGFloat width = [[manifest objectForKey:@"SpriteWidth"] doubleValue];
 	CGFloat height = [[manifest objectForKey:@"SpriteHeight"] doubleValue];
-	spriteSize = NSMakeSize(width > 0.0f ? width : 32.0f,
-	                        height > 0.0f ? height : 32.0f);
+	spriteSize = NSMakeSize(width > 0.0 ? width : 32.0,
+	                        height > 0.0 ? height : 32.0);
 
 	NSDictionary *states = [manifest objectForKey:@"States"];
 	int i;
 	for(i = 0; i < NekoStateCount; i++) {
 		NSDictionary *state = [states objectForKey:NekoStateKeys[i]];
-		frames[i] = [[self imagesInDirectory:path
-		                          fileNames:[state objectForKey:@"Frames"]] retain];
+		frames[i] = [self imagesInDirectory:path
+								  fileNames:[state objectForKey:@"Frames"]];
 		unsigned ticks = [[state objectForKey:@"TicksPerFrame"] unsignedIntValue];
 		ticksPerFrame[i] = (ticks > 0) ? ticks : 1;
 	}
 
 	if([frames[NekoStateStop] count] == 0) {
 		NSLog(@"Neko: %@ describes no usable \"stop\" state", path);
-		[self release];
 		return nil;
 	}
 	return self;
@@ -167,7 +162,6 @@ static NSArray *NekoCharacterCache = nil;
 			continue;
 		}
 		[images addObject:image];
-		[image release];
 	}
 	return images;
 }
@@ -176,11 +170,7 @@ static NSArray *NekoCharacterCache = nil;
 {
 	int i;
 	for(i = 0; i < NekoStateCount; i++)
-		[frames[i] release];
-	[identifier release];
-	[name release];
-	[persona release];
-	[super dealloc];
+		frames[i] = nil;
 }
 
 #pragma mark Accessors
@@ -222,7 +212,7 @@ static NSArray *NekoCharacterCache = nil;
 	return ticksPerFrame[[self resolvedState:state]];
 }
 
-/* Template rendering keeps the menu bar icon readable in both appearances, but
+/*! Template rendering keeps the menu bar icon readable in both appearances, but
    it throws colour away. That suits the classic two colour sprites and ruins
    the colourful ones, so only greyscale frames become templates. */
 - (BOOL)isGreyscale:(NSImage *)image
@@ -253,7 +243,7 @@ static NSArray *NekoCharacterCache = nil;
 	NSImage *image = [frame copy];
 	[image setSize:NSMakeSize(18.0f, 18.0f)];
 	[image setTemplate:[self isGreyscale:frame]];
-	return [image autorelease];
+	return image;
 }
 
 @end

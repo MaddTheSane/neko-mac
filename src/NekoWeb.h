@@ -53,7 +53,7 @@ extern NSString * const NekoWebEnabledKey;
 /* The list, which is now whatever the enabled plugins provide — the app's own
    two dozen feeds included, since they ship as a plugin. Closed in the sense that
    matters: a model may name a word from it and can never name an address. */
-+ (NSArray *)sources;
++ (NSArray<NekoWebSource *> *)sources;
 + (NekoWebSource *)sourceNamed:(NSString *)identifier;
 
 /* The line of names a model is shown — the handful worth naming, not all of
@@ -98,9 +98,9 @@ extern NSString * const NekoWebEnabledKey;
 
 /* What goes into the second prompt: the lines, marked as somebody else's
    writing. */
-+ (NSString *)blockFrom:(NSString *)what lines:(NSArray *)lines;
++ (NSString *)blockFrom:(NSString *)what lines:(NSArray<NSString*> *)lines;
 
 /* And what to show when there is no model worth handing it to. */
-+ (NSString *)plainList:(NSArray *)lines from:(NekoWebSource *)source;
++ (NSString *)plainList:(NSArray<NSString*> *)lines from:(NekoWebSource *)source;
 
 @end

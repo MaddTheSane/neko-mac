@@ -19,8 +19,6 @@
 - (void)dealloc
 {
 	[model cancel];
-	[model release];
-	[super dealloc];
 }
 
 - (NSString *)name

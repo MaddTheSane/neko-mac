@@ -68,7 +68,7 @@ typedef enum {
 @property (readonly) NSSize spriteSize;
 
 /* Frames of a state, fallbacks already applied: never nil, never empty. */
-- (NSArray *)framesForState:(NekoState)state;
+- (NSArray<NSImage*> *)framesForState:(NekoState)state;
 
 /* How many 0.125s ticks each frame of a state is held for. */
 - (unsigned)ticksPerFrameForState:(NekoState)state;

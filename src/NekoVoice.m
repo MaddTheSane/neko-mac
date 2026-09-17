@@ -174,7 +174,7 @@ NSString * const NekoVoiceGreetedKey  = @"NekoVoiceGreeted";
 
 /* The openings a model reaches for when it is being agreeable. Every one of them
    is a sentence that could be deleted without losing anything. */
-+ (NSArray *)complimentOpenings
++ (NSArray<NSString*> *)complimentOpenings
 {
 	return @[
 		@"great question", @"good question", @"excellent question",
@@ -218,9 +218,7 @@ NSString * const NekoVoiceGreetedKey  = @"NekoVoiceGreeted";
 		[NSCharacterSet whitespaceAndNewlineCharacterSet]] lowercaseString];
 	if([lowered length] > 60)
 		return NO;               /* long enough to be carrying something */
-	NSEnumerator *e = [[self complimentOpenings] objectEnumerator];
-	NSString *opening;
-	while((opening = [e nextObject]) != nil)
+	for(NSString *opening in [self complimentOpenings])
 		if([lowered hasPrefix:opening])
 			return YES;
 	return NO;
@@ -231,21 +229,19 @@ NSString * const NekoVoiceGreetedKey  = @"NekoVoiceGreeted";
 	NSArray *sentences = [self sentencesIn:line];
 	if([sentences count] == 0)
 		return NO;
-	NSEnumerator *e = [sentences objectEnumerator];
-	NSString *sentence;
-	while((sentence = [e nextObject]) != nil)
+	for(NSString *sentence in sentences)
 		if(![self sentenceIsACompliment:sentence])
 			return NO;
 	return YES;
 }
 
-+ (NSSet *)meaningfulWordsIn:(NSString *)sentence
++ (NSSet<NSString*> *)meaningfulWordsIn:(NSString *)sentence
 {
 	NSMutableSet *words = [NSMutableSet set];
 	NSEnumerator *e = [[[sentence lowercaseString] componentsSeparatedByCharactersInSet:
 		[[NSCharacterSet letterCharacterSet] invertedSet]] objectEnumerator];
 	NSString *word;
-	while((word = [e nextObject]) != nil)
+	for(NSString *word in e)
 		if([word length] > 3)    /* short words repeat in any two sentences */
 			[words addObject:word];
 	return words;
@@ -276,7 +272,7 @@ NSString * const NekoVoiceGreetedKey  = @"NekoVoiceGreeted";
    and a cat saying what it is must go through. */
 + (NSArray *)feelingClaims
 {
-	return [NSArray arrayWithObjects:
+	return @[
 		/* Italian */
 		@"mi sento", @"sono triste", @"sono felice", @"sono contento", @"sono contenta",
 		@"sono solo", @"sono sola", @"mi annoio", @"mi manchi", @"ho paura",
@@ -292,15 +288,13 @@ NSString * const NekoVoiceGreetedKey  = @"NekoVoiceGreeted";
 		@"tu me manques", @"j'ai peur", @"je m'ennuie",
 		/* Spanish */
 		@"me siento", @"estoy triste", @"estoy feliz", @"estoy solo", @"estoy sola",
-		@"te echo de menos", @"tengo miedo", @"me aburro", nil];
+		@"te echo de menos", @"tengo miedo", @"me aburro"];
 }
 
 + (BOOL)claimsAFeeling:(NSString *)line
 {
 	NSString *lowered = [line lowercaseString];
-	NSEnumerator *e = [[self feelingClaims] objectEnumerator];
-	NSString *claim;
-	while((claim = [e nextObject]) != nil)
+	for(NSString *claim in [self feelingClaims])
 		if([lowered rangeOfString:claim].location != NSNotFound)
 			return YES;
 	return NO;

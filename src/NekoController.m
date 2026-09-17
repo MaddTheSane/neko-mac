@@ -1243,12 +1243,12 @@ static const CGFloat NekoMaxStopRadius = 200.0;
 	NSEnumerator *e = [[NekoFolderAccess folderKeys] objectEnumerator];
 	NSString *key;
 	while((key = [e nextObject]) != nil) {
-		NSMenuItem *item = [menu addItemWithTitle:[access displayNameFor:key]
+		NSMenuItem *item = [menu addItemWithTitle:[access displayNameForKey:key]
 		                                   action:@selector(chooseFolder:)
 		                            keyEquivalent:@""];
 		[item setTarget:self];
 		[item setRepresentedObject:key];
-		[item setState:[access hasAccessTo:key] ? NSControlStateValueOn : NSControlStateValueOff];
+		[item setState:[access hasAccessToFolderKey:key] ? NSControlStateValueOn : NSControlStateValueOff];
 	}
 	[menu popUpMenuPositioningItem:nil
 	                    atLocation:NSMakePoint(0.0f, NSHeight([sender bounds]))
@@ -1258,7 +1258,7 @@ static const CGFloat NekoMaxStopRadius = 200.0;
 - (void)chooseFolder:(id)sender
 {
 	NSString *why = nil;
-	[[NekoFolderAccess sharedAccess] requestAccessTo:[sender representedObject]
+	[[NekoFolderAccess sharedAccess] requestAccessToFolderKey:[sender representedObject]
 	                                          saying:&why];
 	[self syncAskControls];
 	/* Through the cat, because this is a menu item and has no window to hang a
@@ -1270,10 +1270,8 @@ static const CGFloat NekoMaxStopRadius = 200.0;
 - (void)forgetFoldersPressed:(id)sender
 {
 	NekoFolderAccess *access = [NekoFolderAccess sharedAccess];
-	NSEnumerator *e = [[access allowedKeys] objectEnumerator];
-	NSString *key;
-	while((key = [e nextObject]) != nil)
-		[access forget:key];
+	for(NSString *key in [access allowedKeys])
+		[access forgetFolderKey:key];
 	[self syncAskControls];
 }
 
@@ -1338,8 +1336,7 @@ static const CGFloat NekoMaxStopRadius = 200.0;
 	unsigned short code = (unsigned short)[defaults integerForKey:NekoAskHotKeyCodeKey];
 	NSUInteger flags = (NSUInteger)[defaults integerForKey:NekoAskHotKeyModifiersKey];
 	NSArray *choices = [self hotKeyChoices];
-	NSUInteger i;
-	for(i = 0; i < [choices count]; i++) {
+	for(NSUInteger i = 0; i < [choices count]; i++) {
 		NSArray *choice = [choices objectAtIndex:i];
 		if([[choice objectAtIndex:0] unsignedShortValue] == code
 		   && [[choice objectAtIndex:1] unsignedIntegerValue] == flags) {
@@ -1455,15 +1452,12 @@ static const CGFloat NekoMaxStopRadius = 200.0;
 
 - (NSArray *)drawStepChoices
 {
-	return [NSArray arrayWithObjects:[NSNumber numberWithInt:8],
-		[NSNumber numberWithInt:14], [NSNumber numberWithInt:20],
-		[NSNumber numberWithInt:30], nil];
+	return @[@8, @14, @20, @30];
 }
 
 - (NSArray *)drawSizeChoices
 {
-	return [NSArray arrayWithObjects:[NSNumber numberWithInt:384],
-		[NSNumber numberWithInt:512], [NSNumber numberWithInt:768], nil];
+	return @[@384, @512, @768];
 }
 
 - (NekoLocalModel *)pictureModel
@@ -2291,7 +2285,7 @@ static const CGFloat NekoMaxStopRadius = 200.0;
 			NSEnumerator *e = [allowed objectEnumerator];
 			NSString *key;
 			while((key = [e nextObject]) != nil)
-				[names addObject:[access displayNameFor:key]];
+				[names addObject:[access displayNameForKey:key]];
 			[line appendFormat:NSLocalizedString(@"Folders it has been shown: %@.", @"Folders it has been shown: %@."),
 				[names componentsJoinedByString:@", "]];
 		}

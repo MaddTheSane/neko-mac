@@ -1445,10 +1445,10 @@ static const NSTimeInterval NekoHoldToType = 0.5;
 		NekoFolderAccess *access = [NekoFolderAccess sharedAccess];
 		for (NSString *key in [action needsFolders]) {
 			NSString *why = nil;
-			if(![access requestAccessTo:key saying:&why]) {
+			if(![access requestAccessToFolderKey:key saying:&why]) {
 				[self sayInCharacter:why ?: [NSString stringWithFormat:
 					NSLocalizedString(@"Without your %@ folder I cannot.", @"Without your %@ folder I cannot."),
-					[access displayNameFor:key]]];
+					[access displayNameForKey:key]]];
 				return;
 			}
 		}

@@ -249,7 +249,7 @@
 		   asked, so the Desktop is the sensible default. */
 		[NSApp activateIgnoringOtherApps:YES];
 		NSString *why = nil;
-		[[NekoFolderAccess sharedAccess] requestAccessTo:@"desktop" saying:&why];
+		[[NekoFolderAccess sharedAccess] requestAccessToFolderKey:@"desktop" saying:&why];
 		/* A row in a settings window that refuses in silence is the same complaint
 		   twice over, so it says what happened where it happened. */
 		if([why length] > 0) {

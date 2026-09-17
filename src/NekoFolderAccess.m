@@ -18,8 +18,8 @@ static NSString *NekoBookmarkKeyFor(NSString *key)
 
 + (NSArray *)folderKeys
 {
-	return [NSArray arrayWithObjects:@"desktop", @"documents", @"downloads",
-		@"pictures", @"music", @"movies", nil];
+	return @[@"desktop", @"documents", @"downloads",
+		@"pictures", @"music", @"movies"];
 }
 
 + (BOOL)isFolderKey:(NSString *)key
@@ -27,15 +27,17 @@ static NSString *NekoBookmarkKeyFor(NSString *key)
 	return [[self folderKeys] containsObject:[key lowercaseString]];
 }
 
-/* Where the folder is for a person, which is not where it is for the sandbox:
-   the container has its own empty Desktop, and that is never what anyone means. */
-- (NSURL *)realFolderFor:(NSString *)key
+/*! Where the folder is for a person, which is not where it is for the sandbox:
+   the container has its own empty Desktop, and that is never what anyone means.
+ 
+ This won't work if the user directory is somewhere else! */
+- (NSURL *)realFolderForKey:(NSString *)key
 {
-	NSDictionary *names = [NSDictionary dictionaryWithObjectsAndKeys:
-		@"Desktop", @"desktop", @"Documents", @"documents",
-		@"Downloads", @"downloads", @"Pictures", @"pictures",
-		@"Music", @"music", @"Movies", @"movies", nil];
-	NSString *name = [names objectForKey:[key lowercaseString]];
+	static NSDictionary<NSString*,NSString*> *const names =
+	@{@"desktop": @"Desktop", @"documents": @"Documents",
+	  @"downloads": @"Downloads", @"pictures": @"Pictures",
+	  @"music": @"Music", @"movies": @"Movies"};
+	NSString *name = names[[key lowercaseString]];
 	if(name == nil)
 		return nil;
 	/* NSHomeDirectory is the container inside the sandbox, so the real home is
@@ -44,12 +46,15 @@ static NSString *NekoBookmarkKeyFor(NSString *key)
 	return [NSURL fileURLWithPath:[home stringByAppendingPathComponent:name]];
 }
 
-- (NSString *)displayNameFor:(NSString *)key
+- (NSString *)displayNameForKey:(NSString *)key
 {
-	NSURL *folder = [self realFolderFor:key];
-	NSString *shown = folder != nil
-		? [[NSFileManager defaultManager] displayNameAtPath:[folder path]] : nil;
-	return [shown length] > 0 ? shown : key;
+	NSURL *folder = [self realFolderForKey:key];
+	NSString *shown = nil;
+	
+	if([folder getResourceValue:&shown forKey:NSURLLocalizedNameKey error:NULL]) {
+		return [shown length] > 0 ? shown : key;
+	}
+	return key;
 }
 
 #pragma mark Remembering
@@ -72,7 +77,7 @@ static NSString *NekoBookmarkKeyFor(NSString *key)
 	return url;
 }
 
-- (BOOL)hasAccessTo:(NSString *)key
+- (BOOL)hasAccessToFolderKey:(NSString *)key
 {
 	return [self resolveBookmarkFor:key stale:NULL] != nil;
 }
@@ -80,49 +85,47 @@ static NSString *NekoBookmarkKeyFor(NSString *key)
 - (NSArray *)allowedKeys
 {
 	NSMutableArray *allowed = [NSMutableArray array];
-	NSEnumerator *e = [[NekoFolderAccess folderKeys] objectEnumerator];
-	NSString *key;
-	while((key = [e nextObject]) != nil)
-		if([self hasAccessTo:key])
+	for(NSString *key in [NekoFolderAccess folderKeys])
+		if([self hasAccessToFolderKey:key])
 			[allowed addObject:key];
 	return allowed;
 }
 
-- (void)forget:(NSString *)key
+- (void)forgetFolderKey:(NSString *)key
 {
 	[[NSUserDefaults standardUserDefaults] removeObjectForKey:NekoBookmarkKeyFor(key)];
 }
 
 #pragma mark Asking
 
-- (NSString *)refusalForChoosing:(NSURL *)chosen insteadOf:(NSString *)key
+- (NSString *)refusalForChoosingURL:(NSURL *)chosen insteadOfFolderKey:(NSString *)key
 {
-	NSURL *folder = [self realFolderFor:key];
+	NSURL *folder = [self realFolderForKey:key];
 	if(chosen == nil || folder == nil)
-		return NSLocalizedString(@"Nothing was chosen.", nil);
+		return NSLocalizedString(@"Nothing was chosen.", @"Nothing was chosen.");
 	if([[[chosen path] lastPathComponent] isEqualToString:[[folder path] lastPathComponent]])
 		return nil;
 	return [NSString stringWithFormat:
-		NSLocalizedString(@"That is “%@”, and I asked for your %@ folder. I can only be given the one I asked for.", nil),
+		NSLocalizedString(@"That is “%@”, and I asked for your %@ folder. I can only be given the one I asked for.", @"That is “%@”, and I asked for your %@ folder. I can only be given the one I asked for."),
 		[[NSFileManager defaultManager] displayNameAtPath:[chosen path]],
-		[self displayNameFor:key]];
+		[self displayNameForKey:key]];
 }
 
-- (BOOL)requestAccessTo:(NSString *)key
+- (BOOL)requestAccessToFolderKey:(NSString *)key
 {
-	return [self requestAccessTo:key saying:NULL];
+	return [self requestAccessToFolderKey:key saying:NULL];
 }
 
-- (BOOL)requestAccessTo:(NSString *)key saying:(NSString **)problem
+- (BOOL)requestAccessToFolderKey:(NSString *)key saying:(NSString **)problem
 {
 	if(problem != NULL)
 		*problem = nil;
 	if(![NekoFolderAccess isFolderKey:key])
 		return NO;
-	if([self hasAccessTo:key])
+	if([self hasAccessToFolderKey:key])
 		return YES;
 
-	NSURL *folder = [self realFolderFor:key];
+	NSURL *folder = [self realFolderForKey:key];
 	NSOpenPanel *panel = [NSOpenPanel openPanel];
 	[panel setCanChooseFiles:NO];
 	[panel setCanChooseDirectories:YES];
@@ -132,7 +135,7 @@ static NSString *NekoBookmarkKeyFor(NSString *key)
 	[panel setPrompt:NSLocalizedString(@"Allow", nil)];
 	[panel setMessage:[NSString stringWithFormat:
 		NSLocalizedString(@"Choose your %@ folder so Neko can work in it. It is the only way in: nothing else can grant this.", nil),
-		[self displayNameFor:key]]];
+		[self displayNameForKey:key]]];
 
 	[NSApp activateIgnoringOtherApps:YES];
 	if([panel runModal] != NSModalResponseOK)
@@ -144,7 +147,7 @@ static NSString *NekoBookmarkKeyFor(NSString *key)
 	   would be a lie the rest of the code would believe. Said out loud rather
 	   than refused quietly — from where somebody is standing, a folder chosen and
 	   then ignored is the application doing nothing. */
-	NSString *wrongOne = [self refusalForChoosing:chosen insteadOf:key];
+	NSString *wrongOne = [self refusalForChoosingURL:chosen insteadOfFolderKey:key];
 	if(wrongOne != nil) {
 		if(problem != NULL)
 			*problem = wrongOne;
@@ -160,7 +163,7 @@ static NSString *NekoBookmarkKeyFor(NSString *key)
 		if(problem != NULL)
 			*problem = [NSString stringWithFormat:
 				NSLocalizedString(@"macOS did not hand your %@ folder over: %@", nil),
-				[self displayNameFor:key],
+				[self displayNameForKey:key],
 				[failure localizedDescription] ?: NSLocalizedString(@"no reason given", nil)];
 		return NO;
 	}
@@ -171,18 +174,18 @@ static NSString *NekoBookmarkKeyFor(NSString *key)
 
 #pragma mark Using
 
-- (NSURL *)beginUsing:(NSString *)key
+- (NSURL *)beginUsingFolderKey:(NSString *)key
 {
 	BOOL stale = NO;
 	NSURL *url = [self resolveBookmarkFor:key stale:&stale];
 	if(url == nil)
 		return nil;
 	if(stale)
-		[self forget:key];        /* it will be asked for again, honestly */
+		[self forgetFolderKey:key];        /* it will be asked for again, honestly */
 	return [url startAccessingSecurityScopedResource] ? url : nil;
 }
 
-- (void)doneWith:(NSURL *)url
+- (void)doneWithURL:(NSURL *)url
 {
 	[url stopAccessingSecurityScopedResource];
 }
