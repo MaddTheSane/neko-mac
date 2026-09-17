@@ -240,7 +240,6 @@ NSString * const NekoVoiceGreetedKey  = @"NekoVoiceGreeted";
 	NSMutableSet *words = [NSMutableSet set];
 	NSEnumerator *e = [[[sentence lowercaseString] componentsSeparatedByCharactersInSet:
 		[[NSCharacterSet letterCharacterSet] invertedSet]] objectEnumerator];
-	NSString *word;
 	for(NSString *word in e)
 		if([word length] > 3)    /* short words repeat in any two sentences */
 			[words addObject:word];
