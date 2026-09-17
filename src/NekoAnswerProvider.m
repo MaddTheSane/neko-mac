@@ -127,7 +127,7 @@ BOOL NekoQuestionWantsFacts(NSString *question)
 	if([question length] == 0)
 		return YES;              /* nothing to go on: hand over everything */
 	NSString *lowered = [question lowercaseString];
-	NSArray *words = @[
+	static NSArray *const words = @[
 		@"ora", @"ore", @"orario", @"giorno", @"data", @"oggi", @"domani", @"ieri",
 		@"batteria", @"acceso", @"accesa", @"quanto manca", @"che mese", @"anno",
 		@"time", @"clock", @"date", @"day", @"today", @"tomorrow", @"battery",
@@ -317,13 +317,13 @@ NSString *NekoSuggestionInstructionsSeeing(NSString *persona, BOOL hasText)
 /* The three example lines, so a reply that is one of them can be thrown away. */
 NSArray *NekoInstructionExamples(void)
 {
-	return [NSArray arrayWithObjects:
+	return @[
 		NSLocalizedString(@"Seven programs in ten minutes: pick one and stay in it.", nil),
 		NSLocalizedString(@"Still that same window. Whatever it is, you are winning.", nil),
 		NSLocalizedString(@"A cat would have taken a break by now. Just saying.", nil),
 		NSLocalizedString(@"What are you writing?", nil),
 		NSLocalizedString(@"Is that thing still not working?", nil),
-		NSLocalizedString(@"Long sentence. Does it end well?", nil), nil];
+		NSLocalizedString(@"Long sentence. Does it end well?", nil)];
 }
 
 /* A question, not a remark, and it has to survive being read while the cat is

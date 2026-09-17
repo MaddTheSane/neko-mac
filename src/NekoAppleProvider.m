@@ -1,33 +1,17 @@
 #import "NekoAppleProvider.h"
-
-/* Written out here rather than imported: the class is Swift, and this is all of
-   it that Objective-C needs to know. A mismatch fails at link time, loudly. */
-@interface NekoAppleModel : NSObject
-+ (BOOL)isAvailable;
-+ (NSString *)unavailableReason;
-- (void)ask:(NSString *)question
-	instructions:(NSString *)instructions
-	  completion:(void (^)(NSString *answer, NSString *error))completion;
-- (void)askStreaming:(NSString *)question
-	    instructions:(NSString *)instructions
-	         partial:(void (^)(NSString *sofar))partial
-	      completion:(void (^)(NSString *answer, NSString *error))completion;
-- (void)cancel;
-@end
+#import "Neko-Swift.h"
 
 @implementation NekoAppleProvider
 
 + (BOOL)isSupported
 {
-	Class bridge = NSClassFromString(@"NekoAppleModel");
-	return bridge != Nil && [bridge isAvailable];
+	return [NekoAppleModel isAvailable];
 }
 
 - (id)model
 {
 	if(model == nil) {
-		Class bridge = NSClassFromString(@"NekoAppleModel");
-		model = [[bridge alloc] init];
+		model = [[NekoAppleModel alloc] init];
 	}
 	return model;
 }
@@ -53,8 +37,7 @@
 {
 	if([self isConfigured])
 		return nil;
-	Class bridge = NSClassFromString(@"NekoAppleModel");
-	NSString *reason = bridge != Nil ? [bridge unavailableReason] : nil;
+	NSString *reason = [NekoAppleModel unavailableReason];
 	return reason ?: NSLocalizedString(@"Needs macOS 26 or newer", nil);
 }
 

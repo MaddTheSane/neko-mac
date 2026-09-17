@@ -3,7 +3,9 @@
 #import <Cocoa/Cocoa.h>
 #import "NekoAnswerProvider.h"
 
-/* Apple's on-device model, the one behind Apple Intelligence.
+@class NekoAppleModel;
+
+/*! Apple's on-device model, the one behind Apple Intelligence.
 
    Nothing leaves the Mac, there is no key and there is no bill. It exists only
    on macOS 26 and later, on hardware that supports Apple Intelligence, with the
@@ -14,7 +16,7 @@
    way in. */
 @interface NekoAppleProvider : NSObject <NekoAnswerProvider>
 {
-	id model;                    /* NekoAppleModel */
+	NekoAppleModel *model;                    /* NekoAppleModel */
 }
 
 + (BOOL)isSupported;
