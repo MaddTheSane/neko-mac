@@ -7,22 +7,18 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		55A8C811305BA903005AF955 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 55A8C80F305BA903005AF955 /* Localizable.strings */; };
 		8D11072A0486CEB800E47090 /* MainMenu.nib in Resources */ = {isa = PBXBuildFile; fileRef = 29B97318FDCFA39411CA2CEA /* MainMenu.nib */; };
 		8D11072B0486CEB800E47090 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 089C165CFE840E0CC02AAC07 /* InfoPlist.strings */; };
-		D1C0117A1B00000000000021 /* it.lproj in Resources */ = {isa = PBXBuildFile; fileRef = D1C0117A1B00000000000020 /* it.lproj */; };
-		D1C0117A1B00000000000023 /* fr.lproj in Resources */ = {isa = PBXBuildFile; fileRef = D1C0117A1B00000000000022 /* fr.lproj */; };
-		D1C0117A1B00000000000025 /* es.lproj in Resources */ = {isa = PBXBuildFile; fileRef = D1C0117A1B00000000000024 /* es.lproj */; };
-		D1C0117A1B00000000000011 /* Characters in Resources */ = {isa = PBXBuildFile; fileRef = D1C0117A1B00000000000010 /* Characters */; };
-		D1C0117A1B00000000000014 /* NekoCharacter.m in Sources */ = {isa = PBXBuildFile; fileRef = D1C0117A1B00000000000013 /* NekoCharacter.m */; };
 		8D11072D0486CEB800E47090 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 29B97316FDCFA39411CA2CEA /* main.m */; settings = {ATTRIBUTES = (); }; };
 		8D11072F0486CEB800E47090 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */; };
-		D1C0117A1B00000000000061 /* Carbon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D1C0117A1B00000000000060 /* Carbon.framework */; };
-		D1C0117A1B00000000000063 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D1C0117A1B00000000000062 /* Security.framework */; };
-		D1C0117A1B00000000000065 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D1C0117A1B00000000000064 /* AVFoundation.framework */; };
-		D1C0117A1B00000000000067 /* Speech.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D1C0117A1B00000000000066 /* Speech.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
-		D1C0117A1B0000000000007D /* FoundationModels.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D1C0117A1B0000000000007C /* FoundationModels.framework */; };
-		D1C0117A1B00000000000031 /* ServiceManagement.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D1C0117A1B00000000000030 /* ServiceManagement.framework */; };
 		A700278D0CA641680057F7E4 /* MyPanel.m in Sources */ = {isa = PBXBuildFile; fileRef = A700278C0CA641680057F7E4 /* MyPanel.m */; };
+		A70027B30CA6447E0057F7E4 /* MyView.m in Sources */ = {isa = PBXBuildFile; fileRef = A70027B20CA6447E0057F7E4 /* MyView.m */; };
+		A7B9FF1D1A575C310074B4D4 /* Neko.icns in Resources */ = {isa = PBXBuildFile; fileRef = A7B9FF1C1A575C310074B4D4 /* Neko.icns */; };
+		D1C0117A1B00000000000003 /* NekoController.m in Sources */ = {isa = PBXBuildFile; fileRef = D1C0117A1B00000000000002 /* NekoController.m */; };
+		D1C0117A1B00000000000011 /* Characters in Resources */ = {isa = PBXBuildFile; fileRef = D1C0117A1B00000000000010 /* Characters */; };
+		D1C0117A1B00000000000014 /* NekoCharacter.m in Sources */ = {isa = PBXBuildFile; fileRef = D1C0117A1B00000000000013 /* NekoCharacter.m */; };
+		D1C0117A1B00000000000031 /* ServiceManagement.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D1C0117A1B00000000000030 /* ServiceManagement.framework */; };
 		D1C0117A1B00000000000042 /* NekoAnswerProvider.m in Sources */ = {isa = PBXBuildFile; fileRef = D1C0117A1B00000000000041 /* NekoAnswerProvider.m */; };
 		D1C0117A1B00000000000045 /* NekoShortcutProvider.m in Sources */ = {isa = PBXBuildFile; fileRef = D1C0117A1B00000000000044 /* NekoShortcutProvider.m */; };
 		D1C0117A1B00000000000048 /* NekoModelProvider.m in Sources */ = {isa = PBXBuildFile; fileRef = D1C0117A1B00000000000047 /* NekoModelProvider.m */; };
@@ -30,8 +26,13 @@
 		D1C0117A1B0000000000004E /* NekoListener.m in Sources */ = {isa = PBXBuildFile; fileRef = D1C0117A1B0000000000004D /* NekoListener.m */; };
 		D1C0117A1B00000000000051 /* NekoBubble.m in Sources */ = {isa = PBXBuildFile; fileRef = D1C0117A1B00000000000050 /* NekoBubble.m */; };
 		D1C0117A1B00000000000054 /* NekoAsk.m in Sources */ = {isa = PBXBuildFile; fileRef = D1C0117A1B00000000000053 /* NekoAsk.m */; };
+		D1C0117A1B00000000000061 /* Carbon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D1C0117A1B00000000000060 /* Carbon.framework */; };
+		D1C0117A1B00000000000063 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D1C0117A1B00000000000062 /* Security.framework */; };
+		D1C0117A1B00000000000065 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D1C0117A1B00000000000064 /* AVFoundation.framework */; };
+		D1C0117A1B00000000000067 /* Speech.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D1C0117A1B00000000000066 /* Speech.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
 		D1C0117A1B00000000000071 /* NekoAppleProvider.m in Sources */ = {isa = PBXBuildFile; fileRef = D1C0117A1B00000000000070 /* NekoAppleProvider.m */; };
 		D1C0117A1B00000000000073 /* NekoAppleModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1C0117A1B00000000000072 /* NekoAppleModel.swift */; };
+		D1C0117A1B0000000000007D /* FoundationModels.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D1C0117A1B0000000000007C /* FoundationModels.framework */; };
 		D1C0117A1B00000000000081 /* NekoOpenAIProvider.m in Sources */ = {isa = PBXBuildFile; fileRef = D1C0117A1B00000000000080 /* NekoOpenAIProvider.m */; };
 		D1C0117A1B00000000000083 /* NekoKeychain.m in Sources */ = {isa = PBXBuildFile; fileRef = D1C0117A1B00000000000082 /* NekoKeychain.m */; };
 		D1C0117A1B00000000000091 /* NekoModelStore.m in Sources */ = {isa = PBXBuildFile; fileRef = D1C0117A1B00000000000090 /* NekoModelStore.m */; };
@@ -44,28 +45,19 @@
 		D1C0117A1B000000000000D5 /* NekoAction.m in Sources */ = {isa = PBXBuildFile; fileRef = D1C0117A1B000000000000D4 /* NekoAction.m */; };
 		D1C0117A1B000000000000E1 /* NekoFolderAccess.m in Sources */ = {isa = PBXBuildFile; fileRef = D1C0117A1B000000000000E0 /* NekoFolderAccess.m */; };
 		D1C0117A1B000000000000F1 /* NekoWakeWord.m in Sources */ = {isa = PBXBuildFile; fileRef = D1C0117A1B000000000000F0 /* NekoWakeWord.m */; };
-		D1C0117A1B00000000000F0B0 /* NekoNoise.m in Sources */ = {isa = PBXBuildFile; fileRef = D1C0117A1B00000000000F0M0 /* NekoNoise.m */; };
-		D1C0117A1B00000000000E0B0 /* NekoPlace.m in Sources */ = {isa = PBXBuildFile; fileRef = D1C0117A1B00000000000E0M0 /* NekoPlace.m */; };
-		D1C0117A1B00000000000D0B0 /* NekoVoice.m in Sources */ = {isa = PBXBuildFile; fileRef = D1C0117A1B00000000000D0M0 /* NekoVoice.m */; };
-		D1C0117A1B00000000000C0B0 /* NekoWeb.m in Sources */ = {isa = PBXBuildFile; fileRef = D1C0117A1B00000000000C0M0 /* NekoWeb.m */; };
-		D1C0117A1B00000000000B0B0 /* NekoRate.m in Sources */ = {isa = PBXBuildFile; fileRef = D1C0117A1B00000000000B0M0 /* NekoRate.m */; };
-		D1C0117A1B00000000000A8B0 /* NekoMemory.m in Sources */ = {isa = PBXBuildFile; fileRef = D1C0117A1B00000000000A8M0 /* NekoMemory.m */; };
-		D1C0117A1B00000000000A4B0 /* NekoBrains.m in Sources */ = {isa = PBXBuildFile; fileRef = D1C0117A1B00000000000A4M0 /* NekoBrains.m */; };
-		D1C0117A1B00000000000A0B0 /* NekoLine.m in Sources */ = {isa = PBXBuildFile; fileRef = D1C0117A1B00000000000A0M0 /* NekoLine.m */; };
 		D1C0117A1B00000000000101 /* NekoPermissions.m in Sources */ = {isa = PBXBuildFile; fileRef = D1C0117A1B00000000000100 /* NekoPermissions.m */; };
-		D1C0117A1B00000000000003 /* NekoController.m in Sources */ = {isa = PBXBuildFile; fileRef = D1C0117A1B00000000000002 /* NekoController.m */; };
-		A70027B30CA6447E0057F7E4 /* MyView.m in Sources */ = {isa = PBXBuildFile; fileRef = A70027B20CA6447E0057F7E4 /* MyView.m */; };
-		A7B9FF1D1A575C310074B4D4 /* Neko.icns in Resources */ = {isa = PBXBuildFile; fileRef = A7B9FF1C1A575C310074B4D4 /* Neko.icns */; };
+		D1C0117A1B00000000000A0B0 /* NekoLine.m in Sources */ = {isa = PBXBuildFile; fileRef = D1C0117A1B00000000000A0M0 /* NekoLine.m */; };
+		D1C0117A1B00000000000A4B0 /* NekoBrains.m in Sources */ = {isa = PBXBuildFile; fileRef = D1C0117A1B00000000000A4M0 /* NekoBrains.m */; };
+		D1C0117A1B00000000000A8B0 /* NekoMemory.m in Sources */ = {isa = PBXBuildFile; fileRef = D1C0117A1B00000000000A8M0 /* NekoMemory.m */; };
+		D1C0117A1B00000000000B0B0 /* NekoRate.m in Sources */ = {isa = PBXBuildFile; fileRef = D1C0117A1B00000000000B0M0 /* NekoRate.m */; };
+		D1C0117A1B00000000000C0B0 /* NekoWeb.m in Sources */ = {isa = PBXBuildFile; fileRef = D1C0117A1B00000000000C0M0 /* NekoWeb.m */; };
+		D1C0117A1B00000000000D0B0 /* NekoVoice.m in Sources */ = {isa = PBXBuildFile; fileRef = D1C0117A1B00000000000D0M0 /* NekoVoice.m */; };
+		D1C0117A1B00000000000E0B0 /* NekoPlace.m in Sources */ = {isa = PBXBuildFile; fileRef = D1C0117A1B00000000000E0M0 /* NekoPlace.m */; };
+		D1C0117A1B00000000000F0B0 /* NekoNoise.m in Sources */ = {isa = PBXBuildFile; fileRef = D1C0117A1B00000000000F0M0 /* NekoNoise.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		089C165DFE840E0CC02AAC07 /* English */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = English; path = English.lproj/InfoPlist.strings; sourceTree = "<group>"; };
-		D1C0117A1B00000000000060 /* Carbon.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Carbon.framework; path = /System/Library/Frameworks/Carbon.framework; sourceTree = "<absolute>"; };
-		D1C0117A1B00000000000062 /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = /System/Library/Frameworks/Security.framework; sourceTree = "<absolute>"; };
-		D1C0117A1B00000000000064 /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = /System/Library/Frameworks/AVFoundation.framework; sourceTree = "<absolute>"; };
-		D1C0117A1B00000000000066 /* Speech.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Speech.framework; path = /System/Library/Frameworks/Speech.framework; sourceTree = "<absolute>"; };
-		D1C0117A1B0000000000007C /* FoundationModels.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = FoundationModels.framework; path = /System/Library/Frameworks/FoundationModels.framework; sourceTree = "<absolute>"; };
-		D1C0117A1B00000000000030 /* ServiceManagement.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ServiceManagement.framework; path = /System/Library/Frameworks/ServiceManagement.framework; sourceTree = "<absolute>"; };
 		1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = /System/Library/Frameworks/Cocoa.framework; sourceTree = "<absolute>"; };
 		13E42FB307B3F0F600E4EEF1 /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = /System/Library/Frameworks/CoreData.framework; sourceTree = "<absolute>"; };
 		29B97316FDCFA39411CA2CEA /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
@@ -73,12 +65,23 @@
 		29B97324FDCFA39411CA2CEA /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = /System/Library/Frameworks/AppKit.framework; sourceTree = "<absolute>"; };
 		29B97325FDCFA39411CA2CEA /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = /System/Library/Frameworks/Foundation.framework; sourceTree = "<absolute>"; };
 		32CA4F630368D1EE00C91783 /* Neko_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Neko_Prefix.pch; sourceTree = "<group>"; };
-		D1C0117A1B00000000000020 /* it.lproj */ = {isa = PBXFileReference; lastKnownFileType = folder; path = it.lproj; sourceTree = "<group>"; };
-		D1C0117A1B00000000000022 /* fr.lproj */ = {isa = PBXFileReference; lastKnownFileType = folder; path = fr.lproj; sourceTree = "<group>"; };
-		D1C0117A1B00000000000024 /* es.lproj */ = {isa = PBXFileReference; lastKnownFileType = folder; path = es.lproj; sourceTree = "<group>"; };
+		55A8C810305BA903005AF955 /* es */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = es; path = es.lproj/Localizable.strings; sourceTree = "<group>"; };
+		55A8C812305BA94E005AF955 /* fr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = fr; path = fr.lproj/Localizable.strings; sourceTree = "<group>"; };
+		55A8C813305BA951005AF955 /* it */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = it; path = it.lproj/Localizable.strings; sourceTree = "<group>"; };
+		8D1107320486CEB800E47090 /* Neko.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Neko.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		A700278B0CA641680057F7E4 /* MyPanel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MyPanel.h; sourceTree = "<group>"; };
+		A700278C0CA641680057F7E4 /* MyPanel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MyPanel.m; sourceTree = "<group>"; usesTabs = 1; };
+		A70027B10CA6447E0057F7E4 /* MyView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MyView.h; sourceTree = "<group>"; };
+		A70027B20CA6447E0057F7E4 /* MyView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MyView.m; sourceTree = "<group>"; };
+		A78E7A3E1A575EFE008B4180 /* Neko.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = Neko.entitlements; sourceTree = "<group>"; };
+		A78E7A3F1A576567008B4180 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		A7B9FF1C1A575C310074B4D4 /* Neko.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = Neko.icns; sourceTree = "<group>"; };
+		D1C0117A1B00000000000001 /* NekoController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NekoController.h; sourceTree = "<group>"; };
+		D1C0117A1B00000000000002 /* NekoController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NekoController.m; sourceTree = "<group>"; };
 		D1C0117A1B00000000000010 /* Characters */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Characters; sourceTree = "<group>"; };
 		D1C0117A1B00000000000012 /* NekoCharacter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NekoCharacter.h; sourceTree = "<group>"; };
 		D1C0117A1B00000000000013 /* NekoCharacter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NekoCharacter.m; sourceTree = "<group>"; };
+		D1C0117A1B00000000000030 /* ServiceManagement.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ServiceManagement.framework; path = /System/Library/Frameworks/ServiceManagement.framework; sourceTree = "<absolute>"; };
 		D1C0117A1B00000000000040 /* NekoAnswerProvider.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NekoAnswerProvider.h; sourceTree = "<group>"; };
 		D1C0117A1B00000000000041 /* NekoAnswerProvider.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NekoAnswerProvider.m; sourceTree = "<group>"; };
 		D1C0117A1B00000000000043 /* NekoShortcutProvider.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NekoShortcutProvider.h; sourceTree = "<group>"; };
@@ -93,62 +96,57 @@
 		D1C0117A1B00000000000050 /* NekoBubble.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NekoBubble.m; sourceTree = "<group>"; };
 		D1C0117A1B00000000000052 /* NekoAsk.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NekoAsk.h; sourceTree = "<group>"; };
 		D1C0117A1B00000000000053 /* NekoAsk.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NekoAsk.m; sourceTree = "<group>"; };
+		D1C0117A1B00000000000060 /* Carbon.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Carbon.framework; path = /System/Library/Frameworks/Carbon.framework; sourceTree = "<absolute>"; };
+		D1C0117A1B00000000000062 /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = /System/Library/Frameworks/Security.framework; sourceTree = "<absolute>"; };
+		D1C0117A1B00000000000064 /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = /System/Library/Frameworks/AVFoundation.framework; sourceTree = "<absolute>"; };
+		D1C0117A1B00000000000066 /* Speech.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Speech.framework; path = /System/Library/Frameworks/Speech.framework; sourceTree = "<absolute>"; };
 		D1C0117A1B00000000000070 /* NekoAppleProvider.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NekoAppleProvider.m; sourceTree = "<group>"; };
 		D1C0117A1B00000000000072 /* NekoAppleModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NekoAppleModel.swift; sourceTree = "<group>"; };
 		D1C0117A1B0000000000007A /* NekoAppleProvider.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NekoAppleProvider.h; sourceTree = "<group>"; };
+		D1C0117A1B0000000000007C /* FoundationModels.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = FoundationModels.framework; path = /System/Library/Frameworks/FoundationModels.framework; sourceTree = "<absolute>"; };
 		D1C0117A1B00000000000080 /* NekoOpenAIProvider.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NekoOpenAIProvider.m; sourceTree = "<group>"; };
 		D1C0117A1B00000000000082 /* NekoKeychain.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NekoKeychain.m; sourceTree = "<group>"; };
 		D1C0117A1B00000000000084 /* NekoOpenAIProvider.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NekoOpenAIProvider.h; sourceTree = "<group>"; };
 		D1C0117A1B00000000000086 /* NekoKeychain.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NekoKeychain.h; sourceTree = "<group>"; };
 		D1C0117A1B00000000000090 /* NekoModelStore.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NekoModelStore.m; sourceTree = "<group>"; };
 		D1C0117A1B00000000000092 /* NekoLocalProvider.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NekoLocalProvider.m; sourceTree = "<group>"; };
-		D1C0117A1B000000000000A2 /* NekoAdvisor.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NekoAdvisor.m; sourceTree = "<group>"; };
-		D1C0117A1B000000000000A6 /* NekoAntics.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NekoAntics.m; sourceTree = "<group>"; };
-		D1C0117A1B000000000000B0 /* NekoDesktop.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NekoDesktop.m; sourceTree = "<group>"; };
-		D1C0117A1B000000000000C0 /* NekoPainter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NekoPainter.m; sourceTree = "<group>"; };
-		D1C0117A1B000000000000D0 /* NekoSense.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NekoSense.m; sourceTree = "<group>"; };
-		D1C0117A1B000000000000D4 /* NekoAction.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NekoAction.m; sourceTree = "<group>"; };
-		D1C0117A1B000000000000E0 /* NekoFolderAccess.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NekoFolderAccess.m; sourceTree = "<group>"; };
-		D1C0117A1B000000000000F0 /* NekoWakeWord.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NekoWakeWord.m; sourceTree = "<group>"; };
-		D1C0117A1B00000000000F0M0 /* NekoNoise.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NekoNoise.m; sourceTree = "<group>"; };
-		D1C0117A1B00000000000E0M0 /* NekoPlace.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NekoPlace.m; sourceTree = "<group>"; };
-		D1C0117A1B00000000000D0M0 /* NekoVoice.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NekoVoice.m; sourceTree = "<group>"; };
-		D1C0117A1B00000000000C0M0 /* NekoWeb.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NekoWeb.m; sourceTree = "<group>"; };
-		D1C0117A1B00000000000B0M0 /* NekoRate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NekoRate.m; sourceTree = "<group>"; };
-		D1C0117A1B00000000000A8M0 /* NekoMemory.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NekoMemory.m; sourceTree = "<group>"; };
-		D1C0117A1B00000000000A4M0 /* NekoBrains.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NekoBrains.m; sourceTree = "<group>"; };
-		D1C0117A1B00000000000A0M0 /* NekoLine.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NekoLine.m; sourceTree = "<group>"; };
-		D1C0117A1B00000000000100 /* NekoPermissions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NekoPermissions.m; sourceTree = "<group>"; };
-		D1C0117A1B00000000000102 /* NekoPermissions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NekoPermissions.h; sourceTree = "<group>"; };
-		D1C0117A1B000000000000F2 /* NekoWakeWord.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NekoWakeWord.h; sourceTree = "<group>"; };
-		D1C0117A1B00000000000F0H0 /* NekoNoise.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NekoNoise.h; sourceTree = "<group>"; };
-		D1C0117A1B00000000000E0H0 /* NekoPlace.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NekoPlace.h; sourceTree = "<group>"; };
-		D1C0117A1B00000000000D0H0 /* NekoVoice.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NekoVoice.h; sourceTree = "<group>"; };
-		D1C0117A1B00000000000C0H0 /* NekoWeb.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NekoWeb.h; sourceTree = "<group>"; };
-		D1C0117A1B00000000000B0H0 /* NekoRate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NekoRate.h; sourceTree = "<group>"; };
-		D1C0117A1B00000000000A8H0 /* NekoMemory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NekoMemory.h; sourceTree = "<group>"; };
-		D1C0117A1B00000000000A4H0 /* NekoBrains.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NekoBrains.h; sourceTree = "<group>"; };
-		D1C0117A1B00000000000A0H0 /* NekoLine.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NekoLine.h; sourceTree = "<group>"; };
-		D1C0117A1B000000000000E2 /* NekoFolderAccess.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NekoFolderAccess.h; sourceTree = "<group>"; };
-		D1C0117A1B000000000000D6 /* NekoAction.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NekoAction.h; sourceTree = "<group>"; };
-		D1C0117A1B000000000000D2 /* NekoSense.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NekoSense.h; sourceTree = "<group>"; };
-		D1C0117A1B000000000000C2 /* NekoPainter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NekoPainter.h; sourceTree = "<group>"; };
-		D1C0117A1B000000000000B2 /* NekoDesktop.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NekoDesktop.h; sourceTree = "<group>"; };
-		D1C0117A1B000000000000A8 /* NekoAntics.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NekoAntics.h; sourceTree = "<group>"; };
-		D1C0117A1B000000000000A4 /* NekoAdvisor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NekoAdvisor.h; sourceTree = "<group>"; };
 		D1C0117A1B00000000000094 /* NekoModelStore.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NekoModelStore.h; sourceTree = "<group>"; };
 		D1C0117A1B00000000000096 /* NekoLocalProvider.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NekoLocalProvider.h; sourceTree = "<group>"; };
 		D1C0117A1B000000000000A0 /* NekoLlamaEngine.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = NekoLlamaEngine.mm; sourceTree = "<group>"; };
-		D1C0117A1B00000000000001 /* NekoController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NekoController.h; sourceTree = "<group>"; };
-		D1C0117A1B00000000000002 /* NekoController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NekoController.m; sourceTree = "<group>"; };
-		8D1107320486CEB800E47090 /* Neko.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Neko.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		A700278B0CA641680057F7E4 /* MyPanel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MyPanel.h; sourceTree = "<group>"; };
-		A700278C0CA641680057F7E4 /* MyPanel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MyPanel.m; sourceTree = "<group>"; usesTabs = 1; };
-		A70027B10CA6447E0057F7E4 /* MyView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MyView.h; sourceTree = "<group>"; };
-		A70027B20CA6447E0057F7E4 /* MyView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MyView.m; sourceTree = "<group>"; };
-		A78E7A3E1A575EFE008B4180 /* Neko.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = Neko.entitlements; sourceTree = "<group>"; };
-		A78E7A3F1A576567008B4180 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		A7B9FF1C1A575C310074B4D4 /* Neko.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = Neko.icns; sourceTree = "<group>"; };
+		D1C0117A1B000000000000A2 /* NekoAdvisor.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NekoAdvisor.m; sourceTree = "<group>"; };
+		D1C0117A1B000000000000A4 /* NekoAdvisor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NekoAdvisor.h; sourceTree = "<group>"; };
+		D1C0117A1B000000000000A6 /* NekoAntics.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NekoAntics.m; sourceTree = "<group>"; };
+		D1C0117A1B000000000000A8 /* NekoAntics.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NekoAntics.h; sourceTree = "<group>"; };
+		D1C0117A1B000000000000B0 /* NekoDesktop.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NekoDesktop.m; sourceTree = "<group>"; };
+		D1C0117A1B000000000000B2 /* NekoDesktop.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NekoDesktop.h; sourceTree = "<group>"; };
+		D1C0117A1B000000000000C0 /* NekoPainter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NekoPainter.m; sourceTree = "<group>"; };
+		D1C0117A1B000000000000C2 /* NekoPainter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NekoPainter.h; sourceTree = "<group>"; };
+		D1C0117A1B000000000000D0 /* NekoSense.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NekoSense.m; sourceTree = "<group>"; };
+		D1C0117A1B000000000000D2 /* NekoSense.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NekoSense.h; sourceTree = "<group>"; };
+		D1C0117A1B000000000000D4 /* NekoAction.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NekoAction.m; sourceTree = "<group>"; };
+		D1C0117A1B000000000000D6 /* NekoAction.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NekoAction.h; sourceTree = "<group>"; };
+		D1C0117A1B000000000000E0 /* NekoFolderAccess.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NekoFolderAccess.m; sourceTree = "<group>"; };
+		D1C0117A1B000000000000E2 /* NekoFolderAccess.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NekoFolderAccess.h; sourceTree = "<group>"; };
+		D1C0117A1B000000000000F0 /* NekoWakeWord.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NekoWakeWord.m; sourceTree = "<group>"; };
+		D1C0117A1B000000000000F2 /* NekoWakeWord.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NekoWakeWord.h; sourceTree = "<group>"; };
+		D1C0117A1B00000000000100 /* NekoPermissions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NekoPermissions.m; sourceTree = "<group>"; };
+		D1C0117A1B00000000000102 /* NekoPermissions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NekoPermissions.h; sourceTree = "<group>"; };
+		D1C0117A1B00000000000A0H0 /* NekoLine.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NekoLine.h; sourceTree = "<group>"; };
+		D1C0117A1B00000000000A0M0 /* NekoLine.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NekoLine.m; sourceTree = "<group>"; };
+		D1C0117A1B00000000000A4H0 /* NekoBrains.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NekoBrains.h; sourceTree = "<group>"; };
+		D1C0117A1B00000000000A4M0 /* NekoBrains.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NekoBrains.m; sourceTree = "<group>"; };
+		D1C0117A1B00000000000A8H0 /* NekoMemory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NekoMemory.h; sourceTree = "<group>"; };
+		D1C0117A1B00000000000A8M0 /* NekoMemory.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NekoMemory.m; sourceTree = "<group>"; };
+		D1C0117A1B00000000000B0H0 /* NekoRate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NekoRate.h; sourceTree = "<group>"; };
+		D1C0117A1B00000000000B0M0 /* NekoRate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NekoRate.m; sourceTree = "<group>"; };
+		D1C0117A1B00000000000C0H0 /* NekoWeb.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NekoWeb.h; sourceTree = "<group>"; };
+		D1C0117A1B00000000000C0M0 /* NekoWeb.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NekoWeb.m; sourceTree = "<group>"; };
+		D1C0117A1B00000000000D0H0 /* NekoVoice.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NekoVoice.h; sourceTree = "<group>"; };
+		D1C0117A1B00000000000D0M0 /* NekoVoice.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NekoVoice.m; sourceTree = "<group>"; };
+		D1C0117A1B00000000000E0H0 /* NekoPlace.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NekoPlace.h; sourceTree = "<group>"; };
+		D1C0117A1B00000000000E0M0 /* NekoPlace.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NekoPlace.m; sourceTree = "<group>"; };
+		D1C0117A1B00000000000F0H0 /* NekoNoise.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NekoNoise.h; sourceTree = "<group>"; };
+		D1C0117A1B00000000000F0M0 /* NekoNoise.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NekoNoise.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -306,9 +304,7 @@
 			children = (
 				A7B9FF1C1A575C310074B4D4 /* Neko.icns */,
 				D1C0117A1B00000000000010 /* Characters */,
-				D1C0117A1B00000000000024 /* es.lproj */,
-				D1C0117A1B00000000000022 /* fr.lproj */,
-				D1C0117A1B00000000000020 /* it.lproj */,
+				55A8C80F305BA903005AF955 /* Localizable.strings */,
 				089C165CFE840E0CC02AAC07 /* InfoPlist.strings */,
 				29B97318FDCFA39411CA2CEA /* MainMenu.nib */,
 			);
@@ -367,6 +363,7 @@
 			developmentRegion = English;
 			hasScannedForEncodings = 1;
 			knownRegions = (
+				English,
 				en,
 				it,
 				fr,
@@ -389,9 +386,7 @@
 				8D11072A0486CEB800E47090 /* MainMenu.nib in Resources */,
 				8D11072B0486CEB800E47090 /* InfoPlist.strings in Resources */,
 				D1C0117A1B00000000000011 /* Characters in Resources */,
-				D1C0117A1B00000000000025 /* es.lproj in Resources */,
-				D1C0117A1B00000000000023 /* fr.lproj in Resources */,
-				D1C0117A1B00000000000021 /* it.lproj in Resources */,
+				55A8C811305BA903005AF955 /* Localizable.strings in Resources */,
 				A7B9FF1D1A575C310074B4D4 /* Neko.icns in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -460,6 +455,16 @@
 			name = MainMenu.nib;
 			sourceTree = "<group>";
 		};
+		55A8C80F305BA903005AF955 /* Localizable.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				55A8C810305BA903005AF955 /* es */,
+				55A8C812305BA94E005AF955 /* fr */,
+				55A8C813305BA951005AF955 /* it */,
+			);
+			name = Localizable.strings;
+			sourceTree = "<group>";
+		};
 /* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
@@ -476,10 +481,10 @@
 				GCC_OPTIMIZATION_LEVEL = 0;
 				INFOPLIST_FILE = Info.plist;
 				INSTALL_PATH = "$(HOME)/Applications";
-				PRODUCT_NAME = Neko;
 				MACOSX_DEPLOYMENT_TARGET = 11.0;
-				SWIFT_VERSION = 5.0;
+				PRODUCT_NAME = Neko;
 				SDKROOT = macosx;
+				SWIFT_VERSION = 5.0;
 				WRAPPER_EXTENSION = app;
 				ZERO_LINK = YES;
 			};
@@ -495,10 +500,10 @@
 				GCC_MODEL_TUNING = G5;
 				INFOPLIST_FILE = Info.plist;
 				INSTALL_PATH = "$(HOME)/Applications";
-				PRODUCT_NAME = Neko;
 				MACOSX_DEPLOYMENT_TARGET = 11.0;
-				SWIFT_VERSION = 5.0;
+				PRODUCT_NAME = Neko;
 				SDKROOT = macosx;
+				SWIFT_VERSION = 5.0;
 				WRAPPER_EXTENSION = app;
 			};
 			name = Release;
