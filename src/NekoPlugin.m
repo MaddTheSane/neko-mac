@@ -620,7 +620,7 @@ static NSString * const NekoPluginMarkers[] = { @"ACTION:", @"IMAGE:", @"LOOK:",
 	return localized;
 }
 
-- (NSArray *)shortcutsItNeeds
+- (NSArray<NSString*> *)shortcutsItNeeds
 {
 	NSMutableArray *names = [NSMutableArray array];
 	NSEnumerator *e = [[self verbs] objectEnumerator];

@@ -2,7 +2,7 @@
 
 #import <Cocoa/Cocoa.h>
 
-extern NSString * const NekoTimerDidChangeNotification;
+extern NSNotificationName const NekoTimerDidChangeNotification;
 
 /* "Metti un timer di dieci minuti."
 

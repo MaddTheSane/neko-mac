@@ -4,27 +4,25 @@
    write digits. "Un" and "una" are here because "un'ora" is one hour. */
 static NSDictionary *NekoWrittenNumbers(void)
 {
-	static NSDictionary *numbers = nil;
-	if(numbers != nil)
-		return numbers;
-	numbers = [[NSDictionary dictionaryWithObjectsAndKeys:
-		@1, @"un", @1, @"uno", @1, @"una", @1, @"one", @1, @"une", @1, @"a",
-		@1, @"an",
-		@2, @"due", @2, @"two", @2, @"deux", @2, @"dos",
-		@3, @"tre", @3, @"three", @3, @"trois", @3, @"tres",
-		@4, @"quattro", @4, @"four", @4, @"quatre", @4, @"cuatro",
-		@5, @"cinque", @5, @"five", @5, @"cinq", @5, @"cinco",
-		@6, @"sei", @6, @"six", @6, @"seis",
-		@7, @"sette", @7, @"seven", @7, @"sept", @7, @"siete",
-		@8, @"otto", @8, @"eight", @8, @"huit", @8, @"ocho",
-		@9, @"nove", @9, @"nine", @9, @"neuf", @9, @"nueve",
-		@10, @"dieci", @10, @"ten", @10, @"dix", @10, @"diez",
-		@11, @"undici", @11, @"eleven", @11, @"onze", @11, @"once",
-		@12, @"dodici", @12, @"twelve", @12, @"douze", @12, @"doce",
-		@15, @"quindici", @15, @"fifteen", @15, @"quinze", @15, @"quince",
-		@20, @"venti", @20, @"twenty", @20, @"vingt", @20, @"veinte",
-		@30, @"trenta", @30, @"thirty", @30, @"trente", @30, @"treinta",
-		@45, @"quarantacinque", @45, @"forty-five", nil] retain];
+	static NSDictionary * const numbers =
+	@{@"un": @1, @"uno": @1, @"una": @1, @"one": @1, @"une": @1, @"a": @1,
+	  @"an": @1,
+	  @"due": @2, @"two": @2, @"deux": @2, @"dos": @2,
+	  @"tre": @3, @"three": @3, @"trois": @3, @"tres": @3,
+	  @"quattro": @4, @"four": @4, @"quatre": @4, @"cuatro": @4,
+	  @"cinque": @5, @"five": @5, @"cinq": @5, @"cinco": @5,
+	  @"sei": @6, @"six": @6, @"seis": @6,
+	  @"sette": @7, @"seven": @7, @"sept": @7, @"siete": @7,
+	  @"otto": @8, @"eight": @8, @"huit": @8, @"ocho": @8,
+	  @"nove": @9, @"nine": @9, @"neuf": @9, @"nueve": @9,
+	  @"dieci": @10, @"ten": @10, @"dix": @10, @"diez": @10,
+	  @"undici": @11, @"eleven": @11, @"onze": @11, @"once": @11,
+	  @"dodici": @12, @"twelve": @12, @"douze": @12, @"doce": @12,
+	  @"quindici": @15, @"fifteen": @15, @"quinze": @15, @"quince": @15,
+	  @"venti": @20, @"twenty": @20, @"vingt": @20, @"veinte": @20,
+	  @"trenta": @30, @"thirty": @30, @"trente": @30, @"treinta": @30,
+	  @"quarantacinque": @45, @"forty-five": @45};
+	
 	return numbers;
 }
 
@@ -100,14 +98,14 @@ static NSArray *NekoSetPhrases(void)
    whatever unit was just said. */
 static BOOL NekoSaysAndAHalf(NSString *rest)
 {
-	NSArray *halves = [NSArray arrayWithObjects:
+	static NSArray *const halves = @[
 		@"e mezza", @"e mezzo", @"and a half", @"et demie", @"et demi",
-		@"y media", @"y medio", nil];
-	NSEnumerator *e = [halves objectEnumerator];
-	NSString *half;
-	while((half = [e nextObject]) != nil)
-		if([rest hasPrefix:half])
+		@"y media", @"y medio"];
+	for(NSString *half in halves) {
+		if([rest hasPrefix:half]) {
 			return YES;
+		}
+	}
 	return NO;
 }
 
@@ -128,9 +126,7 @@ static BOOL NekoSaysAndAHalf(NSString *rest)
 
 	/* The set phrases first: "un quarto d'ora" has a number and a unit inside it
 	   that mean something else together. */
-	NSEnumerator *p = [NekoSetPhrases() objectEnumerator];
-	NSArray *phrase;
-	while((phrase = [p nextObject]) != nil) {
+	for(NSArray *phrase in NekoSetPhrases()) {
 		NSString *words = [[phrase objectAtIndex:0]
 			stringByReplacingOccurrencesOfString:@"’" withString:@"'"];
 		if([text rangeOfString:words].location != NSNotFound)
@@ -169,9 +165,7 @@ static BOOL NekoSaysAndAHalf(NSString *rest)
 		}
 
 		double unit = 0.0;
-		NSEnumerator *u = [NekoUnits() objectEnumerator];
-		NSArray *known;
-		while((known = [u nextObject]) != nil)
+		for(NSArray *known in NekoUnits())
 			if([word isEqualToString:[known objectAtIndex:0]]) {
 				unit = [[known objectAtIndex:1] doubleValue];
 				break;

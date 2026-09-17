@@ -2,7 +2,7 @@
 
 #import <Cocoa/Cocoa.h>
 
-/* "Quanti giorni mancano a venerdì?"
+/*! "Quanti giorni mancano a venerdì?"
 
    Answered here rather than by a model, and the reason was measured rather than
    assumed — because the obvious version of the claim is **already false in this

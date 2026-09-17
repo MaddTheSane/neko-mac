@@ -15,7 +15,7 @@ static NSArray *NekoCalendarOpenings(void)
 {
 	static NSArray *openings = nil;
 	if(openings == nil)
-		openings = [[NSArray arrayWithObjects:
+		openings = [@[
 			/* Italian */
 			@"metti in calendario", @"in calendario", @"segna in agenda",
 			@"segna un appuntamento", @"appuntamento", @"aggiungi al calendario",
@@ -27,7 +27,7 @@ static NSArray *NekoCalendarOpenings(void)
 			@"dans mon calendrier", @"au calendrier", @"rendez-vous",
 			/* Spanish */
 			@"en mi calendario", @"al calendario", @"añade al calendario",
-			@"cita ", @"agenda ", nil] retain];
+			@"cita ", @"agenda "] retain];
 	return openings;
 }
 
@@ -35,11 +35,11 @@ static NSArray *NekoCalendarOpenings(void)
 
 + (BOOL)asksForOne:(NSString *)said
 {
-	NSEnumerator *e = [NekoCalendarOpenings() objectEnumerator];
-	NSString *opening;
-	while((opening = [e nextObject]) != nil)
-		if([said rangeOfString:opening].location != NSNotFound)
+	for (NSString *opening in NekoCalendarOpenings()) {
+		if([said rangeOfString:opening].location != NSNotFound) {
 			return YES;
+		}
+	}
 	return NO;
 }
 
@@ -106,9 +106,7 @@ static NSArray *NekoCalendarOpenings(void)
 		if([a length] == [b length]) return NSOrderedSame;
 		return [a length] > [b length] ? NSOrderedAscending : NSOrderedDescending;
 	}];
-	NSEnumerator *e = [byLength objectEnumerator];
-	NSString *opening;
-	while((opening = [e nextObject]) != nil) {
+	for (NSString *opening in byLength) {
 		NSRange where = [title rangeOfString:opening options:NSCaseInsensitiveSearch];
 		if(where.location != NSNotFound)
 			[title deleteCharactersInRange:where];
@@ -116,8 +114,8 @@ static NSArray *NekoCalendarOpenings(void)
 	NSString *plain = [title stringByTrimmingCharactersInSet:
 		[NSCharacterSet characterSetWithCharactersInString:@" \t\n\r,;:.!?-–—"]];
 	/* Leading joining words left behind by the cut: "la riunione con Marco". */
-	NSArray *leading = [NSArray arrayWithObjects:@"la ", @"il ", @"lo ", @"le ",
-		@"un ", @"una ", @"the ", @"a ", @"an ", @"per ", @"for ", @"di ", @"of ", nil];
+	NSArray *const leading = @[@"la ", @"il ", @"lo ", @"le ",
+		@"un ", @"una ", @"the ", @"a ", @"an ", @"per ", @"for ", @"di ", @"of "];
 	NSEnumerator *l = [leading objectEnumerator];
 	NSString *word;
 	while((word = [l nextObject]) != nil)

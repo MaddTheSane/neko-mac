@@ -46,7 +46,7 @@ static const long long NekoModelLeaveForTheMac = 4000LL * 1000LL * 1000LL;
                      url:(NSURL *)aURL
                    bytes:(long long)bytes
                    steps:(int)steps
-                guidance:(float)guidance
+                guidance:(CGFloat)guidance
                     side:(int)side
 {
 	if((self = [self initWithIdentifier:anIdentifier name:aName detail:aDetail
@@ -59,7 +59,7 @@ static const long long NekoModelLeaveForTheMac = 4000LL * 1000LL * 1000LL;
 }
 
 - (int)drawSteps       { return drawSteps; }
-- (float)drawGuidance  { return drawGuidance; }
+- (CGFloat)drawGuidance  { return drawGuidance; }
 - (int)drawSide        { return drawSide; }
 
 - (void)dealloc
@@ -71,12 +71,12 @@ static const long long NekoModelLeaveForTheMac = 4000LL * 1000LL * 1000LL;
 	[super dealloc];
 }
 
-- (NSString *)identifier { return identifier; }
-- (NSString *)name { return name; }
-- (NSString *)detail { return detail; }
-- (NSURL *)url { return url; }
-- (long long)expectedBytes { return expectedBytes; }
-- (BOOL)thinks { return thinks; }
+@synthesize identifier;
+@synthesize name;
+@synthesize detail;
+@synthesize url;
+@synthesize expectedBytes;
+@synthesize thinks;
 
 - (long long)memoryNeeded
 {
@@ -507,15 +507,9 @@ static const long long NekoModelLeaveForTheMac = 4000LL * 1000LL * 1000LL;
 	return task != nil;
 }
 
-- (double)fraction
-{
-	return fraction;
-}
+@synthesize fraction;
 
-- (NekoLocalModel *)downloadingModel
-{
-	return downloading;
-}
+@synthesize downloadingModel = downloading;
 
 + (long long)memoryOnThisMac
 {

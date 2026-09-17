@@ -2,18 +2,18 @@
 
 #import <Cocoa/Cocoa.h>
 
-/* Whether this Mac can actually run a given model.
+/*! Whether this Mac can actually run a given model.
 
    Added because the catalogue grew a 27B, and that is the first entry somebody
    can *fetch* and then not *load*: sixteen gigabytes arrive over an hour and
    then llama.cpp cannot map them beside everything else running. Nothing here
    used to look, so the only warning was a sentence in a row somebody may not
    read. */
-typedef enum {
-	NekoModelFitsWell,        /* room to spare */
-	NekoModelFitsTightly,     /* it will load, and the Mac will feel it */
-	NekoModelWillNotLoad      /* not on this machine */
-} NekoModelFit;
+typedef NS_ENUM(int, NekoModelFit) {
+	NekoModelFitsWell,        /*!< room to spare */
+	NekoModelFitsTightly,     /*!< it will load, and the Mac will feel it */
+	NekoModelWillNotLoad      /*!< not on this machine */
+};
 
 /* One downloadable model. */
 @interface NekoLocalModel : NSObject
@@ -25,10 +25,10 @@ typedef enum {
 	long long expectedBytes;
 	BOOL thinks;
 	int drawSteps;
-	float drawGuidance;
+	CGFloat drawGuidance;
 	int drawSide;
 }
-/* Whether this model writes its notes before it answers.
+/*! Whether this model writes its notes before it answers.
 
    A required argument and not a setter, on purpose: a catalogue entry added
    without deciding this is exactly how Qwen3.5 4B got in. Its URL was checked,
@@ -36,19 +36,19 @@ typedef enum {
    **writes** — which is a `<think>` block, and it went in the bubble with the
    persona quoted back inside it. NekoLocalProvider takes it out now; this says
    which ones it will be taking it out of, so the preferences can say so too. */
-- (BOOL)thinks;
+@property (readonly) BOOL thinks;
 
-/* What it takes to answer with, in bytes: the weights plus what llama.cpp wants
+/*! What it takes to answer with, in bytes: the weights plus what llama.cpp wants
    beside them for the context and its own buffers. Not the same as the download,
    which is only the weights. */
 - (long long)memoryNeeded;
 
-/* And whether that fits here. Read from hw.memsize each time rather than kept:
+/*! And whether that fits here. Read from hw.memsize each time rather than kept:
    the answer changes when somebody plugs in a different Mac's disk, and it costs
    nothing to ask. */
 - (NekoModelFit)fitOnThisMac;
 
-/* One sentence for the row, or nil when there is nothing to warn about. */
+/*! One sentence for the row, or nil when there is nothing to warn about. */
 - (NSString *)memoryWarning;
 
 - (id)initWithIdentifier:(NSString *)anIdentifier
@@ -58,7 +58,7 @@ typedef enum {
                    bytes:(long long)bytes
                   thinks:(BOOL)thinksOutLoud;
 
-/* The same thing for a model that draws, and the three extra arguments are
+/*! The same thing for a model that draws, and the three extra arguments are
    required for the reason `thinks` is: a picture model added without them is a
    picture model drawn with somebody else's recipe.
 
@@ -72,23 +72,23 @@ typedef enum {
                      url:(NSURL *)aURL
                    bytes:(long long)bytes
                    steps:(int)steps
-                guidance:(float)guidance
+                guidance:(CGFloat)guidance
                     side:(int)side;
 
 /* How this one wants to be drawn with. Meaningless for a model that answers in
    words, where they are zero. */
-- (int)drawSteps;
-- (float)drawGuidance;
-- (int)drawSide;
-- (NSString *)identifier;
-- (NSString *)name;
-- (NSString *)detail;        /* "468 MB, 4-bit" and so on */
-- (NSURL *)url;
-- (long long)expectedBytes;
+@property (readonly) int drawSteps;
+@property (readonly) CGFloat drawGuidance;
+@property (readonly) int drawSide;
+@property (readonly, copy) NSString *identifier;
+@property (readonly, copy) NSString *name;
+@property (readonly, copy) NSString *detail;        /*!< "468 MB, 4-bit" and so on */
+@property (readonly, copy) NSURL *url;
+@property (readonly) long long expectedBytes;
 @end
 
 
-/* Keeps the local models: what can be had, what is on disk, and the download in
+/*! Keeps the local models: what can be had, what is on disk, and the download in
    between.
 
    Nothing here shells out to anything. The files live in the app's own
@@ -126,7 +126,7 @@ extern NSString * const NekoModelMemoryKey;
 + (NekoModelStore *)sharedStore;
 
 /* What can be downloaded, in ascending size. */
-- (NSArray *)catalogue;
+- (NSArray<NekoLocalModel*> *)catalogue;
 
 /* The ones that draw rather than write. Kept apart from the others in every
    sense — their own folder, their own list — so that the housekeeping button on
@@ -146,12 +146,12 @@ extern NSString * const NekoModelMemoryKey;
    download, which reads as a broken model rather than a missing one. */
 - (BOOL)isIncomplete:(NSString *)identifier;
 - (long long)installedBytesForIdentifier:(NSString *)identifier;
-- (NSArray *)installedIdentifiers;
+- (NSArray<NSString*> *)installedIdentifiers;
 - (BOOL)removeIdentifier:(NSString *)identifier;
 
 /* Housekeeping: what is downloaded besides the one in use, what it costs, and
    one call to be rid of it — strays that are not in the catalogue included. */
-- (NSArray *)identifiersOtherThan:(NSString *)keep;
+- (NSArray<NSString*> *)identifiersOtherThan:(NSString *)keep;
 - (long long)installedBytesOtherThan:(NSString *)keep;
 - (long long)totalInstalledBytes;
 - (NSUInteger)removeAllExcept:(NSString *)keep;
@@ -176,8 +176,8 @@ extern NSString * const NekoModelMemoryKey;
              progress:(void (^)(double fraction))progress
            completion:(void (^)(NSURL *file, NSError *error))completion;
 - (void)cancelDownload;
-- (BOOL)isDownloading;
-- (double)fraction;
-- (NekoLocalModel *)downloadingModel;
+@property (readonly, getter=isDownloading) BOOL downloading;
+@property (readonly) double fraction;
+@property (readonly, retain) NekoLocalModel *downloadingModel;
 
 @end

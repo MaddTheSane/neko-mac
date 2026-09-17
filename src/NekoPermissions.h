@@ -47,9 +47,9 @@ typedef enum {
 @interface NekoPermissions : NSObject
 
 /* All of them, in the order they matter. */
-+ (NSArray *)all;
++ (NSArray<NekoPermission*> *)all;
 
 /* Everything that is switched on but not allowed. */
-+ (NSArray *)missing;
++ (NSArray<NekoPermission*> *)missing;
 
 @end

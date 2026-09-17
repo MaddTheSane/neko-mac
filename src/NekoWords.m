@@ -59,9 +59,7 @@ static const NSUInteger NekoWordsMost = 300;
 {
 	NSString *text = [NSString stringWithContentsOfURL:[self file]
 	                                          encoding:NSUTF8StringEncoding error:NULL];
-	NSEnumerator *e = [[text componentsSeparatedByString:@"\n"] objectEnumerator];
-	NSString *line;
-	while((line = [e nextObject]) != nil) {
+	for(NSString *line in [text componentsSeparatedByString:@"\n"]) {
 		if([line hasPrefix:@"#"])
 			continue;
 		NSRange colon = [line rangeOfString:@":"];
@@ -252,16 +250,15 @@ static const NSUInteger NekoWordsMost = 300;
 /* Whatever came back, kept only where it is in the list that was offered. This
    is the guard that makes the whole thing safe: the model cannot introduce a
    word, only pick one. */
-- (NSArray *)wordsOf:(NSString *)answer among:(NSArray *)candidates
+- (NSArray<NSString*> *)wordsOf:(NSString *)answer among:(NSArray<NSString*> *)candidates
 {
 	NSSet *offered = [NSSet setWithArray:candidates];
-	NSMutableArray *picked = [NSMutableArray array];
+	NSMutableArray<NSString*> *picked = [NSMutableArray array];
 	NSCharacterSet *breaks = [NSCharacterSet
 		characterSetWithCharactersInString:@",;\n.·-—\t "];
 	NSEnumerator *e = [[[answer lowercaseString]
 		componentsSeparatedByCharactersInSet:breaks] objectEnumerator];
-	NSString *part;
-	while((part = [e nextObject]) != nil) {
+	for(NSString *part in e) {
 		part = [part stringByTrimmingCharactersInSet:
 			[NSCharacterSet punctuationCharacterSet]];
 		if([offered containsObject:part] && ![picked containsObject:part]

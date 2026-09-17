@@ -112,27 +112,27 @@ static NSString * const NekoPluginsSeededKey = @"NekoPluginsSeeded";
 
 - (NSArray *)all
 {
-	return plugins;
+	return [NSArray arrayWithArray:plugins];
 }
 
 - (NekoPlugin *)pluginWithIdentifier:(NSString *)identifier
 {
-	NSEnumerator *e = [plugins objectEnumerator];
-	NekoPlugin *plugin;
-	while((plugin = [e nextObject]) != nil)
-		if([[plugin identifier] isEqualToString:identifier])
+	for (NekoPlugin *plugin in plugins) {
+		if([[plugin identifier] isEqualToString:identifier]) {
 			return plugin;
+		}
+	}
 	return nil;
 }
 
 - (NSArray *)enabled
 {
 	NSMutableArray *on = [NSMutableArray array];
-	NSEnumerator *e = [plugins objectEnumerator];
-	NekoPlugin *plugin;
-	while((plugin = [e nextObject]) != nil)
-		if([plugin isUsable] && [self isEnabled:plugin])
+	for (NekoPlugin *plugin in plugins) {
+		if ([plugin isUsable] && [self isEnabled:plugin]) {
 			[on addObject:plugin];
+		}
+	}
 	return on;
 }
 

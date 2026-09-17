@@ -89,7 +89,7 @@ extern const NSInteger NekoPluginInterface;
 /* Every Shortcut of yours this plugin needs, verbs and text together, in the
    order they were declared. Which of them exist is not asked here: a manifest is
    read, and Shortcuts are somebody's own business. */
-- (NSArray *)shortcutsItNeeds;
+- (NSArray<NSString*> *)shortcutsItNeeds;
 - (BOOL)processesTextGoing:(BOOL)inward;   /* YES for what you said, NO for the answer */
 
 /* "2 feeds", "nothing yet" — the line under its name in the panel. */

@@ -2,9 +2,9 @@
 
 #import <Cocoa/Cocoa.h>
 
-extern NSString * const NekoGlanceDidChangeNotification;
+extern NSNotificationName const NekoGlanceDidChangeNotification;
 
-/* Reading the screen, granted for a stretch of time rather than for ever.
+/*! Reading the screen, granted for a stretch of time rather than for ever.
 
    Taken from the Convai desktop pet by way of docs/others-2.md, designed in
    docs/one-look.md, and argued with in docs/one-look-roadmap.md — which is worth

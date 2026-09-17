@@ -12,7 +12,7 @@
    Unlike the bubble, this one has to take the keyboard focus: there is no way to
    type into a window that cannot become key. It gives the focus back to whatever
    application had it, which is the least it can do for having taken it. */
-@interface NekoLine : NSPanel
+@interface NekoLine : NSPanel <NSTextFieldDelegate>
 {
 	NSTextField *field;
 	void (^finished)(NSString *typed);

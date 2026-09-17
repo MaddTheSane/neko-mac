@@ -3,7 +3,7 @@
 #import <Cocoa/Cocoa.h>
 
 extern NSString * const NekoUpdateCheckKey;          /* the switch, on by default */
-extern NSString * const NekoUpdateDidChangeNotification;
+extern NSNotificationName const NekoUpdateDidChangeNotification;
 
 /* Telling you a new version exists, and then getting out of the way.
 

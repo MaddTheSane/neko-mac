@@ -1445,9 +1445,7 @@ static const NSTimeInterval NekoHoldToType = 0.5;
 		   after the yes and never before it: a pet that opens a file chooser on
 		   its own would be a different kind of animal. */
 		NekoFolderAccess *access = [NekoFolderAccess sharedAccess];
-		NSEnumerator *missing = [[action needsFolders] objectEnumerator];
-		NSString *key;
-		while((key = [missing nextObject]) != nil) {
+		for (NSString *key in [action needsFolders]) {
 			NSString *why = nil;
 			if(![access requestAccessTo:key saying:&why]) {
 				[self sayInCharacter:why ?: [NSString stringWithFormat:

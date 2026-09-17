@@ -43,21 +43,18 @@ NSString *NekoWithoutMarkdown(NSString *line)
 	if(direct != nil)
 		return [NSURL fileURLWithPath:direct];
 
-	NSArray *folders = [NSArray arrayWithObjects:@"/Applications",
+	NSArray *folders = @[@"/Applications",
 		@"/Applications/Utilities", @"/System/Applications",
 		@"/System/Applications/Utilities",
-		[NSHomeDirectory() stringByAppendingPathComponent:@"Applications"], nil];
+		[NSHomeDirectory() stringByAppendingPathComponent:@"Applications"]];
 	NSFileManager *files = [NSFileManager defaultManager];
 	NSString *wanted = [name lowercaseString];
 	NSString *best = nil;
 
-	NSEnumerator *e = [folders objectEnumerator];
-	NSString *folder;
-	while((folder = [e nextObject]) != nil) {
+	for (NSString *folder in folders) {
 		NSEnumerator *inside = [[files contentsOfDirectoryAtPath:folder error:NULL]
 			objectEnumerator];
-		NSString *entry;
-		while((entry = [inside nextObject]) != nil) {
+		for (NSString *entry in inside) {
 			if(![[entry pathExtension] isEqualToString:@"app"])
 				continue;
 			NSString *path = [folder stringByAppendingPathComponent:entry];
@@ -245,9 +242,7 @@ NSString *NekoWithoutMarkdown(NSString *line)
 	NSString *wanted = [target lowercaseString];
 	NSMutableArray *exact = [NSMutableArray array];
 	NSMutableArray *stem = [NSMutableArray array];
-	NSEnumerator *e = [entries objectEnumerator];
-	NSString *entry;
-	while((entry = [e nextObject]) != nil) {
+	for(NSString *entry in entries) {
 		if([entry hasPrefix:@"."])
 			continue;
 		NSString *plain = [entry lowercaseString];

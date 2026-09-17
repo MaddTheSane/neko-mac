@@ -1,37 +1,34 @@
 #import "NekoBubble.h"
 
-static const float NekoBubbleMaxWidth = 420.0f;
-static const float NekoBubbleMaxPicture = 320.0f;
-static const float NekoBubbleGapUnderPicture = 8.0f;
-static const float NekoBubblePadding = 12.0f;
-static const float NekoBubbleTail = 9.0f;
-static const float NekoBubbleGap = 6.0f;
-static const float NekoBubbleRadius = 10.0f;
+static const CGFloat NekoBubbleMaxWidth = 420.0f;
+static const CGFloat NekoBubbleMaxPicture = 320.0f;
+static const CGFloat NekoBubbleGapUnderPicture = 8.0f;
+static const CGFloat NekoBubblePadding = 12.0f;
+static const CGFloat NekoBubbleTail = 9.0f;
+static const CGFloat NekoBubbleGap = 6.0f;
+static const CGFloat NekoBubbleRadius = 10.0f;
 
 /* Draws the rounded body and the tail. The tail points down when the bubble sits
    above the cat, which is the usual case, and up when it had to go below. */
 @interface NekoBubbleView : NSView
 {
 	BOOL tailAtBottom;
-	float tailOffset;            /* from the centre, to keep it on the cat */
+	CGFloat tailOffset;            /* from the centre, to keep it on the cat */
 }
-- (void)setTailAtBottom:(BOOL)atBottom offset:(float)offset;
-- (BOOL)tailAtBottom;
+- (void)setTailAtBottom:(BOOL)atBottom offset:(CGFloat)offset;
+@property (readonly) BOOL tailAtBottom;
 @end
 
 @implementation NekoBubbleView
 
-- (void)setTailAtBottom:(BOOL)atBottom offset:(float)offset
+- (void)setTailAtBottom:(BOOL)atBottom offset:(CGFloat)offset
 {
 	tailAtBottom = atBottom;
 	tailOffset = offset;
 	[self setNeedsDisplay:YES];
 }
 
-- (BOOL)tailAtBottom
-{
-	return tailAtBottom;
-}
+@synthesize tailAtBottom;
 
 - (BOOL)isOpaque
 {
@@ -50,7 +47,7 @@ static const float NekoBubbleRadius = 10.0f;
 	                                                    xRadius:NekoBubbleRadius
 	                                                    yRadius:NekoBubbleRadius];
 
-	float centre = NSMidX(body) + tailOffset;
+	CGFloat centre = NSMidX(body) + tailOffset;
 	centre = MIN(MAX(centre, NSMinX(body) + NekoBubbleRadius + NekoBubbleTail),
 	             NSMaxX(body) - NekoBubbleRadius - NekoBubbleTail);
 	NSBezierPath *tail = [NSBezierPath bezierPath];
@@ -104,7 +101,7 @@ static const float NekoBubbleRadius = 10.0f;
 	[self setCanHide:NO];
 	[self setHidesOnDeactivate:NO];
 	[self setBecomesKeyOnlyIfNeeded:YES];
-	[self setContentView:[[[NekoBubbleView alloc] initWithFrame:NSZeroRect] autorelease]];
+	[self setContentView:[[NekoBubbleView alloc] initWithFrame:NSZeroRect]];
 
 	label = [[NSTextField alloc] initWithFrame:NSZeroRect];
 	[label setBezeled:NO];
@@ -167,16 +164,6 @@ static const float NekoBubbleRadius = 10.0f;
 - (void)dealloc
 {
 	[dismissal invalidate];
-	[label release];
-	[hintLabel release];
-	[hint release];
-	[picture release];
-	[saveButton release];
-	[yesButton release];
-	[noButton release];
-	[decision release];
-	[hover release];
-	[super dealloc];
 }
 
 - (BOOL)canBecomeKeyWindow
@@ -194,7 +181,6 @@ static const float NekoBubbleRadius = 10.0f;
 {
 	if(hint == line || [hint isEqualToString:line])
 		return;
-	[hint release];
 	hint = [line copy];
 	/* Already on screen: grow or shrink for it now rather than at the next
 	   thing that gets said — keeping whatever was left of its welcome, since
@@ -239,7 +225,6 @@ static const float NekoBubbleRadius = 10.0f;
 	[label setFont:font];
 	[label setStringValue:(text ?: @"")];
 	if(lastText != text) {
-		[lastText release];
 		lastText = [(text ?: @"") copy];
 	}
 	lastCat = catFrame;
@@ -249,22 +234,22 @@ static const float NekoBubbleRadius = 10.0f;
 	   the field than it does in a bare measurement: a sentence measured as one
 	   line needs two, and the second one used to be cut off — which ate the end
 	   of every short answer. */
-	float room = NekoBubbleMaxWidth - 2.0f * NekoBubblePadding;
+	CGFloat room = NekoBubbleMaxWidth - 2.0 * NekoBubblePadding;
 	NSSize needed = [[label cell] cellSizeForBounds:
-		NSMakeRect(0.0f, 0.0f, room, 10000.0f)];
+		NSMakeRect(0.0, 0.0, room, 10000.0)];
 
-	float textWidth = ceilf(MIN(needed.width, room));
-	float textHeight = [text length] > 0 ? ceilf(needed.height) : 0.0f;
+	CGFloat textWidth = ceil(MIN(needed.width, room));
+	CGFloat textHeight = [text length] > 0 ? ceil(needed.height) : 0.0;
 
 	/* The hint sits on its own row under the words, measured the same way. */
-	float hintWidth = 0.0f, hintHeight = 0.0f;
+	CGFloat hintWidth = 0.0, hintHeight = 0.0;
 	[hintLabel setStringValue:(hint ?: @"")];
 	[hintLabel setHidden:([hint length] == 0)];
 	if([hint length] > 0) {
 		NSSize small = [[hintLabel cell] cellSizeForBounds:
-			NSMakeRect(0.0f, 0.0f, room, 10000.0f)];
-		hintWidth = ceilf(MIN(small.width, room));
-		hintHeight = ceilf(small.height) + 4.0f;
+			NSMakeRect(0.0, 0.0, room, 10000.0)];
+		hintWidth = ceil(MIN(small.width, room));
+		hintHeight = ceil(small.height) + 4.0;
 	}
 
 	/* The picture is shown at whatever size fits the bubble's own limit, keeping
@@ -273,36 +258,36 @@ static const float NekoBubbleRadius = 10.0f;
 	NSSize drawn = NSZeroSize;
 	if(image != nil) {
 		NSSize natural = [image size];
-		float side = MIN(NekoBubbleMaxPicture, MAX(natural.width, natural.height));
-		float scale = natural.width > 0.0f && natural.height > 0.0f
-			? side / MAX(natural.width, natural.height) : 1.0f;
-		drawn = NSMakeSize(ceilf(natural.width * scale), ceilf(natural.height * scale));
+		CGFloat side = MIN(NekoBubbleMaxPicture, MAX(natural.width, natural.height));
+		CGFloat scale = natural.width > 0.0 && natural.height > 0.0
+			? side / MAX(natural.width, natural.height) : 1.0;
+		drawn = NSMakeSize(ceil(natural.width * scale), ceil(natural.height * scale));
 	}
 
-	float contentWidth = MAX(MAX(textWidth, hintWidth), drawn.width);
-	float gap = (image != nil && [text length] > 0) ? NekoBubbleGapUnderPicture : 0.0f;
-	float width = contentWidth + 2.0f * NekoBubblePadding;
-	float height = textHeight + hintHeight + drawn.height + gap
-		+ 2.0f * NekoBubblePadding + NekoBubbleTail;
+	CGFloat contentWidth = MAX(MAX(textWidth, hintWidth), drawn.width);
+	CGFloat gap = (image != nil && [text length] > 0) ? NekoBubbleGapUnderPicture : 0.0f;
+	CGFloat width = contentWidth + 2.0f * NekoBubblePadding;
+	CGFloat height = textHeight + hintHeight + drawn.height + gap
+		+ 2.0 * NekoBubblePadding + NekoBubbleTail;
 
 	NSScreen *screen = [self screenForRect:catFrame];
 	NSRect visible = [screen visibleFrame];
 
 	/* Above the cat by default, below when there is no room up there. */
 	BOOL above = NSMaxY(catFrame) + NekoBubbleGap + height <= NSMaxY(visible);
-	float y = above ? NSMaxY(catFrame) + NekoBubbleGap
-	                : NSMinY(catFrame) - NekoBubbleGap - height;
-	float x = NSMidX(catFrame) - width / 2.0f;
-	x = MIN(MAX(x, NSMinX(visible) + 4.0f), NSMaxX(visible) - width - 4.0f);
-	y = MIN(MAX(y, NSMinY(visible) + 4.0f), NSMaxY(visible) - height - 4.0f);
+	CGFloat y = above ? NSMaxY(catFrame) + NekoBubbleGap
+	                  : NSMinY(catFrame) - NekoBubbleGap - height;
+	CGFloat x = NSMidX(catFrame) - width / 2.0;
+	x = MIN(MAX(x, NSMinX(visible) + 4.0), NSMaxX(visible) - width - 4.0);
+	y = MIN(MAX(y, NSMinY(visible) + 4.0), NSMaxY(visible) - height - 4.0);
 
 	[self setFrame:NSMakeRect(x, y, width, height) display:NO];
 	[(NekoBubbleView *)[self contentView] setTailAtBottom:above
-	                                               offset:NSMidX(catFrame) - (x + width / 2.0f)];
-	float bottom = (above ? NekoBubbleTail : 0.0f) + NekoBubblePadding;
+	                                               offset:NSMidX(catFrame) - (x + width / 2.0)];
+	CGFloat bottom = (above ? NekoBubbleTail : 0.0) + NekoBubblePadding;
 	if(hintHeight > 0.0f)
 		[hintLabel setFrame:NSMakeRect(NekoBubblePadding, bottom,
-		                               contentWidth, hintHeight - 4.0f)];
+		                               contentWidth, hintHeight - 4.0)];
 	[label setFrame:NSMakeRect(NekoBubblePadding, bottom + hintHeight,
 	                           contentWidth, textHeight)];
 	[picture setImage:image];
@@ -313,15 +298,15 @@ static const float NekoBubbleRadius = 10.0f;
 	[saveButton setTitle:NSLocalizedString(@"Save", nil)];
 	[saveButton setEnabled:YES];
 	if(image != nil) {
-		NSRect where = NSMakeRect(NekoBubblePadding + (contentWidth - drawn.width) / 2.0f,
+		NSRect where = NSMakeRect(NekoBubblePadding + (contentWidth - drawn.width) / 2.0,
 		                          bottom + hintHeight + textHeight + gap,
 		                          drawn.width, drawn.height);
 		[picture setFrame:where];
 		/* Top right of the drawing, a few points in, out of the way of whatever
 		   the picture is of. */
 		NSSize wanted = [saveButton intrinsicContentSize];
-		[saveButton setFrame:NSMakeRect(NSMaxX(where) - wanted.width - 8.0f,
-		                                NSMaxY(where) - wanted.height - 8.0f,
+		[saveButton setFrame:NSMakeRect(NSMaxX(where) - wanted.width - 8.0,
+		                                NSMaxY(where) - wanted.height - 8.0,
 		                                wanted.width, wanted.height)];
 	}
 
@@ -329,7 +314,6 @@ static const float NekoBubbleRadius = 10.0f;
 	   is a picture until somebody reaches for it. */
 	if(hover != nil) {
 		[[self contentView] removeTrackingArea:hover];
-		[hover release];
 		hover = nil;
 	}
 	if(image != nil) {
@@ -359,7 +343,6 @@ static const float NekoBubbleRadius = 10.0f;
        nearRect:(NSRect)catFrame
         decided:(void (^)(BOOL yes))block
 {
-	[decision release];
 	decision = [block copy];
 
 	[self setHint:nil];         /* a question with buttons says enough already */
@@ -367,7 +350,7 @@ static const float NekoBubbleRadius = 10.0f;
 
 	NSSize yesSize = [yesButton intrinsicContentSize];
 	NSSize noSize = [noButton intrinsicContentSize];
-	float row = MAX(yesSize.height, noSize.height);
+	CGFloat row = MAX(yesSize.height, noSize.height);
 	NSRect frame = [self frame];
 	frame.size.height += row + NekoBubbleGapUnderPicture;
 	if(![(NekoBubbleView *)[self contentView] tailAtBottom])
@@ -380,11 +363,11 @@ static const float NekoBubbleRadius = 10.0f;
 	words.origin.y += row + NekoBubbleGapUnderPicture;
 	[label setFrame:words];
 
-	float right = NSWidth(frame) - NekoBubblePadding;
-	float bottom = ([(NekoBubbleView *)[self contentView] tailAtBottom]
-		? NekoBubbleTail : 0.0f) + NekoBubblePadding;
+	CGFloat right = NSWidth(frame) - NekoBubblePadding;
+	CGFloat bottom = ([(NekoBubbleView *)[self contentView] tailAtBottom]
+		  ? NekoBubbleTail : 0.0f) + NekoBubblePadding;
 	[noButton setFrame:NSMakeRect(right - noSize.width, bottom, noSize.width, row)];
-	[yesButton setFrame:NSMakeRect(right - noSize.width - yesSize.width - 8.0f,
+	[yesButton setFrame:NSMakeRect(right - noSize.width - yesSize.width - 8.0,
 	                               bottom, yesSize.width, row)];
 	[yesButton setHidden:NO];
 	[noButton setHidden:NO];
@@ -393,15 +376,13 @@ static const float NekoBubbleRadius = 10.0f;
 
 - (void)answerWith:(BOOL)yes
 {
-	void (^block)(BOOL) = [decision retain];
-	[decision release];
+	void (^block)(BOOL) = decision;
 	decision = nil;
 	[yesButton setHidden:YES];
 	[noButton setHidden:YES];
 	[self hide];
 	if(block != nil) {
 		block(yes);
-		[block release];
 	}
 }
 
@@ -410,9 +391,7 @@ static const float NekoBubbleRadius = 10.0f;
 
 - (NSScreen *)screenForRect:(NSRect)rect
 {
-	NSEnumerator *e = [[NSScreen screens] objectEnumerator];
-	NSScreen *screen;
-	while((screen = [e nextObject]) != nil)
+	for(NSScreen *screen in [NSScreen screens])
 		if(NSIntersectsRect([screen frame], rect))
 			return screen;
 	return [NSScreen mainScreen];
@@ -438,8 +417,8 @@ static const float NekoBubbleRadius = 10.0f;
 	if(image == nil)
 		return;
 
-	NSBitmapImageRep *bitmap = [[[NSBitmapImageRep alloc]
-		initWithData:[image TIFFRepresentation]] autorelease];
+	NSBitmapImageRep *bitmap = [[NSBitmapImageRep alloc]
+								initWithData:[image TIFFRepresentation]];
 	NSData *png = [bitmap representationUsingType:NSBitmapImageFileTypePNG
 	                                   properties:[NSDictionary dictionary]];
 	NSString *folder = [NSSearchPathForDirectoriesInDomains(
@@ -449,7 +428,7 @@ static const float NekoBubbleRadius = 10.0f;
 		return;
 	}
 
-	NSDateFormatter *stamp = [[[NSDateFormatter alloc] init] autorelease];
+	NSDateFormatter *stamp = [[NSDateFormatter alloc] init];
 	[stamp setDateFormat:@"yyyy-MM-dd HH.mm.ss"];
 	NSString *file = [folder stringByAppendingPathComponent:
 		[NSString stringWithFormat:NSLocalizedString(@"Neko %@.png", nil),

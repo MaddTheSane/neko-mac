@@ -37,7 +37,7 @@
 		8D11072B0486CEB800E47090 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 089C165CFE840E0CC02AAC07 /* InfoPlist.strings */; };
 		8D11072D0486CEB800E47090 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 29B97316FDCFA39411CA2CEA /* main.m */; settings = {ATTRIBUTES = (); }; };
 		8D11072F0486CEB800E47090 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */; };
-		A700278D0CA641680057F7E4 /* MyPanel.m in Sources */ = {isa = PBXBuildFile; fileRef = A700278C0CA641680057F7E4 /* MyPanel.m */; };
+		A700278D0CA641680057F7E4 /* MyPanel.m in Sources */ = {isa = PBXBuildFile; fileRef = A700278C0CA641680057F7E4 /* MyPanel.m */; settings = {COMPILER_FLAGS = "-fobjc-arc"; }; };
 		A70027B30CA6447E0057F7E4 /* MyView.m in Sources */ = {isa = PBXBuildFile; fileRef = A70027B20CA6447E0057F7E4 /* MyView.m */; };
 		A7B9FF1D1A575C310074B4D4 /* Neko.icns in Resources */ = {isa = PBXBuildFile; fileRef = A7B9FF1C1A575C310074B4D4 /* Neko.icns */; };
 		D1C0117A1B00000000000003 /* NekoController.m in Sources */ = {isa = PBXBuildFile; fileRef = D1C0117A1B00000000000002 /* NekoController.m */; };
@@ -49,7 +49,7 @@
 		D1C0117A1B00000000000048 /* NekoModelProvider.m in Sources */ = {isa = PBXBuildFile; fileRef = D1C0117A1B00000000000047 /* NekoModelProvider.m */; };
 		D1C0117A1B0000000000004B /* NekoHotKey.m in Sources */ = {isa = PBXBuildFile; fileRef = D1C0117A1B0000000000004A /* NekoHotKey.m */; };
 		D1C0117A1B0000000000004E /* NekoListener.m in Sources */ = {isa = PBXBuildFile; fileRef = D1C0117A1B0000000000004D /* NekoListener.m */; };
-		D1C0117A1B00000000000051 /* NekoBubble.m in Sources */ = {isa = PBXBuildFile; fileRef = D1C0117A1B00000000000050 /* NekoBubble.m */; };
+		D1C0117A1B00000000000051 /* NekoBubble.m in Sources */ = {isa = PBXBuildFile; fileRef = D1C0117A1B00000000000050 /* NekoBubble.m */; settings = {COMPILER_FLAGS = "-fobjc-arc"; }; };
 		D1C0117A1B00000000000054 /* NekoAsk.m in Sources */ = {isa = PBXBuildFile; fileRef = D1C0117A1B00000000000053 /* NekoAsk.m */; };
 		D1C0117A1B00000000000061 /* Carbon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D1C0117A1B00000000000060 /* Carbon.framework */; };
 		D1C0117A1B00000000000063 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D1C0117A1B00000000000062 /* Security.framework */; };
@@ -629,6 +629,8 @@
 				GCC_ENABLE_FIX_AND_CONTINUE = YES;
 				GCC_MODEL_TUNING = G5;
 				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = src/Neko_Prefix.pch;
 				INFOPLIST_FILE = Info.plist;
 				INSTALL_PATH = "$(HOME)/Applications";
 				MACOSX_DEPLOYMENT_TARGET = 12.0;
@@ -650,6 +652,8 @@
 				COMBINE_HIDPI_IMAGES = YES;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
 				GCC_MODEL_TUNING = G5;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = src/Neko_Prefix.pch;
 				INFOPLIST_FILE = Info.plist;
 				INSTALL_PATH = "$(HOME)/Applications";
 				MACOSX_DEPLOYMENT_TARGET = 12.0;

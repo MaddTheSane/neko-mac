@@ -124,7 +124,7 @@ NSString * const NekoDrawSizeKey    = @"NekoDrawSize";
 	/* The guidance is the model's and not somebody's to set: it is not a taste,
 	   it is what the checkpoint was distilled for. A turbo model at seven draws
 	   mush, and there is no reason anybody would want that. */
-	float guidance = [chosen drawGuidance] > 0.0f ? [chosen drawGuidance] : 7.0f;
+	CGFloat guidance = [chosen drawGuidance] > 0.0 ? [chosen drawGuidance] : 7.0;
 
 	[scratch release];
 	scratch = [[NSTemporaryDirectory() stringByAppendingPathComponent:

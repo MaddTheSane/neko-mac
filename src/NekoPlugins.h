@@ -14,7 +14,7 @@ extern NSString * const NekoPluginsEnabledKey;
 extern NSString * const NekoPluginsDirectoryKey;
 
 /* Posted when one is added, removed, enabled or disabled. */
-extern NSString * const NekoPluginsDidChangeNotification;
+extern NSNotificationName const NekoPluginsDidChangeNotification;
 
 /* The folder of plugins, and what may be done with them.
 
@@ -35,12 +35,12 @@ extern NSString * const NekoPluginsDidChangeNotification;
 /* The examples inside the bundle, if any shipped: read-only, never seeded, and
    there so that Add… has somewhere to point. */
 - (NSURL *)examplesDirectory;
-- (NSArray *)examples;
+- (NSArray<NekoPlugin*> *)examples;
 
 /* Everything installed, refused ones included: a plugin that cannot be used is
    still shown, with the sentence saying why. */
-- (NSArray *)all;
-- (NSArray *)enabled;            /* usable and switched on */
+- (NSArray<NekoPlugin*> *)all;
+- (NSArray<NekoPlugin*> *)enabled;            /* usable and switched on */
 - (NekoPlugin *)pluginWithIdentifier:(NSString *)identifier;
 
 - (void)reload;

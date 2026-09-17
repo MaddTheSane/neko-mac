@@ -37,9 +37,7 @@ static const long long NekoBrainsCapable = 2000000000LL;
 	NekoModelStore *store = [NekoModelStore sharedStore];
 	NekoLocalModel *best = nil;
 	long long bestBytes = 0;
-	NSEnumerator *e = [[store catalogue] objectEnumerator];
-	NekoLocalModel *model;
-	while((model = [e nextObject]) != nil) {
+	for(NekoLocalModel *model in [store catalogue]) {
 		if([store installedURLForIdentifier:[model identifier]] == nil)
 			continue;
 		long long bytes = [store installedBytesForIdentifier:[model identifier]];

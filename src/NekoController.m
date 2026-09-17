@@ -74,17 +74,13 @@ enum {
 	NekoLoginNotFound = 3
 };
 
-/* The English text doubles as the lookup key, so a missing translation falls
-   back to English on its own and there is no English table to keep in step. */
-#define NekoLocalized(text) NSLocalizedString(text, nil)
-
-static const float NekoMinSpeed = 4.0f;
-static const float NekoMaxSpeed = 30.0f;
+static const CGFloat NekoMinSpeed = 4.0f;
+static const CGFloat NekoMaxSpeed = 30.0f;
 
 /* How close the cat is allowed to get to the pointer. 0 puts it right under
    the cursor, which is what it did before the setting existed. */
-static const float NekoMinStopRadius = 0.0f;
-static const float NekoMaxStopRadius = 200.0f;
+static const CGFloat NekoMinStopRadius = 0.0;
+static const CGFloat NekoMaxStopRadius = 200.0;
 
 @implementation NekoController
 
@@ -95,18 +91,18 @@ static const float NekoMaxStopRadius = 200.0f;
 	[[NSUserDefaults standardUserDefaults] registerDefaults:
 		[NSDictionary dictionaryWithObjectsAndKeys:
 			@"neko", NekoCharacterKey,
-			[NSNumber numberWithFloat:13.0f], NekoSpeedKey,
-			[NSNumber numberWithFloat:1.0f], NekoScaleKey,
-			[NSNumber numberWithFloat:48.0f], NekoStopRadiusKey,
-			[NSNumber numberWithBool:YES], NekoIdleSleepKey,
-			[NSNumber numberWithBool:YES], NekoWanderKey,
+			@13.0, NekoSpeedKey,
+			@1.0, NekoScaleKey,
+			@48.0, NekoStopRadiusKey,
+			@YES, NekoIdleSleepKey,
+			@YES, NekoWanderKey,
 			@"follow", NekoBehaviourKey,
-			[NSNumber numberWithBool:NO], NekoPausedKey,
+			@NO, NekoPausedKey,
 			/* Off: a cat that starts talking about your work on first launch,
 			   sending what it saw to whichever engine is set, would be a
 			   decision made for you. */
-			[NSNumber numberWithBool:NO], NekoSuggestKey,
-			[NSNumber numberWithInt:10], NekoSuggestEveryKey, nil]];
+			@NO, NekoSuggestKey,
+			@10, NekoSuggestEveryKey, nil]];
 }
 
 + (NekoController *)sharedController
@@ -144,7 +140,7 @@ static const float NekoMaxStopRadius = 200.0f;
 	/* So the minutes left are worked out when somebody looks, rather than being
 	   written once and going stale in the closed menu. */
 	[menu setDelegate:self];
-	pauseItem = [menu addItemWithTitle:NekoLocalized(@"Pause Neko")
+	pauseItem = [menu addItemWithTitle:NSLocalizedString(@"Pause Neko", @"Pause Neko")
 	                           action:@selector(togglePause:)
 	                    keyEquivalent:@""];
 	[pauseItem setTarget:self];
@@ -153,7 +149,7 @@ static const float NekoMaxStopRadius = 200.0f;
 	   the menu is one click above it. Not a drag, because the cat is not a
 	   control — it ignores the mouse entirely, which is how it can sit on top of
 	   everything without being in the way of a click. */
-	stayItem = [menu addItemWithTitle:NekoLocalized(@"Stay here")
+	stayItem = [menu addItemWithTitle:NSLocalizedString(@"Stay here", @"Stay here")
 	                           action:@selector(toggleStay:)
 	                    keyEquivalent:@""];
 	[stayItem setTarget:self];
@@ -197,12 +193,12 @@ static const float NekoMaxStopRadius = 200.0f;
 
 	[menu addItem:[NSMenuItem separatorItem]];
 
-	NSMenuItem *item = [menu addItemWithTitle:NekoLocalized(@"Character") action:NULL keyEquivalent:@""];
-	characterMenu = [[NSMenu alloc] initWithTitle:NekoLocalized(@"Character")];
+	NSMenuItem *item = [menu addItemWithTitle:NSLocalizedString(@"Character", @"Character") action:NULL keyEquivalent:@""];
+	characterMenu = [[NSMenu alloc] initWithTitle:NSLocalizedString(@"Character", @"Character")];
 	[self buildCharacterMenu];
 	[item setSubmenu:characterMenu];
 
-	item = [menu addItemWithTitle:NekoLocalized(@"Preferences…")
+	item = [menu addItemWithTitle:NSLocalizedString(@"Preferences…", @"Preferences…")
 	                       action:@selector(showPreferences:)
 	                keyEquivalent:@","];
 	[item setTarget:self];
@@ -210,21 +206,21 @@ static const float NekoMaxStopRadius = 200.0f;
 	/* Its own item, because plugins are not settings: they are things somebody
 	   installed, and the window that manages them says more than a tab has room
 	   for. */
-	item = [menu addItemWithTitle:NekoLocalized(@"Plugins…")
+	item = [menu addItemWithTitle:NSLocalizedString(@"Plugins…", @"Plugins…")
 	                       action:@selector(showPlugins:)
 	                keyEquivalent:@""];
 	[item setTarget:self];
 
 	[menu addItem:[NSMenuItem separatorItem]];
 
-	askItem = [menu addItemWithTitle:NekoLocalized(@"Ask Neko")
+	askItem = [menu addItemWithTitle:NSLocalizedString(@"Ask Neko", @"Ask Neko")
 	                         action:@selector(askNeko:)
 	                  keyEquivalent:@""];
 	[askItem setTarget:self];
 
 	[menu addItem:[NSMenuItem separatorItem]];
 
-	item = [menu addItemWithTitle:NekoLocalized(@"About Neko")
+	item = [menu addItemWithTitle:NSLocalizedString(@"About Neko", @"About Neko")
 	                       action:@selector(showAbout:)
 	                keyEquivalent:@""];
 	[item setTarget:self];
@@ -238,7 +234,7 @@ static const float NekoMaxStopRadius = 200.0f;
 	   It is also invisible. There is no Dock icon and no application menu on
 	   screen, so nothing tells you the shortcut exists until it has fired. The
 	   menu item stays, and it is the only way out. */
-	item = [menu addItemWithTitle:NekoLocalized(@"Quit Neko")
+	item = [menu addItemWithTitle:NSLocalizedString(@"Quit Neko", @"Quit Neko")
 	                       action:@selector(quit:)
 	                keyEquivalent:@""];
 	[item setTarget:self];
@@ -274,11 +270,11 @@ static const float NekoMaxStopRadius = 200.0f;
 	NekoAsk *ask = [NekoAsk sharedAsk];
 	if([ask isEnabled]) {
 		[askItem setTitle:[NSString stringWithFormat:@"%@  (%@)",
-			NekoLocalized(@"Ask Neko"), [ask hotKeyDisplayName]]];
+						   NSLocalizedString(@"Ask Neko", @"Ask Neko"), [ask hotKeyDisplayName]]];
 		[askItem setAction:@selector(askNeko:)];
 	} else {
 		/* The ellipsis is the promise that a window opens. */
-		[askItem setTitle:NekoLocalized(@"Set up Ask Neko…")];
+		[askItem setTitle:NSLocalizedString(@"Set up Ask Neko…", @"Set up Ask Neko…")];
 		[askItem setAction:@selector(showAskPreferences:)];
 	}
 	[askItem setTarget:self];
@@ -354,13 +350,13 @@ static const float NekoMaxStopRadius = 200.0f;
 - (void)stopGlance:(id)sender
 {
 	[[NekoGlance sharedGlance] stop];
-	[[NekoAsk sharedAsk] sayUnprompted:NekoLocalized(@"I have stopped looking.")];
+	[[NekoAsk sharedAsk] sayUnprompted:NSLocalizedString(@"I have stopped looking.", @"I have stopped looking.")];
 }
 
 - (void)cancelTimer:(id)sender
 {
 	[[NekoTimer sharedTimer] cancel];
-	[[NekoAsk sharedAsk] sayUnprompted:NekoLocalized(@"Timer off.")];
+	[[NekoAsk sharedAsk] sayUnprompted:NSLocalizedString(@"Timer off.", @"Timer off.")];
 }
 
 - (void)toggleStay:(id)sender
@@ -385,17 +381,15 @@ static const float NekoMaxStopRadius = 200.0f;
 
 - (void)updatePauseItemTitle
 {
-	[pauseItem setTitle:[self isPaused] ? NekoLocalized(@"Resume Neko")
-	                                   : NekoLocalized(@"Pause Neko")];
+	[pauseItem setTitle:[self isPaused] ? NSLocalizedString(@"Resume Neko", @"Resume Neko")
+	                                   : NSLocalizedString(@"Pause Neko", @"Pause Neko")];
 }
 
 - (void)buildCharacterMenu
 {
 	[characterMenu removeAllItems];
 	NSString *active = [[self character] identifier];
-	NSEnumerator *e = [[NekoCharacter availableCharacters] objectEnumerator];
-	NekoCharacter *character;
-	while((character = [e nextObject]) != nil) {
+	for(NekoCharacter *character in [NekoCharacter availableCharacters]) {
 		NSMenuItem *item = [characterMenu addItemWithTitle:[character name]
 		                                           action:@selector(chooseCharacter:)
 		                                    keyEquivalent:@""];
@@ -405,7 +399,7 @@ static const float NekoMaxStopRadius = 200.0f;
 			? NSControlStateValueOn : NSControlStateValueOff];
 	}
 	if([characterMenu numberOfItems] == 0)
-		[[characterMenu addItemWithTitle:NekoLocalized(@"No characters found") action:NULL
+		[[characterMenu addItemWithTitle:NSLocalizedString(@"No characters found", @"No characters found") action:NULL
 		                  keyEquivalent:@""] setEnabled:NO];
 }
 
@@ -471,9 +465,9 @@ static const float NekoMaxStopRadius = 200.0f;
 		[[NSUserDefaults standardUserDefaults] stringForKey:NekoCharacterKey]];
 }
 
-- (float)speed
+- (CGFloat)speed
 {
-	float speed = [[NSUserDefaults standardUserDefaults] floatForKey:NekoSpeedKey];
+	CGFloat speed = [[NSUserDefaults standardUserDefaults] doubleForKey:NekoSpeedKey];
 	if(speed < NekoMinSpeed)
 		return NekoMinSpeed;
 	if(speed > NekoMaxSpeed)
@@ -481,9 +475,9 @@ static const float NekoMaxStopRadius = 200.0f;
 	return speed;
 }
 
-- (float)stopRadius
+- (CGFloat)stopRadius
 {
-	float radius = [[NSUserDefaults standardUserDefaults] floatForKey:NekoStopRadiusKey];
+	CGFloat radius = [[NSUserDefaults standardUserDefaults] doubleForKey:NekoStopRadiusKey];
 	if(radius < NekoMinStopRadius)
 		return NekoMinStopRadius;
 	if(radius > NekoMaxStopRadius)
@@ -491,9 +485,9 @@ static const float NekoMaxStopRadius = 200.0f;
 	return radius;
 }
 
-- (float)scale
+- (CGFloat)scale
 {
-	float scale = [[NSUserDefaults standardUserDefaults] floatForKey:NekoScaleKey];
+	CGFloat scale = [[NSUserDefaults standardUserDefaults] doubleForKey:NekoScaleKey];
 	return (scale >= 2.0f) ? 2.0f : 1.0f;
 }
 
@@ -609,9 +603,9 @@ static const float NekoMaxStopRadius = 200.0f;
 - (void)explainLoginApproval
 {
 	NSAlert *alert = [[[NSAlert alloc] init] autorelease];
-	[alert setMessageText:NekoLocalized(@"Neko needs your approval to open at login")];
-	[alert setInformativeText:NekoLocalized(@"Open System Settings, then Login Items, and allow Neko.")];
-	[alert addButtonWithTitle:NekoLocalized(@"OK")];
+	[alert setMessageText:NSLocalizedString(@"Neko needs your approval to open at login", @"Neko needs your approval to open at login")];
+	[alert setInformativeText:NSLocalizedString(@"Open System Settings, then Login Items, and allow Neko.", @"Open System Settings, then Login Items, and allow Neko.")];
+	[alert addButtonWithTitle:NSLocalizedString(@"OK", @"OK")];
 	[NSApp activateIgnoringOtherApps:YES];
 	[alert runModal];
 }
@@ -653,7 +647,7 @@ static const float NekoMaxStopRadius = 200.0f;
 	BOOL follows = [self behaviourIndex] == 0;
 	[wanderCheck setEnabled:follows];
 	[wanderCheck setToolTip:follows ? nil
-		: NekoLocalized(@"Only while following the cursor")];
+		: NSLocalizedString(@"Only while following the cursor", @"Only while following the cursor")];
 }
 
 - (void)takeOpenAtLoginFrom:(id)sender
@@ -770,15 +764,13 @@ static const float NekoMaxStopRadius = 200.0f;
 		return;
 
 	NSMutableArray *names = [NSMutableArray array];
-	NSEnumerator *e = [missing objectEnumerator];
-	NekoPermission *one;
-	while((one = [e nextObject]) != nil)
+	for(NekoPermission *one in missing)
 		[names addObject:[one name]];
 
 	NSLog(@"Neko: switched on but not allowed — %@",
 		[names componentsJoinedByString:@", "]);
 	[[NekoAsk sharedAsk] sayUnprompted:[NSString stringWithFormat:
-		NekoLocalized(@"Something is switched on that I am not allowed to do: %@."),
+		NSLocalizedString(@"Something is switched on that I am not allowed to do: %@.", @"Something is switched on that I am not allowed to do: %@."),
 		[names componentsJoinedByString:@", "]]];
 	[self showPermissions:nil];
 }
@@ -792,9 +784,7 @@ static const float NekoMaxStopRadius = 200.0f;
 
 - (void)disarmQuitIn:(NSMenu *)menu
 {
-	NSEnumerator *e = [[menu itemArray] objectEnumerator];
-	NSMenuItem *item;
-	while((item = [e nextObject]) != nil) {
+	for(NSMenuItem *item in [menu itemArray]) {
 		if([item action] == @selector(terminate:)
 		   || [item action] == @selector(quit:)) {
 			[item setKeyEquivalent:@""];
@@ -831,7 +821,7 @@ static const float NekoMaxStopRadius = 200.0f;
 		          styleMask:(NSWindowStyleMaskTitled | NSWindowStyleMaskClosable)
 		            backing:NSBackingStoreBuffered
 		              defer:NO];
-	[prefsPanel setTitle:NekoLocalized(@"Neko Preferences")];
+	[prefsPanel setTitle:NSLocalizedString(@"Neko Preferences", @"Neko Preferences")];
 	/* The opposite of the cat's rule: this one window should come to whichever
 	   desktop you are on rather than living on all of them, so that choosing
 	   Preferences from the menu bar does not throw you across Spaces to where it
@@ -850,15 +840,16 @@ static const float NekoMaxStopRadius = 200.0f;
 
 	NSView *content = [[[NSView alloc]
 		initWithFrame:NSMakeRect(0.0f, 0.0f, 600.0f, 420.0f)] autorelease];
-	NSTabViewItem *petTab = [[[NSTabViewItem alloc] initWithIdentifier:@"pet"] autorelease];
-	[petTab setLabel:NekoLocalized(@"Pet")];
+	NSTabViewItem *petTab = [[NSTabViewItem alloc] initWithIdentifier:@"pet"];
+	[petTab setLabel:NSLocalizedString(@"Pet", @"Pet")];
 	[petTab setView:content];
 	[tabs addTabViewItem:petTab];
+	[petTab release];
 
 	NSView *askContent = [[[NSView alloc]
 		initWithFrame:NSMakeRect(0.0f, 0.0f, 600.0f, 420.0f)] autorelease];
 	NSTabViewItem *askTab = [[[NSTabViewItem alloc] initWithIdentifier:@"ask"] autorelease];
-	[askTab setLabel:NekoLocalized(@"Ask Neko")];
+	[askTab setLabel:NSLocalizedString(@"Ask Neko", @"Ask Neko")];
 	[askTab setView:askContent];
 	[tabs addTabViewItem:askTab];
 
@@ -866,7 +857,7 @@ static const float NekoMaxStopRadius = 200.0f;
 		initWithFrame:NSMakeRect(0.0f, 0.0f, 600.0f, 420.0f)] autorelease];
 	[self buildLocalTabInView:localContent];
 	NSTabViewItem *localTab = [[[NSTabViewItem alloc] initWithIdentifier:@"local"] autorelease];
-	[localTab setLabel:NekoLocalized(@"Local model")];
+	[localTab setLabel:NSLocalizedString(@"Local model", @"Local model")];
 	[localTab setView:localContent];
 	[tabs addTabViewItem:localTab];
 
@@ -874,7 +865,7 @@ static const float NekoMaxStopRadius = 200.0f;
 		initWithFrame:NSMakeRect(0.0f, 0.0f, 600.0f, 420.0f)] autorelease];
 	[self buildSuggestTabInView:suggestContent];
 	NSTabViewItem *suggestTab = [[[NSTabViewItem alloc] initWithIdentifier:@"suggest"] autorelease];
-	[suggestTab setLabel:NekoLocalized(@"Suggestions")];
+	[suggestTab setLabel:NSLocalizedString(@"Suggestions", @"Suggestions")];
 	[suggestTab setView:suggestContent];
 	[tabs addTabViewItem:suggestTab];
 
@@ -882,14 +873,14 @@ static const float NekoMaxStopRadius = 200.0f;
 		initWithFrame:NSMakeRect(0.0f, 0.0f, 600.0f, 420.0f)] autorelease];
 	[self buildDrawTabInView:drawContent];
 	NSTabViewItem *drawTab = [[[NSTabViewItem alloc] initWithIdentifier:@"draw"] autorelease];
-	[drawTab setLabel:NekoLocalized(@"Drawings")];
+	[drawTab setLabel:NSLocalizedString(@"Drawings", @"Drawings")];
 	[drawTab setView:drawContent];
 	[tabs addTabViewItem:drawTab];
 
 	permissionsContent = [[[NSView alloc]
 		initWithFrame:NSMakeRect(0.0f, 0.0f, 600.0f, 420.0f)] autorelease];
 	NSTabViewItem *permissionsTab = [[[NSTabViewItem alloc] initWithIdentifier:@"permissions"] autorelease];
-	[permissionsTab setLabel:NekoLocalized(@"Permissions")];
+	[permissionsTab setLabel:NSLocalizedString(@"Permissions", @"Permissions")];
 	[permissionsTab setView:permissionsContent];
 	[tabs addTabViewItem:permissionsTab];
 	/* Its own class since 2.12 — see NekoPermissionsTab.h for why this one moved
@@ -899,15 +890,15 @@ static const float NekoMaxStopRadius = 200.0f;
 	[tabs release];
 
 	/* Behaviour */
-	[content addSubview:[self labelWithString:NekoLocalized(@"Behaviour:")
+	[content addSubview:[self labelWithString:NSLocalizedString(@"Behaviour:", @"Behaviour:")
 	                                    frame:NSMakeRect(20.0f, 176.0f, 125.0f, 17.0f)]];
 
 	behaviourPopUp = [[NSPopUpButton alloc]
 		initWithFrame:NSMakeRect(152.0f, 171.0f, 260.0f, 26.0f) pullsDown:NO];
-	[behaviourPopUp addItemWithTitle:NekoLocalized(@"Follows the cursor")];
-	[behaviourPopUp addItemWithTitle:NekoLocalized(@"Lives on the Dock")];
-	[behaviourPopUp addItemWithTitle:NekoLocalized(@"Roams on its own")];
-	[behaviourPopUp addItemWithTitle:NekoLocalized(@"Runs from the cursor")];
+	[behaviourPopUp addItemWithTitle:NSLocalizedString(@"Follows the cursor", @"Follows the cursor")];
+	[behaviourPopUp addItemWithTitle:NSLocalizedString(@"Lives on the Dock", @"Lives on the Dock")];
+	[behaviourPopUp addItemWithTitle:NSLocalizedString(@"Roams on its own", @"Roams on its own")];
+	[behaviourPopUp addItemWithTitle:NSLocalizedString(@"Runs from the cursor", @"Runs from the cursor")];
 	[behaviourPopUp selectItemAtIndex:[self behaviourIndex]];
 	[behaviourPopUp setTarget:self];
 	[behaviourPopUp setAction:@selector(takeBehaviourFrom:)];
@@ -915,14 +906,12 @@ static const float NekoMaxStopRadius = 200.0f;
 	[behaviourPopUp release];
 
 	/* Character */
-	[content addSubview:[self labelWithString:NekoLocalized(@"Character:")
+	[content addSubview:[self labelWithString:NSLocalizedString(@"Character:", @"Character:")
 	                                    frame:NSMakeRect(20.0f, 378.0f, 125.0f, 17.0f)]];
 
 	characterPopUp = [[NSPopUpButton alloc]
 		initWithFrame:NSMakeRect(152.0f, 373.0f, 170.0f, 26.0f) pullsDown:NO];
-	NSEnumerator *e = [[NekoCharacter availableCharacters] objectEnumerator];
-	NekoCharacter *character;
-	while((character = [e nextObject]) != nil)
+	for(NekoCharacter *character in [NekoCharacter availableCharacters])
 		[characterPopUp addItemWithTitle:[character name]];
 	[characterPopUp selectItemWithTitle:[[self character] name]];
 	[characterPopUp setTarget:self];
@@ -931,7 +920,7 @@ static const float NekoMaxStopRadius = 200.0f;
 	[characterPopUp release];
 
 	/* Speed */
-	[content addSubview:[self labelWithString:NekoLocalized(@"Speed:")
+	[content addSubview:[self labelWithString:NSLocalizedString(@"Speed:", @"Speed:")
 	                                    frame:NSMakeRect(20.0f, 338.0f, 125.0f, 17.0f)]];
 
 	speedSlider = [[NSSlider alloc] initWithFrame:NSMakeRect(152.0f, 335.0f, 200.0f, 21.0f)];
@@ -948,7 +937,7 @@ static const float NekoMaxStopRadius = 200.0f;
 	[content addSubview:speedField];
 
 	/* How close it comes */
-	[content addSubview:[self labelWithString:NekoLocalized(@"Stops short by:")
+	[content addSubview:[self labelWithString:NSLocalizedString(@"Stops short by:", @"Stops short by:")
 	                                    frame:NSMakeRect(20.0f, 298.0f, 125.0f, 17.0f)]];
 
 	radiusSlider = [[NSSlider alloc] initWithFrame:NSMakeRect(152.0f, 295.0f, 200.0f, 21.0f)];
@@ -965,7 +954,7 @@ static const float NekoMaxStopRadius = 200.0f;
 	[content addSubview:radiusField];
 
 	/* Size */
-	[content addSubview:[self labelWithString:NekoLocalized(@"Size:")
+	[content addSubview:[self labelWithString:NSLocalizedString(@"Size:", @"Size:")
 	                                    frame:NSMakeRect(20.0f, 256.0f, 125.0f, 17.0f)]];
 
 	sizePopUp = [[NSPopUpButton alloc]
@@ -981,7 +970,7 @@ static const float NekoMaxStopRadius = 200.0f;
 	/* Idle sleep */
 	sleepCheck = [[NSButton alloc] initWithFrame:NSMakeRect(154.0f, 224.0f, 300.0f, 18.0f)];
 	[sleepCheck setButtonType:NSButtonTypeSwitch];
-	[sleepCheck setTitle:NekoLocalized(@"Fall asleep when idle")];
+	[sleepCheck setTitle:NSLocalizedString(@"Fall asleep when idle", @"Fall asleep when idle")];
 	[sleepCheck setState:[self idleSleep] ? NSControlStateValueOn : NSControlStateValueOff];
 	[sleepCheck setTarget:self];
 	[sleepCheck setAction:@selector(takeIdleSleepFrom:)];
@@ -991,7 +980,7 @@ static const float NekoMaxStopRadius = 200.0f;
 	/* Wandering */
 	wanderCheck = [[NSButton alloc] initWithFrame:NSMakeRect(154.0f, 200.0f, 300.0f, 18.0f)];
 	[wanderCheck setButtonType:NSButtonTypeSwitch];
-	[wanderCheck setTitle:NekoLocalized(@"Wander off when idle")];
+	[wanderCheck setTitle:NSLocalizedString(@"Wander off when idle", @"Wander off when idle")];
 	[wanderCheck setState:[self wandersWhenIdle] ? NSControlStateValueOn : NSControlStateValueOff];
 	[wanderCheck setTarget:self];
 	[wanderCheck setAction:@selector(takeWanderFrom:)];
@@ -1001,13 +990,13 @@ static const float NekoMaxStopRadius = 200.0f;
 	/* Opening at login */
 	loginCheck = [[NSButton alloc] initWithFrame:NSMakeRect(154.0f, 152.0f, 300.0f, 18.0f)];
 	[loginCheck setButtonType:NSButtonTypeSwitch];
-	[loginCheck setTitle:NekoLocalized(@"Open at login")];
+	[loginCheck setTitle:NSLocalizedString(@"Open at login", @"Open at login")];
 	[loginCheck setState:[self opensAtLogin] ? NSControlStateValueOn : NSControlStateValueOff];
 	[loginCheck setTarget:self];
 	[loginCheck setAction:@selector(takeOpenAtLoginFrom:)];
 	if (![self canOpenAtLogin]) {
 		[loginCheck setEnabled:NO];
-		[loginCheck setToolTip:NekoLocalized(@"Needs macOS 13 or newer")];
+		[loginCheck setToolTip:NSLocalizedString(@"Needs macOS 13 or newer", @"Needs macOS 13 or newer")];
 	}
 	[content addSubview:loginCheck];
 	[loginCheck release];
@@ -1017,7 +1006,7 @@ static const float NekoMaxStopRadius = 200.0f;
 	   nothing about you beyond what any request carries. See NekoUpdate.h. */
 	updateCheck = [[NSButton alloc] initWithFrame:NSMakeRect(154.0f, 126.0f, 300.0f, 18.0f)];
 	[updateCheck setButtonType:NSButtonTypeSwitch];
-	[updateCheck setTitle:NekoLocalized(@"Look for new versions")];
+	[updateCheck setTitle:NSLocalizedString(@"Look for new versions", @"Look for new versions")];
 	[updateCheck setState:[[NSUserDefaults standardUserDefaults]
 		boolForKey:NekoUpdateCheckKey] ? NSControlStateValueOn : NSControlStateValueOff];
 	[updateCheck setTarget:self];
@@ -1025,14 +1014,14 @@ static const float NekoMaxStopRadius = 200.0f;
 	/* One literal, not four joined: a key split across string literals is a key
 	   that can never match an entry in Localizable.strings, and tests/docs.m
 	   found exactly that here. */
-	[updateCheck setToolTip:NekoLocalized(@"Neko is not signed, so it never installs anything itself: it tells you, downloads the disk image if you say so, and you drag it across.")];
+	[updateCheck setToolTip:NSLocalizedString(@"Neko is not signed, so it never installs anything itself: it tells you, downloads the disk image if you say so, and you drag it across.", @"Neko is not signed, so it never installs anything itself: it tells you, downloads the disk image if you say so, and you drag it across.")];
 	[content addSubview:updateCheck];
 	[updateCheck release];
 
 	/* Restore defaults */
 	NSButton *reset = [[NSButton alloc] initWithFrame:NSMakeRect(16.0f, 62.0f, 180.0f, 32.0f)];
 	[reset setBezelStyle:NSBezelStyleRounded];
-	[reset setTitle:NekoLocalized(@"Restore Defaults")];
+	[reset setTitle:NSLocalizedString(@"Restore Defaults", @"Restore Defaults")];
 	[reset setTarget:self];
 	[reset setAction:@selector(restoreDefaults:)];
 	[content addSubview:reset];
@@ -1040,7 +1029,7 @@ static const float NekoMaxStopRadius = 200.0f;
 
 	NSButton *look = [[NSButton alloc] initWithFrame:NSMakeRect(206.0f, 62.0f, 160.0f, 32.0f)];
 	[look setBezelStyle:NSBezelStyleRounded];
-	[look setTitle:NekoLocalized(@"Check now")];
+	[look setTitle:NSLocalizedString(@"Check now", @"Check now")];
 	[look setTarget:self];
 	[look setAction:@selector(checkNow:)];
 	[content addSubview:look];
@@ -1059,14 +1048,14 @@ static const float NekoMaxStopRadius = 200.0f;
 
 	askCheck = [[NSButton alloc] initWithFrame:NSMakeRect(20.0f, 380.0f, 520.0f, 18.0f)];
 	[askCheck setButtonType:NSButtonTypeSwitch];
-	[askCheck setTitle:NekoLocalized(@"Let me ask Neko questions out loud")];
+	[askCheck setTitle:NSLocalizedString(@"Let me ask Neko questions out loud", @"Let me ask Neko questions out loud")];
 	[askCheck setState:[ask isEnabled] ? NSControlStateValueOn : NSControlStateValueOff];
 	[askCheck setTarget:self];
 	[askCheck setAction:@selector(takeAskEnabledFrom:)];
 	[content addSubview:askCheck];
 	[askCheck release];
 
-	[content addSubview:[self labelWithString:NekoLocalized(@"Keystroke:")
+	[content addSubview:[self labelWithString:NSLocalizedString(@"Keystroke:", @"Keystroke:")
 	                                    frame:NSMakeRect(20.0f, 342.0f, 125.0f, 17.0f)]];
 	askHotKeyPopUp = [[NSPopUpButton alloc]
 		initWithFrame:NSMakeRect(152.0f, 337.0f, 160.0f, 26.0f) pullsDown:NO];
@@ -1081,22 +1070,22 @@ static const float NekoMaxStopRadius = 200.0f;
 	[content addSubview:askHotKeyPopUp];
 	[askHotKeyPopUp release];
 
-	[content addSubview:[self labelWithString:NekoLocalized(@"Answers from:")
+	[content addSubview:[self labelWithString:NSLocalizedString(@"Answers from:", @"Answers from:")
 	                                    frame:NSMakeRect(20.0f, 302.0f, 125.0f, 17.0f)]];
 	askProviderPopUp = [[NSPopUpButton alloc]
 		initWithFrame:NSMakeRect(152.0f, 297.0f, 220.0f, 26.0f) pullsDown:NO];
 	/* Same order as askProviderKeys. */
-	[askProviderPopUp addItemWithTitle:NekoLocalized(@"Apple Intelligence, on this Mac")];
-	[askProviderPopUp addItemWithTitle:NekoLocalized(@"ChatGPT")];
-	[askProviderPopUp addItemWithTitle:NekoLocalized(@"Claude")];
-	[askProviderPopUp addItemWithTitle:NekoLocalized(@"A model on this Mac")];
-	[askProviderPopUp addItemWithTitle:NekoLocalized(@"A Shortcut of mine")];
+	[askProviderPopUp addItemWithTitle:NSLocalizedString(@"Apple Intelligence, on this Mac", @"Apple Intelligence, on this Mac")];
+	[askProviderPopUp addItemWithTitle:NSLocalizedString(@"ChatGPT", @"ChatGPT")];
+	[askProviderPopUp addItemWithTitle:NSLocalizedString(@"Claude", @"Claude")];
+	[askProviderPopUp addItemWithTitle:NSLocalizedString(@"A model on this Mac", @"A model on this Mac")];
+	[askProviderPopUp addItemWithTitle:NSLocalizedString(@"A Shortcut of mine", @"A Shortcut of mine")];
 	[askProviderPopUp setTarget:self];
 	[askProviderPopUp setAction:@selector(takeAskProviderFrom:)];
 	[content addSubview:askProviderPopUp];
 	[askProviderPopUp release];
 
-	[content addSubview:[self labelWithString:NekoLocalized(@"Shortcut name:")
+	[content addSubview:[self labelWithString:NSLocalizedString(@"Shortcut name:", @"Shortcut name:")
 	                                    frame:NSMakeRect(20.0f, 262.0f, 125.0f, 17.0f)]];
 	askShortcutField = [[NSTextField alloc] initWithFrame:NSMakeRect(152.0f, 259.0f, 220.0f, 22.0f)];
 	[askShortcutField setTarget:self];
@@ -1104,7 +1093,7 @@ static const float NekoMaxStopRadius = 200.0f;
 	[content addSubview:askShortcutField];
 	[askShortcutField release];
 
-	[content addSubview:[self labelWithString:NekoLocalized(@"API key:")
+	[content addSubview:[self labelWithString:NSLocalizedString(@"API key:", @"API key:")
 	                                    frame:NSMakeRect(20.0f, 222.0f, 125.0f, 17.0f)]];
 	askKeyField = [[NSSecureTextField alloc] initWithFrame:NSMakeRect(152.0f, 219.0f, 220.0f, 22.0f)];
 	[askKeyField setTarget:self];
@@ -1114,7 +1103,7 @@ static const float NekoMaxStopRadius = 200.0f;
 
 	askSpeakCheck = [[NSButton alloc] initWithFrame:NSMakeRect(152.0f, 162.0f, 196.0f, 18.0f)];
 	[askSpeakCheck setButtonType:NSButtonTypeSwitch];
-	[askSpeakCheck setTitle:NekoLocalized(@"Read the answer aloud")];
+	[askSpeakCheck setTitle:NSLocalizedString(@"Read the answer aloud", @"Read the answer aloud")];
 	[askSpeakCheck setTarget:self];
 	[askSpeakCheck setAction:@selector(takeAskSpeakFrom:)];
 	[content addSubview:askSpeakCheck];
@@ -1124,8 +1113,8 @@ static const float NekoMaxStopRadius = 200.0f;
 	   ends, and whether the next one needs a keystroke. */
 	followUpCheck = [[NSButton alloc] initWithFrame:NSMakeRect(356.0f, 162.0f, 224.0f, 18.0f)];
 	[followUpCheck setButtonType:NSButtonTypeSwitch];
-	[followUpCheck setTitle:NekoLocalized(@"Listen for a reply after")];
-	[followUpCheck setToolTip:NekoLocalized(@"For a few seconds after it speaks, so an answer needs no keystroke. The bubble says so while the microphone is open.")];
+	[followUpCheck setTitle:NSLocalizedString(@"Listen for a reply after", @"Listen for a reply after")];
+	[followUpCheck setToolTip:NSLocalizedString(@"For a few seconds after it speaks, so an answer needs no keystroke. The bubble says so while the microphone is open.", @"For a few seconds after it speaks, so an answer needs no keystroke. The bubble says so while the microphone is open.")];
 	[followUpCheck setTarget:self];
 	[followUpCheck setAction:@selector(takeFollowUpFrom:)];
 	[content addSubview:followUpCheck];
@@ -1133,7 +1122,7 @@ static const float NekoMaxStopRadius = 200.0f;
 
 	wakeCheck = [[NSButton alloc] initWithFrame:NSMakeRect(152.0f, 186.0f, 300.0f, 18.0f)];
 	[wakeCheck setButtonType:NSButtonTypeSwitch];
-	[wakeCheck setTitle:NekoLocalized(@"Answer when I say “Neko” (beta)")];
+	[wakeCheck setTitle:NSLocalizedString(@"Answer when I say “Neko” (beta)", @"Answer when I say “Neko” (beta)")];
 	[wakeCheck setTarget:self];
 	[wakeCheck setAction:@selector(takeWakeWordFrom:)];
 	[content addSubview:wakeCheck];
@@ -1144,7 +1133,7 @@ static const float NekoMaxStopRadius = 200.0f;
 	   from elsewhere. */
 	webCheck = [[NSButton alloc] initWithFrame:NSMakeRect(356.0f, 138.0f, 224.0f, 18.0f)];
 	[webCheck setButtonType:NSButtonTypeSwitch];
-	[webCheck setTitle:NekoLocalized(@"Let it look up the news")];
+	[webCheck setTitle:NSLocalizedString(@"Let it look up the news", @"Let it look up the news")];
 	[webCheck setTarget:self];
 	[webCheck setAction:@selector(takeWebFrom:)];
 	[content addSubview:webCheck];
@@ -1152,7 +1141,7 @@ static const float NekoMaxStopRadius = 200.0f;
 
 	actionsCheck = [[NSButton alloc] initWithFrame:NSMakeRect(152.0f, 138.0f, 196.0f, 18.0f)];
 	[actionsCheck setButtonType:NSButtonTypeSwitch];
-	[actionsCheck setTitle:NekoLocalized(@"Let it open things when I ask")];
+	[actionsCheck setTitle:NSLocalizedString(@"Let it open things when I ask", @"Let it open things when I ask")];
 	[actionsCheck setTarget:self];
 	[actionsCheck setAction:@selector(takeActionsFrom:)];
 	[content addSubview:actionsCheck];
@@ -1161,7 +1150,7 @@ static const float NekoMaxStopRadius = 200.0f;
 	foldersButton = [[NSButton alloc] initWithFrame:NSMakeRect(148.0f, 100.0f, 168.0f, 28.0f)];
 	[foldersButton setBezelStyle:NSBezelStyleRounded];
 	[foldersButton setControlSize:NSControlSizeSmall];
-	[foldersButton setTitle:NekoLocalized(@"Show it a folder…")];
+	[foldersButton setTitle:NSLocalizedString(@"Show it a folder…", @"Show it a folder…")];
 	[foldersButton setTarget:self];
 	[foldersButton setAction:@selector(showFolderPressed:)];
 	[content addSubview:foldersButton];
@@ -1170,7 +1159,7 @@ static const float NekoMaxStopRadius = 200.0f;
 	forgetFoldersButton = [[NSButton alloc] initWithFrame:NSMakeRect(450.0f, 100.0f, 130.0f, 28.0f)];
 	[forgetFoldersButton setBezelStyle:NSBezelStyleRounded];
 	[forgetFoldersButton setControlSize:NSControlSizeSmall];
-	[forgetFoldersButton setTitle:NekoLocalized(@"Forget them")];
+	[forgetFoldersButton setTitle:NSLocalizedString(@"Forget them", @"Forget them")];
 	[forgetFoldersButton setTarget:self];
 	[forgetFoldersButton setAction:@selector(forgetFoldersPressed:)];
 	[content addSubview:forgetFoldersButton];
@@ -1201,10 +1190,10 @@ static const float NekoMaxStopRadius = 200.0f;
    things that do not collide with anything is more useful sooner. */
 - (NSArray *)hotKeyChoices
 {
-	NSUInteger control = NSEventModifierFlagControl;
-	NSUInteger option = NSEventModifierFlagOption;
-	NSUInteger command = NSEventModifierFlagCommand;
-	NSUInteger shift = NSEventModifierFlagShift;
+	NSEventModifierFlags control = NSEventModifierFlagControl;
+	NSEventModifierFlags option = NSEventModifierFlagOption;
+	NSEventModifierFlags command = NSEventModifierFlagCommand;
+	NSEventModifierFlags shift = NSEventModifierFlagShift;
 	return [NSArray arrayWithObjects:
 		[NSArray arrayWithObjects:[NSNumber numberWithUnsignedShort:0x2D],
 			[NSNumber numberWithUnsignedInteger:control | option], nil],
@@ -1293,11 +1282,11 @@ static const float NekoMaxStopRadius = 200.0f;
 	[askStatusField setStringValue:(text ?: @"")];
 	NSSize needed = [[askStatusField cell] cellSizeForBounds:
 		NSMakeRect(0.0f, 0.0f, 538.0f, 100000.0f)];
-	float height = ceilf(needed.height);
-	if(height < 86.0f)
-		height = 86.0f;
-	[askStatusField setFrame:NSMakeRect(0.0f, 0.0f, 538.0f, height)];
-	[askStatusField scrollRectToVisible:NSMakeRect(0.0f, height - 1.0f, 538.0f, 1.0f)];
+	CGFloat height = ceil(needed.height);
+	if(height < 86.0)
+		height = 86.0;
+	[askStatusField setFrame:NSMakeRect(0.0, 0.0, 538.0, height)];
+	[askStatusField scrollRectToVisible:NSMakeRect(0.0, height - 1.0, 538.0, 1.0)];
 }
 
 - (void)syncAskControls
@@ -1378,7 +1367,7 @@ static const float NekoMaxStopRadius = 200.0f;
 {
 	drawCheck = [[NSButton alloc] initWithFrame:NSMakeRect(20.0f, 380.0f, 556.0f, 18.0f)];
 	[drawCheck setButtonType:NSButtonTypeSwitch];
-	[drawCheck setTitle:NekoLocalized(@"Let Neko draw when I ask to see something")];
+	[drawCheck setTitle:NSLocalizedString(@"Let Neko draw when I ask to see something", @"Let Neko draw when I ask to see something")];
 	[drawCheck setTarget:self];
 	[drawCheck setAction:@selector(takeDrawEnabledFrom:)];
 	[content addSubview:drawCheck];
@@ -1386,7 +1375,7 @@ static const float NekoMaxStopRadius = 200.0f;
 
 	/* Which of them draws. There is more than one now, and until this row
 	   existed the answer was -firstObject in two different files. */
-	[content addSubview:[self labelWithString:NekoLocalized(@"Model:")
+	[content addSubview:[self labelWithString:NSLocalizedString(@"Model:", @"Model:")
 	                                    frame:NSMakeRect(20.0f, 351.0f, 125.0f, 17.0f)]];
 	drawModelPopUp = [[NSPopUpButton alloc]
 		initWithFrame:NSMakeRect(152.0f, 346.0f, 260.0f, 26.0f) pullsDown:NO];
@@ -1417,28 +1406,28 @@ static const float NekoMaxStopRadius = 200.0f;
 	[content addSubview:drawProgress];
 	[drawProgress release];
 
-	[content addSubview:[self labelWithString:NekoLocalized(@"Effort:")
+	[content addSubview:[self labelWithString:NSLocalizedString(@"Effort:", @"Effort:")
 	                                    frame:NSMakeRect(20.0f, 277.0f, 125.0f, 17.0f)]];
 	drawStepsPopUp = [[NSPopUpButton alloc]
 		initWithFrame:NSMakeRect(152.0f, 272.0f, 200.0f, 26.0f) pullsDown:NO];
 	NSEnumerator *e = [[self drawStepChoices] objectEnumerator];
 	NSNumber *steps;
 	while((steps = [e nextObject]) != nil)
-		[drawStepsPopUp addItemWithTitle:[NSString stringWithFormat:
-			NekoLocalized(@"%ld steps"), (long)[steps integerValue]]];
+		[drawStepsPopUp addItemWithTitle:[NSString localizedStringWithFormat:
+			NSLocalizedString(@"%ld steps", @"%ld steps"), (long)[steps integerValue]]];
 	[drawStepsPopUp setTarget:self];
 	[drawStepsPopUp setAction:@selector(takeDrawStepsFrom:)];
 	[content addSubview:drawStepsPopUp];
 	[drawStepsPopUp release];
 
-	[content addSubview:[self labelWithString:NekoLocalized(@"Size:")
+	[content addSubview:[self labelWithString:NSLocalizedString(@"Size:", @"Size:")
 	                                    frame:NSMakeRect(20.0f, 243.0f, 125.0f, 17.0f)]];
 	drawSizePopUp = [[NSPopUpButton alloc]
 		initWithFrame:NSMakeRect(152.0f, 238.0f, 200.0f, 26.0f) pullsDown:NO];
 	NSEnumerator *sizes = [[self drawSizeChoices] objectEnumerator];
 	NSNumber *side;
 	while((side = [sizes nextObject]) != nil)
-		[drawSizePopUp addItemWithTitle:[NSString stringWithFormat:@"%ld × %ld",
+		[drawSizePopUp addItemWithTitle:[NSString localizedStringWithFormat:@"%ld × %ld",
 			(long)[side integerValue], (long)[side integerValue]]];
 	[drawSizePopUp setTarget:self];
 	[drawSizePopUp setAction:@selector(takeDrawSizeFrom:)];
@@ -1447,7 +1436,7 @@ static const float NekoMaxStopRadius = 200.0f;
 
 	drawNowButton = [[NSButton alloc] initWithFrame:NSMakeRect(20.0f, 198.0f, 200.0f, 32.0f)];
 	[drawNowButton setBezelStyle:NSBezelStyleRounded];
-	[drawNowButton setTitle:NekoLocalized(@"Draw a cat now")];
+	[drawNowButton setTitle:NSLocalizedString(@"Draw a cat now", @"Draw a cat now")];
 	[drawNowButton setTarget:self];
 	[drawNowButton setAction:@selector(drawNowPressed:)];
 	[content addSubview:drawNowButton];
@@ -1560,18 +1549,18 @@ static const float NekoMaxStopRadius = 200.0f;
 - (void)drawNowPressed:(id)sender
 {
 	[drawNowButton setEnabled:NO];
-	[drawStatusField setStringValue:NekoLocalized(@"Drawing…")];
+	[drawStatusField setStringValue:NSLocalizedString(@"Drawing…", @"Drawing…")];
 	NSDate *started = [NSDate date];
 	[[NekoPainter sharedPainter] draw:@"a small tabby cat sitting on a desk, photograph"
 	                       completion:^(NSImage *picture, NSError *error) {
 		[drawNowButton setEnabled:YES];
 		if(picture == nil) {
 			[drawStatusField setStringValue:[error localizedDescription]
-				?: NekoLocalized(@"The drawing did not come out.")];
+				?: NSLocalizedString(@"The drawing did not come out.", @"The drawing did not come out.")];
 			return;
 		}
-		[drawStatusField setStringValue:[NSString stringWithFormat:
-			NekoLocalized(@"Drawn in %.0f seconds."), -[started timeIntervalSinceNow]]];
+		[drawStatusField setStringValue:[NSString localizedStringWithFormat:
+			NSLocalizedString(@"Drawn in %.0f seconds.", @"Drawn in %.0f seconds."), -[started timeIntervalSinceNow]]];
 		MyPanel *catPanel = [self panel];
 		[[NekoAsk sharedAsk] showDrawing:picture near:catPanel];
 	}];
@@ -1588,9 +1577,9 @@ static const float NekoMaxStopRadius = 200.0f;
 	BOOL on = [defaults boolForKey:NekoDrawEnabledKey];
 
 	[drawCheck setState:on ? NSControlStateValueOn : NSControlStateValueOff];
-	[drawActionButton setTitle:busy ? NekoLocalized(@"Stop")
-	                                : (installed ? NekoLocalized(@"Remove")
-	                                             : NekoLocalized(@"Download"))];
+	[drawActionButton setTitle:busy ? NSLocalizedString(@"Stop", @"Stop")
+	                                : (installed ? NSLocalizedString(@"Remove", @"Remove")
+	                                             : NSLocalizedString(@"Download", @"Download"))];
 	[drawProgress setHidden:!busy];
 	if(busy)
 		[drawProgress setDoubleValue:[store fraction]];
@@ -1619,20 +1608,20 @@ static const float NekoMaxStopRadius = 200.0f;
 {
 	NSMutableString *line = [NSMutableString string];
 	if([[NekoPainter sharedPainter] helperPath] == nil) {
-		[line appendString:NekoLocalized(@"This build has no drawing program in it, so nothing here can work yet.")];
+		[line appendString:NSLocalizedString(@"This build has no drawing program in it, so nothing here can work yet.", @"This build has no drawing program in it, so nothing here can work yet.")];
 		return line;
 	}
-	[line appendString:NekoLocalized(@"Ask to be shown something — “show me the Colosseum” — and the cat draws it here, on this Mac's GPU, with Stable Diffusion. Nothing is sent anywhere, and it costs nothing but the time.")];
+	[line appendString:NSLocalizedString(@"Ask to be shown something — “show me the Colosseum” — and the cat draws it here, on this Mac's GPU, with Stable Diffusion. Nothing is sent anywhere, and it costs nothing but the time.", @"Ask to be shown something — “show me the Colosseum” — and the cat draws it here, on this Mac's GPU, with Stable Diffusion. Nothing is sent anywhere, and it costs nothing but the time.")];
 	[line appendString:@"\n\n"];
 	if(!installed)
-		[line appendFormat:NekoLocalized(@"The model is %@ and has not been downloaded yet. "),
+		[line appendFormat:NSLocalizedString(@"The model is %@ and has not been downloaded yet. ", @"The model is %@ and has not been downloaded yet. "),
 			[[self pictureModel] detail]];
 	else
-		[line appendFormat:NekoLocalized(@"Measured on this Mac: a 512 pixel picture at 14 steps took 14 seconds to draw, plus about nine to open the model the first time. More steps means a better picture and a longer wait. The model takes %@ of disk. "),
+		[line appendFormat:NSLocalizedString(@"Measured on this Mac: a 512 pixel picture at 14 steps took 14 seconds to draw, plus about nine to open the model the first time. More steps means a better picture and a longer wait. The model takes %@ of disk. ", @"Measured on this Mac: a 512 pixel picture at 14 steps took 14 seconds to draw, plus about nine to open the model the first time. More steps means a better picture and a longer wait. The model takes %@ of disk. "),
 			[NSByteCountFormatter stringFromByteCount:
 				[[NekoModelStore sharedStore] installedBytesForIdentifier:[[self pictureModel] identifier]]
 			                               countStyle:NSByteCountFormatterCountStyleFile]];
-	[line appendString:NekoLocalized(@"The words that describe the picture come from whichever engine Ask Neko is set to; only that sentence leaves the Mac, and only if that engine is a remote one.")];
+	[line appendString:NSLocalizedString(@"The words that describe the picture come from whichever engine Ask Neko is set to; only that sentence leaves the Mac, and only if that engine is a remote one.", @"The words that describe the picture come from whichever engine Ask Neko is set to; only that sentence leaves the Mac, and only if that engine is a remote one.")];
 	return line;
 }
 
@@ -1640,7 +1629,7 @@ static const float NekoMaxStopRadius = 200.0f;
 {
 	suggestCheck = [[NSButton alloc] initWithFrame:NSMakeRect(20.0f, 380.0f, 556.0f, 18.0f)];
 	[suggestCheck setButtonType:NSButtonTypeSwitch];
-	[suggestCheck setTitle:NekoLocalized(@"Let Neko suggest things while it roams")];
+	[suggestCheck setTitle:NSLocalizedString(@"Let Neko suggest things while it roams", @"Let Neko suggest things while it roams")];
 	[suggestCheck setTarget:self];
 	[suggestCheck setAction:@selector(takeSuggestFrom:)];
 	[content addSubview:suggestCheck];
@@ -1652,13 +1641,13 @@ static const float NekoMaxStopRadius = 200.0f;
 	   See NekoGlance.h. */
 	lookButton = [[NSButton alloc] initWithFrame:NSMakeRect(20.0f, 350.0f, 300.0f, 24.0f)];
 	[lookButton setBezelStyle:NSBezelStyleRounded];
-	[lookButton setTitle:NekoLocalized(@"Let it look for ten minutes")];
+	[lookButton setTitle:NSLocalizedString(@"Let it look for ten minutes", @"Let it look for ten minutes")];
 	[lookButton setTarget:self];
 	[lookButton setAction:@selector(takeReadTextFrom:)];
 	[content addSubview:lookButton];
 	[lookButton release];
 
-	[content addSubview:[self labelWithString:NekoLocalized(@"Speaks at most every:")
+	[content addSubview:[self labelWithString:NSLocalizedString(@"Speaks at most every:", @"Speaks at most every:")
 	                                    frame:NSMakeRect(20.0f, 320.0f, 125.0f, 17.0f)]];
 
 	suggestEveryPopUp = [[NSPopUpButton alloc]
@@ -1666,8 +1655,8 @@ static const float NekoMaxStopRadius = 200.0f;
 	NSEnumerator *e = [[self suggestIntervalChoices] objectEnumerator];
 	NSNumber *minutes;
 	while((minutes = [e nextObject]) != nil)
-		[suggestEveryPopUp addItemWithTitle:[NSString stringWithFormat:
-			NekoLocalized(@"%ld minutes"), (long)[minutes integerValue]]];
+		[suggestEveryPopUp addItemWithTitle:[NSString localizedStringWithFormat:
+			NSLocalizedString(@"%ld minutes", @"%ld minutes"), (long)[minutes integerValue]]];
 	[suggestEveryPopUp setTarget:self];
 	[suggestEveryPopUp setAction:@selector(takeSuggestEveryFrom:)];
 	[content addSubview:suggestEveryPopUp];
@@ -1675,7 +1664,7 @@ static const float NekoMaxStopRadius = 200.0f;
 
 	suggestNowButton = [[NSButton alloc] initWithFrame:NSMakeRect(20.0f, 272.0f, 200.0f, 32.0f)];
 	[suggestNowButton setBezelStyle:NSBezelStyleRounded];
-	[suggestNowButton setTitle:NekoLocalized(@"Suggest something now")];
+	[suggestNowButton setTitle:NSLocalizedString(@"Suggest something now", @"Suggest something now")];
 	[suggestNowButton setTarget:self];
 	[suggestNowButton setAction:@selector(suggestNowPressed:)];
 	[content addSubview:suggestNowButton];
@@ -1710,7 +1699,7 @@ static const float NekoMaxStopRadius = 200.0f;
 	NSButton *reveal = [[NSButton alloc] initWithFrame:NSMakeRect(20.0f, 22.0f, 190.0f, 28.0f)];
 	[reveal setBezelStyle:NSBezelStyleRounded];
 	[reveal setControlSize:NSControlSizeSmall];
-	[reveal setTitle:NekoLocalized(@"Show what it remembers")];
+	[reveal setTitle:NSLocalizedString(@"Show what it remembers", @"Show what it remembers")];
 	[reveal setTarget:self];
 	[reveal setAction:@selector(revealMemoryPressed:)];
 	[content addSubview:reveal];
@@ -1719,7 +1708,7 @@ static const float NekoMaxStopRadius = 200.0f;
 	NSButton *forget = [[NSButton alloc] initWithFrame:NSMakeRect(216.0f, 22.0f, 160.0f, 28.0f)];
 	[forget setBezelStyle:NSBezelStyleRounded];
 	[forget setControlSize:NSControlSizeSmall];
-	[forget setTitle:NekoLocalized(@"Forget everything")];
+	[forget setTitle:NSLocalizedString(@"Forget everything", @"Forget everything")];
 	[forget setTarget:self];
 	[forget setAction:@selector(forgetMemoryPressed:)];
 	[content addSubview:forget];
@@ -1775,18 +1764,18 @@ static const float NekoMaxStopRadius = 200.0f;
 - (void)suggestNowPressed:(id)sender
 {
 	[suggestNowButton setEnabled:NO];
-	[self setSuggestStatus:NekoLocalized(@"Having a look…")];
+	[self setSuggestStatus:NSLocalizedString(@"Having a look…", @"Having a look…")];
 	[[NekoAdvisor sharedAdvisor] suggestNow:^(NSString *line, NSError *error) {
 		[suggestNowButton setEnabled:YES];
 		if([line length] > 0 && ![line isEqualToString:@"-"])
 			[self setSuggestStatus:[NSString stringWithFormat:
-				NekoLocalized(@"It said: %@"), line]];
+				NSLocalizedString(@"It said: %@", @"It said: %@"), line]];
 		else if(error != nil)
 			[self setSuggestStatus:[error localizedDescription]
-				?: NekoLocalized(@"No engine answered.")];
+				?: NSLocalizedString(@"No engine answered.", @"No engine answered.")];
 		else
 			[self setSuggestStatus:
-				NekoLocalized(@"It had nothing worth saying about this.")];
+				NSLocalizedString(@"It had nothing worth saying about this.", @"It had nothing worth saying about this.")];
 	}];
 }
 
@@ -1806,16 +1795,16 @@ static const float NekoMaxStopRadius = 200.0f;
 		return;
 
 	NSAlert *alert = [[[NSAlert alloc] init] autorelease];
-	[alert setMessageText:NekoLocalized(@"Forget everything Neko remembers?")];
+	[alert setMessageText:NSLocalizedString(@"Forget everything Neko remembers?", @"Forget everything Neko remembers?")];
 	/* The things somebody asked it to remember are counted separately, because
 	   they are the ones a person will actually miss: the rest it worked out on
 	   its own, and these it was told. */
-	[alert setInformativeText:[NSString stringWithFormat:
-		NekoLocalized(@"%lu day(s) of notes, %lu line(s) it had kept, and %lu thing(s) you asked it to remember. This cannot be undone."),
+	[alert setInformativeText:[NSString localizedStringWithFormat:
+		NSLocalizedString(@"%lu day(s) of notes, %lu line(s) it had kept, and %lu thing(s) you asked it to remember. This cannot be undone.", @"%lu day(s) of notes, %lu line(s) it had kept, and %lu thing(s) you asked it to remember. This cannot be undone."),
 		(unsigned long)[memory dayCount], (unsigned long)[[memory durableLines] count],
 		(unsigned long)[[NekoFact all] count]]];
-	[alert addButtonWithTitle:NekoLocalized(@"Forget")];
-	[alert addButtonWithTitle:NekoLocalized(@"Cancel")];
+	[alert addButtonWithTitle:NSLocalizedString(@"Forget", @"Forget")].hasDestructiveAction = YES;
+	[alert addButtonWithTitle:NSLocalizedString(@"Cancel", @"Cancel")];
 	[NSApp activateIgnoringOtherApps:YES];
 	if([alert runModal] != NSAlertFirstButtonReturn)
 		return;
@@ -1833,7 +1822,7 @@ static const float NekoMaxStopRadius = 200.0f;
 	[suggestStatusField setStringValue:(text ?: @"")];
 	NSSize needed = [[suggestStatusField cell] cellSizeForBounds:
 		NSMakeRect(0.0f, 0.0f, 538.0f, 100000.0f)];
-	float height = ceilf(needed.height);
+	CGFloat height = ceil(needed.height);
 	if(height < 168.0f)
 		height = 168.0f;
 	[suggestStatusField setFrame:NSMakeRect(0.0f, 0.0f, 538.0f, height)];
@@ -1851,7 +1840,7 @@ static const float NekoMaxStopRadius = 200.0f;
 	[suggestCheck setState:on ? NSControlStateValueOn : NSControlStateValueOff];
 	[suggestCheck setEnabled:roaming];
 	[suggestCheck setToolTip:roaming ? nil
-		: NekoLocalized(@"Only in the “Roams on its own” behaviour")];
+		: NSLocalizedString(@"Only in the “Roams on its own” behaviour", @"Only in the “Roams on its own” behaviour")];
 	[suggestEveryPopUp setEnabled:roaming && on];
 	[suggestNowButton setEnabled:roaming && on];
 	/* A button rather than a switch now: nothing to reflect, only whether it
@@ -1869,10 +1858,10 @@ static const float NekoMaxStopRadius = 200.0f;
 	NSUInteger days = [memory dayCount];
 	NSUInteger kept = [[memory durableLines] count];
 	if(days == 0 && kept == 0)
-		[memoryField setStringValue:NekoLocalized(@"It remembers nothing yet. What it notices is written a day at a time, in plain text, on this Mac — never sent anywhere — kept for thirty days, and reduced each night to a few lines worth keeping.")];
+		[memoryField setStringValue:NSLocalizedString(@"It remembers nothing yet. What it notices is written a day at a time, in plain text, on this Mac — never sent anywhere — kept for thirty days, and reduced each night to a few lines worth keeping.", @"It remembers nothing yet. What it notices is written a day at a time, in plain text, on this Mac — never sent anywhere — kept for thirty days, and reduced each night to a few lines worth keeping.")];
 	else
-		[memoryField setStringValue:[NSString stringWithFormat:
-			NekoLocalized(@"It remembers %lu day(s) and %lu line(s) worth keeping, %@ in plain text on this Mac. Older days are removed after thirty."),
+		[memoryField setStringValue:[NSString localizedStringWithFormat:
+			NSLocalizedString(@"It remembers %lu day(s) and %lu line(s) worth keeping, %@ in plain text on this Mac. Older days are removed after thirty.", @"It remembers %lu day(s) and %lu line(s) worth keeping, %@ in plain text on this Mac. Older days are removed after thirty."),
 			(unsigned long)days, (unsigned long)kept,
 			[NSByteCountFormatter stringFromByteCount:[memory bytesOnDisk]
 			                               countStyle:NSByteCountFormatterCountStyleFile]]];
@@ -1881,16 +1870,16 @@ static const float NekoMaxStopRadius = 200.0f;
 - (NSString *)suggestStatusLine:(BOOL)roaming
 {
 	if(!roaming)
-		return NekoLocalized(@"This belongs to one behaviour only. Set Behaviour to “Roams on its own” in the Pet tab: a cat chasing the cursor has its attention elsewhere, and one living on the Dock is already busy.");
+		return NSLocalizedString(@"This belongs to one behaviour only. Set Behaviour to “Roams on its own” in the Pet tab: a cat chasing the cursor has its attention elsewhere, and one living on the Dock is already busy.", @"This belongs to one behaviour only. Set Behaviour to “Roams on its own” in the Pet tab: a cat chasing the cursor has its attention elsewhere, and one living on the Dock is already busy.");
 
 	NSMutableString *line = [NSMutableString string];
-	[line appendString:NekoLocalized(@"Curiosity comes with roaming whatever this switch says: every minute or two the cat comes over to the pointer, asks what you are writing, or goes to claw the edge of the screen. That part needs no engine and sends nothing anywhere.")];
+	[line appendString:NSLocalizedString(@"Curiosity comes with roaming whatever this switch says: every minute or two the cat comes over to the pointer, asks what you are writing, or goes to claw the edge of the screen. That part needs no engine and sends nothing anywhere.", @"Curiosity comes with roaming whatever this switch says: every minute or two the cat comes over to the pointer, asks what you are writing, or goes to claw the edge of the screen. That part needs no engine and sends nothing anywhere.")];
 	[line appendString:@"\n\n"];
-	[line appendString:NekoLocalized(@"It waits for a seam in your work before saying anything: a program you have just left after a long stretch, a burst of typing that has ended, a pause. In the middle of something it stays quiet, and it says nothing at all while a window fills the screen or you are typing a password. The interval below is a floor rather than an alarm clock: how good a moment it holds out for depends on how the day has gone so far.")];
+	[line appendString:NSLocalizedString(@"It waits for a seam in your work before saying anything: a program you have just left after a long stretch, a burst of typing that has ended, a pause. In the middle of something it stays quiet, and it says nothing at all while a window fills the screen or you are typing a password. The interval below is a floor rather than an alarm clock: how good a moment it holds out for depends on how the day has gone so far.", @"It waits for a seam in your work before saying anything: a program you have just left after a long stretch, a burst of typing that has ended, a pause. In the middle of something it stays quiet, and it says nothing at all while a window fills the screen or you are typing a password. The interval below is a floor rather than an alarm clock: how good a moment it holds out for depends on how the day has gone so far.")];
 	[line appendString:@"\n\n"];
-	[line appendString:NekoLocalized(@"While roaming, Neko glances at what you are doing and now and then says something about it — a tip, a nudge, or a joke. It waits until you have been in one application for a while, keeps quiet when you are away from the keyboard, and says nothing at all when it has nothing worth saying.")];
+	[line appendString:NSLocalizedString(@"While roaming, Neko glances at what you are doing and now and then says something about it — a tip, a nudge, or a joke. It waits until you have been in one application for a while, keeps quiet when you are away from the keyboard, and says nothing at all when it has nothing worth saying.", @"While roaming, Neko glances at what you are doing and now and then says something about it — a tip, a nudge, or a joke. It waits until you have been in one application for a while, keeps quiet when you are away from the keyboard, and says nothing at all when it has nothing worth saying.")];
 	[line appendString:@"\n\n"];
-	[line appendString:NekoLocalized(@"All it can see, and all that is sent, is this:")];
+	[line appendString:NSLocalizedString(@"All it can see, and all that is sent, is this:", @"All it can see, and all that is sent, is this:")];
 	[line appendString:@"\n"];
 	[line appendString:[[NekoAdvisor sharedAdvisor] context]];
 	[line appendString:@"\n"];
@@ -1912,21 +1901,21 @@ static const float NekoMaxStopRadius = 200.0f;
 	   summary asks NekoBrains for the best engine that stays on this Mac, and
 	   there is no path from here to a remote one. tests/screen.m reads both
 	   callers and fails if a third one ever forgets. */
-	[line appendString:NekoLocalized(@"Window titles are included only if this Mac has already granted Neko screen recording; that permission is never asked for. None of this ever leaves the Mac: what the cat notices is read by a model on this Mac or not at all, whichever engine you chose for answering questions.")];
+	[line appendString:NSLocalizedString(@"Window titles are included only if this Mac has already granted Neko screen recording; that permission is never asked for. None of this ever leaves the Mac: what the cat notices is read by a model on this Mac or not at all, whichever engine you chose for answering questions.", @"Window titles are included only if this Mac has already granted Neko screen recording; that permission is never asked for. None of this ever leaves the Mac: what the cat notices is read by a model on this Mac or not at all, whichever engine you chose for answering questions.")];
 
 	[line appendString:@"\n\n"];
 	if([[NekoGlance sharedGlance] isLooking])
-		[line appendString:NekoLocalized(@"It is looking right now — what is in the field you are typing in, or under the pointer, is included above. It stops on its own, the time left is in the cat's menu, and one click there ends it. Password fields are refused, nothing at all is read while macOS has secure keyboard entry on, and only the last few hundred characters are taken.")];
+		[line appendString:NSLocalizedString(@"It is looking right now — what is in the field you are typing in, or under the pointer, is included above. It stops on its own, the time left is in the cat's menu, and one click there ends it. Password fields are refused, nothing at all is read while macOS has secure keyboard entry on, and only the last few hundred characters are taken.", @"It is looking right now — what is in the field you are typing in, or under the pointer, is included above. It stops on its own, the time left is in the cat's menu, and one click there ends it. Password fields are refused, nothing at all is read while macOS has secure keyboard entry on, and only the last few hundred characters are taken.")];
 	else if([NekoDesktop accessibilityGranted])
-		[line appendString:NekoLocalized(@"It is not looking. Ask it to — “guarda cosa sto facendo”, or the button above — and it reads the text you are working on for ten minutes and then stops by itself. There is no way to leave this on: a permission you have to remember to revoke is one nobody should have to remember.")];
+		[line appendString:NSLocalizedString(@"It is not looking. Ask it to — “guarda cosa sto facendo”, or the button above — and it reads the text you are working on for ten minutes and then stops by itself. There is no way to leave this on: a permission you have to remember to revoke is one nobody should have to remember.", @"It is not looking. Ask it to — “guarda cosa sto facendo”, or the button above — and it reads the text you are working on for ten minutes and then stops by itself. There is no way to leave this on: a permission you have to remember to revoke is one nobody should have to remember.")];
 	else
-		[line appendString:NekoLocalized(@"It is not looking, and it has no Accessibility permission either, so it could not. The button above asks for both at once; the permission is in System Settings, Privacy & Security, Accessibility.")];
+		[line appendString:NSLocalizedString(@"It is not looking, and it has no Accessibility permission either, so it could not. The button above asks for both at once; the permission is in System Settings, Privacy & Security, Accessibility.", @"It is not looking, and it has no Accessibility permission either, so it could not. The button above asks for both at once; the permission is in System Settings, Privacy & Security, Accessibility.")];
 	return line;
 }
 
 - (void)buildLocalTabInView:(NSView *)content
 {
-	[content addSubview:[self labelWithString:NekoLocalized(@"Model:")
+	[content addSubview:[self labelWithString:NSLocalizedString(@"Model:", @"Model:")
 	                                    frame:NSMakeRect(20.0f, 356.0f, 125.0f, 17.0f)]];
 
 	localModelPopUp = [[NSPopUpButton alloc]
@@ -2014,11 +2003,11 @@ static const float NekoMaxStopRadius = 200.0f;
 		NSAlert *alert = [[[NSAlert alloc] init] autorelease];
 		[alert setAlertStyle:NSAlertStyleCritical];
 		[alert setMessageText:[NSString stringWithFormat:
-			NekoLocalized(@"%@ will not load on this Mac"), [model name]]];
+			NSLocalizedString(@"%@ will not load on this Mac", @"%@ will not load on this Mac"), [model name]]];
 		[alert setInformativeText:[NSString stringWithFormat:@"%@\n\n%@",
 			[model memoryWarning],
-			NekoLocalized(@"It is on the disk, and questions sent to it will come back empty. Choose a smaller one, or remove it to get the space back.")]];
-		[alert addButtonWithTitle:NekoLocalized(@"OK")];
+			NSLocalizedString(@"It is on the disk, and questions sent to it will come back empty. Choose a smaller one, or remove it to get the space back.", @"It is on the disk, and questions sent to it will come back empty. Choose a smaller one, or remove it to get the space back.")]];
+		[alert addButtonWithTitle:NSLocalizedString(@"OK", @"OK")];
 		[NSApp activateIgnoringOtherApps:YES];
 		[alert runModal];
 	}
@@ -2047,18 +2036,18 @@ static const float NekoMaxStopRadius = 200.0f;
 	[alert setAlertStyle:NSAlertStyleCritical];
 	[alert setMessageText:cannot != nil
 		? [NSString stringWithFormat:
-			NekoLocalized(@"%@ will not run on this Mac"), [model name]]
+			NSLocalizedString(@"%@ will not run on this Mac", @"%@ will not run on this Mac"), [model name]]
 		: [NSString stringWithFormat:
-			NekoLocalized(@"There is not room for %@"), [model name]]];
+			NSLocalizedString(@"There is not room for %@", @"There is not room for %@"), [model name]]];
 	NSMutableArray *why = [NSMutableArray array];
 	if(cannot != nil)
 		[why addObject:cannot];
 	if(noRoom != nil)
 		[why addObject:noRoom];
-	[why addObject:NekoLocalized(@"Downloading it will work. Loading it will not, and the download is several gigabytes.")];
+	[why addObject:NSLocalizedString(@"Downloading it will work. Loading it will not, and the download is several gigabytes.", @"Downloading it will work. Loading it will not, and the download is several gigabytes.")];
 	[alert setInformativeText:[why componentsJoinedByString:@"\n\n"]];
-	[alert addButtonWithTitle:NekoLocalized(@"Do not download")];
-	[alert addButtonWithTitle:NekoLocalized(@"Download anyway")];
+	[alert addButtonWithTitle:NSLocalizedString(@"Do not download", @"Do not download")];
+	[alert addButtonWithTitle:NSLocalizedString(@"Download anyway", @"Download anyway")];
 	[NSApp activateIgnoringOtherApps:YES];
 	return [alert runModal] != NSAlertFirstButtonReturn;
 }
@@ -2088,13 +2077,13 @@ static const float NekoMaxStopRadius = 200.0f;
 	[store downloadModel:model
 	            progress:^(double fraction) {
 		[localProgress setDoubleValue:fraction];
-		[localStatusField setStringValue:[NSString stringWithFormat:
-			NekoLocalized(@"Downloading %@ — %.0f%%"), [model name], fraction * 100.0]];
+		[localStatusField setStringValue:[NSString localizedStringWithFormat:
+			NSLocalizedString(@"Downloading %@ — %.0f%%", @"Downloading %@ — %.0f%%"), [model name], fraction * 100.0]];
 	}
 	          completion:^(NSURL *file, NSError *error) {
 		if(error != nil)
 			[localStatusField setStringValue:[NSString stringWithFormat:
-				NekoLocalized(@"That download failed: %@"), [error localizedDescription]]];
+				NSLocalizedString(@"That download failed: %@", @"That download failed: %@"), [error localizedDescription]]];
 		[self syncLocalControls];
 		[self syncAskControls];
 	}];
@@ -2113,15 +2102,15 @@ static const float NekoMaxStopRadius = 200.0f;
 	/* Gigabytes are about to leave the disk, and downloading them again is a
 	   long wait: say plainly what goes and what stays before doing it. */
 	NSAlert *alert = [[[NSAlert alloc] init] autorelease];
-	[alert setMessageText:[NSString stringWithFormat:
-		NekoLocalized(@"Remove %lu model(s) you are not using?"), (unsigned long)others]];
+	[alert setMessageText:[NSString localizedStringWithFormat:
+		NSLocalizedString(@"Remove %lu model(s) you are not using?", @"Remove %lu model(s) you are not using?"), (unsigned long)others]];
 	[alert setInformativeText:[NSString stringWithFormat:
-		NekoLocalized(@"%@ is kept. The others free %@ and can be downloaded again later."),
+		NSLocalizedString(@"%@ is kept. The others free %@ and can be downloaded again later.", @"%@ is kept. The others free %@ and can be downloaded again later."),
 		[keeper name],
 		[NSByteCountFormatter stringFromByteCount:[store installedBytesOtherThan:keep]
 		                               countStyle:NSByteCountFormatterCountStyleFile]]];
-	[alert addButtonWithTitle:NekoLocalized(@"Remove")];
-	[alert addButtonWithTitle:NekoLocalized(@"Cancel")];
+	[alert addButtonWithTitle:NSLocalizedString(@"Remove", @"Remove")].hasDestructiveAction = YES;
+	[alert addButtonWithTitle:NSLocalizedString(@"Cancel", @"Cancel")];
 	if([alert runModal] != NSAlertFirstButtonReturn)
 		return;
 
@@ -2130,9 +2119,9 @@ static const float NekoMaxStopRadius = 200.0f;
 	[self syncAskControls];
 	/* After the refresh, so the outcome is what stays on screen. */
 	[localStatusField setStringValue:removed == 0
-		? NekoLocalized(@"There was nothing else to remove.")
-		: [NSString stringWithFormat:
-			NekoLocalized(@"Removed %lu model(s) that were not in use."), (unsigned long)removed]];
+		? NSLocalizedString(@"There was nothing else to remove.", @"There was nothing else to remove.")
+		: [NSString localizedStringWithFormat:
+			NSLocalizedString(@"Removed %lu model(s) that were not in use.", @"Removed %lu model(s) that were not in use."), (unsigned long)removed]];
 }
 
 - (void)syncLocalControls
@@ -2162,7 +2151,7 @@ static const float NekoMaxStopRadius = 200.0f;
 	   that choosing one is a choice and not a surprise. */
 	NSMutableString *says = [NSMutableString stringWithString:[model detail]];
 	if([model thinks])
-		[says appendFormat:@" · %@", NekoLocalized(@"reasons before answering")];
+		[says appendFormat:@" · %@", NSLocalizedString(@"reasons before answering", @"reasons before answering")];
 
 	/* Whether this Mac can actually run it, which is a different question from
 	   whether it can fetch it — and for a 27B the two answers differ. Said in
@@ -2189,10 +2178,10 @@ static const float NekoMaxStopRadius = 200.0f;
 		                               : [NSColor secondaryLabelColor])];
 
 	BOOL broken = [store isIncomplete:[model identifier]];
-	[localActionButton setTitle:busy ? NekoLocalized(@"Stop")
-	                                 : (installed ? NekoLocalized(@"Remove")
-	                                              : (broken ? NekoLocalized(@"Download again")
-	                                                        : NekoLocalized(@"Download")))];
+	[localActionButton setTitle:busy ? NSLocalizedString(@"Stop", @"Stop")
+	                                 : (installed ? NSLocalizedString(@"Remove", @"Remove")
+	                                              : (broken ? NSLocalizedString(@"Download again", @"Download again")
+	                                                        : NSLocalizedString(@"Download", @"Download")))];
 	[localActionButton setEnabled:YES];
 	[localProgress setHidden:!busy];
 	if(busy)
@@ -2204,9 +2193,9 @@ static const float NekoMaxStopRadius = 200.0f;
 	NSUInteger others = [[store identifiersOtherThan:[selected identifier]] count];
 	[localCleanButton setEnabled:!busy && others > 0];
 	[localCleanButton setTitle:others == 0
-		? NekoLocalized(@"No unused models to remove")
-		: [NSString stringWithFormat:
-			NekoLocalized(@"Remove %lu unused model(s) — %@"), (unsigned long)others,
+		? NSLocalizedString(@"No unused models to remove", @"No unused models to remove")
+		: [NSString localizedStringWithFormat:
+			NSLocalizedString(@"Remove %lu unused model(s) — %@", @"Remove %lu unused model(s) — %@"), (unsigned long)others,
 			[NSByteCountFormatter stringFromByteCount:spare
 			                               countStyle:NSByteCountFormatterCountStyleFile]]];
 
@@ -2224,26 +2213,26 @@ static const float NekoMaxStopRadius = 200.0f;
 	if([chosen length] > 0 && ![chosen isEqualToString:using]
 	   && [store installedURLForIdentifier:using] != nil) {
 		NekoLocalModel *fallback = [store modelWithIdentifier:using];
-		[line appendFormat:NekoLocalized(@"“%@” is selected but was never downloaded, so %@ is answering instead. "),
+		[line appendFormat:NSLocalizedString(@"“%@” is selected but was never downloaded, so %@ is answering instead. ", @"“%@” is selected but was never downloaded, so %@ is answering instead. "),
 			[[store modelWithIdentifier:chosen] name] ?: chosen,
 			[fallback name] ?: using];
 	}
 	if([NekoLocalProvider makeEngine] == nil)
-		[line appendString:NekoLocalized(@"No engine is compiled into this build yet, so a downloaded model cannot answer. Everything around it is ready: the model can be fetched now and will be used the moment the engine lands.")];
+		[line appendString:NSLocalizedString(@"No engine is compiled into this build yet, so a downloaded model cannot answer. Everything around it is ready: the model can be fetched now and will be used the moment the engine lands.", @"No engine is compiled into this build yet, so a downloaded model cannot answer. Everything around it is ready: the model can be fetched now and will be used the moment the engine lands.")];
 	else if(installed)
-		[line appendString:NekoLocalized(@"Ready. Choose “A model on this Mac” under Ask Neko.")];
+		[line appendString:NSLocalizedString(@"Ready. Choose “A model on this Mac” under Ask Neko.", @"Ready. Choose “A model on this Mac” under Ask Neko.")];
 	else if([store isIncomplete:[[self selectedLocalModel] identifier]])
-		[line appendString:NekoLocalized(@"That download did not finish: the file is there but too small to be read. Downloading it again picks up where it stopped.")];
+		[line appendString:NSLocalizedString(@"That download did not finish: the file is there but too small to be read. Downloading it again picks up where it stopped.", @"That download did not finish: the file is there but too small to be read. Downloading it again picks up where it stopped.")];
 	else
-		[line appendString:NekoLocalized(@"Nothing downloaded yet.")];
+		[line appendString:NSLocalizedString(@"Nothing downloaded yet.", @"Nothing downloaded yet.")];
 
 	[line appendString:@"\n\n"];
 	long long total = [[NekoModelStore sharedStore] totalInstalledBytes];
 	if(total > 0)
-		[line appendFormat:NekoLocalized(@"%@ of models on disk. "),
+		[line appendFormat:NSLocalizedString(@"%@ of models on disk. ", @"%@ of models on disk. "),
 			[NSByteCountFormatter stringFromByteCount:total
 			                               countStyle:NSByteCountFormatterCountStyleFile]];
-	[line appendFormat:NekoLocalized(@"They are kept in %@ and nothing else is installed: no daemon, no package manager, no other application."),
+	[line appendFormat:NSLocalizedString(@"They are kept in %@ and nothing else is installed: no daemon, no package manager, no other application.", @"They are kept in %@ and nothing else is installed: no daemon, no package manager, no other application."),
 		[[[NekoModelStore sharedStore] modelsDirectory] path]];
 	return line;
 }
@@ -2252,58 +2241,58 @@ static const float NekoMaxStopRadius = 200.0f;
 {
 	NekoAsk *ask = [NekoAsk sharedAsk];
 	if(![ask isEnabled])
-		return NekoLocalized(@"The microphone is asked for the first time you use this, never before.");
+		return NSLocalizedString(@"The microphone is asked for the first time you use this, never before.", @"The microphone is asked for the first time you use this, never before.");
 	if([ask hotKeyUnavailable])
-		return NekoLocalized(@"Another application already owns that keystroke. Pick a different one.");
+		return NSLocalizedString(@"Another application already owns that keystroke. Pick a different one.", @"Another application already owns that keystroke. Pick a different one.");
 
 	NSString *hint = [[ask provider] configurationHint];
 	if(hint != nil)
 		return hint;
 
 	NSMutableString *line = [NSMutableString stringWithFormat:
-		NekoLocalized(@"Press %@ and ask. Neko listens until you stop talking. Hold the same keys instead and a line to type in opens beside it."),
+		NSLocalizedString(@"Press %@ and ask. Neko listens until you stop talking. Hold the same keys instead and a line to type in opens beside it.", @"Press %@ and ask. Neko listens until you stop talking. Hold the same keys instead and a line to type in opens beside it."),
 		[ask hotKeyDisplayName]];
 	if([[NSUserDefaults standardUserDefaults] boolForKey:NekoAskFollowUpKey])
-		[line appendString:NekoLocalized(@" After it speaks it keeps listening for a few seconds — the bubble says so while it does, and talking over it stops it mid-sentence.")];
+		[line appendString:NSLocalizedString(@" After it speaks it keeps listening for a few seconds — the bubble says so while it does, and talking over it stops it mid-sentence.", @" After it speaks it keeps listening for a few seconds — the bubble says so while it does, and talking over it stops it mid-sentence.")];
 	if([[NSUserDefaults standardUserDefaults] boolForKey:NekoWakeWordKey]) {
 		NekoWakeWord *wake = [NekoWakeWord sharedWakeWord];
 		[line appendString:@"\n\n"];
 		if(![NekoWakeWord isAvailable])
 			[line appendString:[NekoWakeWord unavailableReason] ?: @""];
 		else if([wake isHearing])
-			[line appendString:NekoLocalized(@"Listening for its name right now.")];
+			[line appendString:NSLocalizedString(@"Listening for its name right now.", @"Listening for its name right now.")];
 		else if([wake isListening])
-			[line appendString:NekoLocalized(@"The microphone is open but the recogniser has not said anything yet.")];
+			[line appendString:NSLocalizedString(@"The microphone is open but the recogniser has not said anything yet.", @"The microphone is open but the recogniser has not said anything yet.")];
 		else
-			[line appendString:NekoLocalized(@"Not listening: speech recognition has not been allowed. The Permissions tab can ask for it.")];
+			[line appendString:NSLocalizedString(@"Not listening: speech recognition has not been allowed. The Permissions tab can ask for it.", @"Not listening: speech recognition has not been allowed. The Permissions tab can ask for it.")];
 	}
 	if([[NSUserDefaults standardUserDefaults] boolForKey:NekoWakeWordKey]
 	   && [NekoWakeWord isAvailable]) {
 		[line appendString:@" "];
-		[line appendString:NekoLocalized(@"Saying its name works too — which means the microphone stays open, the orange recording light stays on, and the battery notices. The listening is done on this Mac and the audio goes nowhere; it hears one word and forgets the rest.")];
+		[line appendString:NSLocalizedString(@"Saying its name works too — which means the microphone stays open, the orange recording light stays on, and the battery notices. The listening is done on this Mac and the audio goes nowhere; it hears one word and forgets the rest.", @"Saying its name works too — which means the microphone stays open, the orange recording light stays on, and the battery notices. The listening is done on this Mac and the audio goes nowhere; it hears one word and forgets the rest.")];
 	}
 	if([[NSUserDefaults standardUserDefaults] boolForKey:NekoWebEnabledKey]) {
 		[line appendString:@"\n\n"];
-		[line appendString:NekoLocalized(@"Asked about today's news or the weather, it can fetch one of a fixed list of two dozen feeds: ANSA (the wire, world, technology, politics, culture, sport, and your own region), la Repubblica, Corriere della Sera, Il Fatto Quotidiano, Il Sole 24 Ore, RaiNews, Tgcom24, AGI, La Gazzetta dello Sport, Wired, DDay, Focus, MeteoAlarm's warnings for Italy, Hacker News, BBC News, The Guardian, The New York Times and NPR. Every one of them was fetched with this application's own name on the request before it went on the list. The plain forecast comes from open-meteo, because neither 3B Meteo nor meteo.it publishes a feed any more.")];
+		[line appendString:NSLocalizedString(@"Asked about today's news or the weather, it can fetch one of a fixed list of two dozen feeds: ANSA (the wire, world, technology, politics, culture, sport, and your own region), la Repubblica, Corriere della Sera, Il Fatto Quotidiano, Il Sole 24 Ore, RaiNews, Tgcom24, AGI, La Gazzetta dello Sport, Wired, DDay, Focus, MeteoAlarm's warnings for Italy, Hacker News, BBC News, The Guardian, The New York Times and NPR. Every one of them was fetched with this application's own name on the request before it went on the list. The plain forecast comes from open-meteo, because neither 3B Meteo nor meteo.it publishes a feed any more.", @"Asked about today's news or the weather, it can fetch one of a fixed list of two dozen feeds: ANSA (the wire, world, technology, politics, culture, sport, and your own region), la Repubblica, Corriere della Sera, Il Fatto Quotidiano, Il Sole 24 Ore, RaiNews, Tgcom24, AGI, La Gazzetta dello Sport, Wired, DDay, Focus, MeteoAlarm's warnings for Italy, Hacker News, BBC News, The Guardian, The New York Times and NPR. Every one of them was fetched with this application's own name on the request before it went on the list. The plain forecast comes from open-meteo, because neither 3B Meteo nor meteo.it publishes a feed any more.")];
 		[line appendString:@"\n\n"];
-		[line appendString:NekoLocalized(@"Told where this Mac is — the Permissions tab asks macOS, and keeps the name of the town and of the region rather than any coordinates — it also knows which regional feed is the local one, and needs no city named to answer about the weather. It cannot name an address of its own — only one of those words — so nothing it reads can send it somewhere else. What comes back is quoted to it as somebody else's words, and an answer built on them is not allowed to open, copy or move anything: a headline is written by a stranger. The request carries no question, no account and no cookies; the site sees that a public feed was fetched. With Apple Intelligence or a model on this Mac the headlines stay here; with ChatGPT, Claude or a Shortcut they are sent on like any other question.")];
+		[line appendString:NSLocalizedString(@"Told where this Mac is — the Permissions tab asks macOS, and keeps the name of the town and of the region rather than any coordinates — it also knows which regional feed is the local one, and needs no city named to answer about the weather. It cannot name an address of its own — only one of those words — so nothing it reads can send it somewhere else. What comes back is quoted to it as somebody else's words, and an answer built on them is not allowed to open, copy or move anything: a headline is written by a stranger. The request carries no question, no account and no cookies; the site sees that a public feed was fetched. With Apple Intelligence or a model on this Mac the headlines stay here; with ChatGPT, Claude or a Shortcut they are sent on like any other question.", @"Told where this Mac is — the Permissions tab asks macOS, and keeps the name of the town and of the region rather than any coordinates — it also knows which regional feed is the local one, and needs no city named to answer about the weather. It cannot name an address of its own — only one of those words — so nothing it reads can send it somewhere else. What comes back is quoted to it as somebody else's words, and an answer built on them is not allowed to open, copy or move anything: a headline is written by a stranger. The request carries no question, no account and no cookies; the site sees that a public feed was fetched. With Apple Intelligence or a model on this Mac the headlines stay here; with ChatGPT, Claude or a Shortcut they are sent on like any other question.")];
 	}
 
 	if([[NSUserDefaults standardUserDefaults] boolForKey:NekoActionsEnabledKey]) {
 		[line appendString:@"\n\n"];
-		[line appendString:NekoLocalized(@"It can open an application, an address in a browser, one of your folders in the Finder, run one of your own Shortcuts, and copy or move a single file between your folders. That list is all of it. It always shows what it is about to do and waits for a yes; dismissing the bubble is a no. It never overwrites, never deletes, and never acts on text it read from the screen — only on what you said out loud.")];
+		[line appendString:NSLocalizedString(@"It can open an application, an address in a browser, one of your folders in the Finder, run one of your own Shortcuts, and copy or move a single file between your folders. That list is all of it. It always shows what it is about to do and waits for a yes; dismissing the bubble is a no. It never overwrites, never deletes, and never acts on text it read from the screen — only on what you said out loud.", @"It can open an application, an address in a browser, one of your folders in the Finder, run one of your own Shortcuts, and copy or move a single file between your folders. That list is all of it. It always shows what it is about to do and waits for a yes; dismissing the bubble is a no. It never overwrites, never deletes, and never acts on text it read from the screen — only on what you said out loud.")];
 		NekoFolderAccess *access = [NekoFolderAccess sharedAccess];
 		NSArray *allowed = [access allowedKeys];
 		[line appendString:@"\n\n"];
 		if([allowed count] == 0) {
-			[line appendString:NekoLocalized(@"It has been shown no folders, so it cannot touch a file yet. Handing one over is a panel you fill in yourself; nothing else can grant it.")];
+			[line appendString:NSLocalizedString(@"It has been shown no folders, so it cannot touch a file yet. Handing one over is a panel you fill in yourself; nothing else can grant it.", @"It has been shown no folders, so it cannot touch a file yet. Handing one over is a panel you fill in yourself; nothing else can grant it.")];
 		} else {
 			NSMutableArray *names = [NSMutableArray array];
 			NSEnumerator *e = [allowed objectEnumerator];
 			NSString *key;
 			while((key = [e nextObject]) != nil)
 				[names addObject:[access displayNameFor:key]];
-			[line appendFormat:NekoLocalized(@"Folders it has been shown: %@."),
+			[line appendFormat:NSLocalizedString(@"Folders it has been shown: %@.", @"Folders it has been shown: %@."),
 				[names componentsJoinedByString:@", "]];
 		}
 	}
@@ -2388,11 +2377,11 @@ static const float NekoMaxStopRadius = 200.0f;
 - (void)updateValueFields
 {
 	[speedField setStringValue:
-		[NSString stringWithFormat:NekoLocalized(@"%.0f pt/s"), [self speed] * 8.0f]];
-	float radius = [self stopRadius];
-	[radiusField setStringValue:(radius <= 0.0f)
-		? NekoLocalized(@"touches")
-		: [NSString stringWithFormat:NekoLocalized(@"%.0f pt"), radius]];
+		[NSString localizedStringWithFormat:NSLocalizedString(@"%.0f pt/s", @"%.0f pt/s"), [self speed] * 8.0f]];
+	CGFloat radius = [self stopRadius];
+	[radiusField setStringValue:(radius <= 0.0)
+		? NSLocalizedString(@"touches", @"touches")
+		: [NSString localizedStringWithFormat:NSLocalizedString(@"%.0f pt", @"%.0f pt"), radius]];
 }
 
 - (void)syncPreferencesControls
@@ -2466,8 +2455,8 @@ static const float NekoMaxStopRadius = 200.0f;
 
 - (void)takeScaleFrom:(id)sender
 {
-	float scale = ([sender indexOfSelectedItem] == 1) ? 2.0f : 1.0f;
-	[[NSUserDefaults standardUserDefaults] setFloat:scale forKey:NekoScaleKey];
+	CGFloat scale = ([sender indexOfSelectedItem] == 1) ? 2.0f : 1.0f;
+	[[NSUserDefaults standardUserDefaults] setDouble:scale forKey:NekoScaleKey];
 	[self settingsChanged];
 }
 

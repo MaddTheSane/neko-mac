@@ -139,39 +139,39 @@ static const NSTimeInterval NekoAnticsAway = 150.0;
 
 /* An arm's length for a cat: near enough to be nosy, far enough not to be on the
    caret. Varied through the pink-noise stream so it is not the same spot twice. */
-static const float NekoAnticsNear = 60.0f;
-static const float NekoAnticsFar = 90.0f;
+static const CGFloat NekoAnticsNear = 60.0f;
+static const CGFloat NekoAnticsFar = 90.0f;
 
 /* And off the line it walked in on, by this much: 40 to 70 degrees puts it
    beside the thing rather than in front of it. */
-static const float NekoAnticsSideMin = 40.0f;
-static const float NekoAnticsSideMax = 70.0f;
+static const CGFloat NekoAnticsSideMin = 40.0f;
+static const CGFloat NekoAnticsSideMax = 70.0f;
 
 - (NSPoint)spotBeside:(NSPoint)what from:(NSPoint)cat within:(NSRect)bounds
 {
 	NekoNoise *noise = [NekoNoise sharedNoise];
-	float radius = NekoAnticsNear + [noise next] * (NekoAnticsFar - NekoAnticsNear);
-	float side = NekoAnticsSideMin + [noise next] * (NekoAnticsSideMax - NekoAnticsSideMin);
+	CGFloat radius = NekoAnticsNear + [noise next] * (NekoAnticsFar - NekoAnticsNear);
+	CGFloat side = NekoAnticsSideMin + [noise next] * (NekoAnticsSideMax - NekoAnticsSideMin);
 	if([noise next] < 0.5f)
 		side = -side;            /* either side of the approach */
 
 	/* The direction it came from, turned by that much. */
-	float dx = what.x - cat.x, dy = what.y - cat.y;
-	float length = sqrtf(dx * dx + dy * dy);
+	CGFloat dx = what.x - cat.x, dy = what.y - cat.y;
+	CGFloat length = sqrt(dx * dx + dy * dy);
 	if(length < 1.0f) {
 		dx = 1.0f;
 		dy = 0.0f;
 		length = 1.0f;
 	}
-	float angle = atan2f(dy, dx) + side * (float)M_PI / 180.0f;
+	CGFloat angle = atan2(dy, dx) + side * (CGFloat)M_PI / 180.0f;
 	/* Measured back from the thing toward where the cat is coming from, so the
 	   spot ends up beside it on the near side rather than beyond it. */
-	NSPoint spot = NSMakePoint(what.x - cosf(angle) * radius,
-	                           what.y - sinf(angle) * radius);
+	NSPoint spot = NSMakePoint(what.x - cos(angle) * radius,
+	                           what.y - sin(angle) * radius);
 
 	/* On screen, and not so clamped that it lands on the thing anyway. */
-	spot.x = MIN(MAX(spot.x, NSMinX(bounds) + 16.0f), NSMaxX(bounds) - 16.0f);
-	spot.y = MIN(MAX(spot.y, NSMinY(bounds) + 16.0f), NSMaxY(bounds) - 16.0f);
+	spot.x = MIN(MAX(spot.x, NSMinX(bounds) + 16.0), NSMaxX(bounds) - 16.0);
+	spot.y = MIN(MAX(spot.y, NSMinY(bounds) + 16.0), NSMaxY(bounds) - 16.0);
 	return spot;
 }
 
@@ -323,18 +323,18 @@ static const float NekoAnticsSideMax = 70.0f;
 		return;
 	NSRect frame = [panel frame];
 	NSPoint here = NSMakePoint(NSMidX(frame), NSMinY(frame));
-	float dx = here.x - what.x, dy = here.y - what.y;
-	float length = sqrtf(dx * dx + dy * dy);
+	CGFloat dx = here.x - what.x, dy = here.y - what.y;
+	CGFloat length = sqrt(dx * dx + dy * dy);
 	if(length < 1.0f) {
 		dx = -1.0f;
 		dy = 0.0f;
 		length = 1.0f;
 	}
 	NSRect bounds = [panel nekoScreenBounds];
-	NSPoint away = NSMakePoint(here.x + dx / length * 140.0f,
-	                           here.y + dy / length * 140.0f);
-	away.x = MIN(MAX(away.x, NSMinX(bounds) + 16.0f), NSMaxX(bounds) - 16.0f);
-	away.y = MIN(MAX(away.y, NSMinY(bounds) + 16.0f), NSMaxY(bounds) - 16.0f);
+	NSPoint away = NSMakePoint(here.x + dx / length * 140.0,
+	                           here.y + dy / length * 140.0);
+	away.x = MIN(MAX(away.x, NSMinX(bounds) + 16.0), NSMaxX(bounds) - 16.0);
+	away.y = MIN(MAX(away.y, NSMinY(bounds) + 16.0), NSMaxY(bounds) - 16.0);
 	[panel errandTo:away thenState:NekoStateStop forTicks:8];
 }
 

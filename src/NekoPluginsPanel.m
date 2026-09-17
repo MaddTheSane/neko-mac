@@ -5,9 +5,9 @@
 
 #define NekoPanelLocalized(text) NSLocalizedString(text, nil)
 
-static const float NekoPanelWidth = 560.0f;
-static const float NekoPanelHeight = 460.0f;
-static const float NekoRowHeight = 86.0f;
+static const CGFloat NekoPanelWidth = 560.0f;
+static const CGFloat NekoPanelHeight = 460.0f;
+static const CGFloat NekoRowHeight = 86.0f;
 
 @implementation NekoPluginsPanel
 
@@ -154,18 +154,18 @@ static const float NekoRowHeight = 86.0f;
    text the row will show, measured with the same font, because a row sized from
    a guess is a row that clips somebody's summary on the day they write a long
    one. */
-- (float)heightOfDetailFor:(NekoPlugin *)plugin width:(float)width
+- (CGFloat)heightOfDetailFor:(NekoPlugin *)plugin width:(CGFloat)width
 {
 	NSString *what = [plugin isUsable]
 		? [NSString stringWithFormat:@"%@ — %@", [plugin describeWhatItAdds],
 			[[plugin summary] length] > 0 ? [plugin summary]
 				: NekoPanelLocalized(@"no summary")]
 		: [plugin refusal];
-	NSTextField *ruler = [self labelAt:NSMakeRect(0.0f, 0.0f, width, 32.0f)
+	NSTextField *ruler = [self labelAt:NSMakeRect(0.0, 0.0, width, 32.0)
 	                              text:what small:YES];
 	NSSize needed = [[ruler cell] cellSizeForBounds:
-		NSMakeRect(0.0f, 0.0f, width, 10000.0f)];
-	return MAX(32.0f, needed.height + 1.0f);
+		NSMakeRect(0.0, 0.0, width, 10000.0)];
+	return MAX(32.0, needed.height + 1.0);
 }
 
 - (void)refresh
@@ -177,7 +177,7 @@ static const float NekoRowHeight = 86.0f;
 
 	NekoPlugins *registry = [NekoPlugins sharedPlugins];
 	NSArray *all = [registry all];
-	float width = NSWidth([rows frame]);
+	CGFloat width = NSWidth([rows frame]);
 
 	/* Each row is as tall as its own sentence needs, measured before anything is
 	   drawn. It used to be a fixed height with the detail given 32 points of it,
@@ -185,12 +185,10 @@ static const float NekoRowHeight = 86.0f;
 	   it sends off this Mac, which is three. That sentence was being cut in half
 	   by the layout, which is a poor place for a disclosure to end. */
 	NSMutableArray *heights = [NSMutableArray array];
-	float height = 0.0f;
-	NSEnumerator *measuring = [all objectEnumerator];
-	NekoPlugin *measured;
-	while((measured = [measuring nextObject]) != nil) {
-		float needed = [self heightOfDetailFor:measured width:width - 150.0f];
-		float row = MAX(NekoRowHeight, 52.0f + needed + 16.0f);
+	CGFloat height = 0.0;
+	for(NekoPlugin *measured in all) {
+		CGFloat needed = [self heightOfDetailFor:measured width:width - 150.0f];
+		CGFloat row = MAX(NekoRowHeight, 52.0f + needed + 16.0f);
 		[heights addObject:[NSNumber numberWithFloat:row]];
 		height += row;
 	}
@@ -205,17 +203,15 @@ static const float NekoRowHeight = 86.0f;
 	}
 
 	NSUInteger index = 0;
-	float spent = 0.0f;
-	NSEnumerator *e = [all objectEnumerator];
-	NekoPlugin *plugin;
-	while((plugin = [e nextObject]) != nil) {
-		float top = height - spent;
-		float rowHeight = index < [heights count]
-			? [[heights objectAtIndex:index] floatValue] : NekoRowHeight;
+	CGFloat spent = 0.0f;
+	for(NekoPlugin *plugin in all) {
+		CGFloat top = height - spent;
+		CGFloat rowHeight = index < [heights count]
+			? [[heights objectAtIndex:index] doubleValue] : NekoRowHeight;
 		spent += rowHeight;
 		index++;
 
-		NSTextField *title = [self labelAt:NSMakeRect(8.0f, top - 22.0f, width - 150.0f, 18.0f)
+		NSTextField *title = [self labelAt:NSMakeRect(8.0, top - 22.0, width - 150.0, 18.0)
 		                              text:[plugin name] small:NO];
 		[title setFont:[NSFont boldSystemFontOfSize:[NSFont systemFontSize]]];
 		[rows addSubview:title];
@@ -223,7 +219,7 @@ static const float NekoRowHeight = 86.0f;
 		NSString *by = [[plugin author] length] > 0
 			? [NSString stringWithFormat:@"%@ · %@", [plugin author], [plugin version]]
 			: [plugin version];
-		[rows addSubview:[self labelAt:NSMakeRect(8.0f, top - 40.0f, width - 150.0f, 16.0f)
+		[rows addSubview:[self labelAt:NSMakeRect(8.0, top - 40.0, width - 150.0, 16.0)
 		                          text:by small:YES]];
 
 		NSString *what = [plugin isUsable]
@@ -231,9 +227,9 @@ static const float NekoRowHeight = 86.0f;
 				[[plugin summary] length] > 0 ? [plugin summary]
 					: NekoPanelLocalized(@"no summary")]
 			: [plugin refusal];
-		float detailHeight = [self heightOfDetailFor:plugin width:width - 150.0f];
+		CGFloat detailHeight = [self heightOfDetailFor:plugin width:width - 150.0];
 		NSTextField *detail = [self labelAt:
-			NSMakeRect(8.0f, top - 42.0f - detailHeight, width - 150.0f, detailHeight)
+			NSMakeRect(8.0, top - 42.0 - detailHeight, width - 150.0, detailHeight)
 		                               text:what small:YES];
 		if(![plugin isUsable])
 			[detail setTextColor:[NSColor systemRedColor]];
@@ -257,9 +253,7 @@ static const float NekoRowHeight = 86.0f;
 		   fails. */
 		NSMutableArray *missing = [NSMutableArray array];
 		if([plugin isUsable] && [registry isEnabled:plugin]) {
-			NSEnumerator *wanted = [[plugin shortcutsItNeeds] objectEnumerator];
-			NSString *name;
-			while((name = [wanted nextObject]) != nil) {
+			for(NSString *name in [plugin shortcutsItNeeds]) {
 				NekoShortcutProvider *runner = [[[NekoShortcutProvider alloc]
 					initWithShortcutName:name] autorelease];
 				if(![runner shortcutExists])

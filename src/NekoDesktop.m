@@ -487,7 +487,7 @@ static NSString *tidy(NSString *text)
 	   usually what someone is reading. */
 	if(text == nil) {
 		NSPoint mouse = [NSEvent mouseLocation];
-		float height = NSMaxY([[NSScreen screens] count] > 0
+		CGFloat height = NSMaxY([[NSScreen screens] count] > 0
 			? [[[NSScreen screens] objectAtIndex:0] frame] : NSZeroRect);
 		AXUIElementRef under = NULL;
 		if(AXUIElementCopyElementAtPosition(system, mouse.x, height - mouse.y,

@@ -2,6 +2,7 @@
 // Prefix header for all source files of the 'Neko' target in the 'Neko' project
 //
 
+#include <tgmath.h>
 #ifdef __OBJC__
     #import <Cocoa/Cocoa.h>
 #endif

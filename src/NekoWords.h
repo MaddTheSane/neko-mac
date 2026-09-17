@@ -97,11 +97,11 @@
 /* What survives of an answer: only words that were in the list offered. Exposed
    because this is the guard the whole design rests on, and a guard nothing can
    fail loudly is not a guard. */
-- (NSArray *)wordsOf:(NSString *)answer among:(NSArray *)candidates;
+- (NSArray *)wordsOf:(NSString *)answer among:(NSArray<NSString*> *)candidates;
 
 /* The word in a question worth asking about, or nil. Exposed for the same
    reason: "which word" is where this decides to spend a model call. */
-- (NSString *)wordWorthAsking:(NSString *)question among:(NSArray *)vocabulary;
+- (NSString *)wordWorthAsking:(NSString *)question among:(NSArray<NSString*> *)vocabulary;
 
 - (void)forgetEverything;
 

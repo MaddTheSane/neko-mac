@@ -67,16 +67,16 @@
 	   than being squeezed until the explanations are cut off. Which is what
 	   happened when the location row was added — the last row's paragraph ended
 	   up nine points below the bottom of the tab. */
-	float rowHeight = 88.0f;
-	NSArray *permissions = [NekoPermissions all];
-	float documentHeight = MAX((float)[permissions count] * rowHeight, 300.0f);
+	CGFloat rowHeight = 88.0f;
+	NSArray<NekoPermission*> *permissions = [NekoPermissions all];
+	CGFloat documentHeight = MAX((CGFloat)[permissions count] * rowHeight, 300.0);
 	NSScrollView *scroll = [[NSScrollView alloc]
-		initWithFrame:NSMakeRect(16.0f, 60.0f, 568.0f, 300.0f)];
+		initWithFrame:NSMakeRect(16.0, 60.0, 568.0, 300.0)];
 	[scroll setHasVerticalScroller:YES];
 	[scroll setDrawsBackground:NO];
 	[scroll setBorderType:NSNoBorder];
 	NSView *rows = [[[NSView alloc]
-		initWithFrame:NSMakeRect(0.0f, 0.0f, 548.0f, documentHeight)] autorelease];
+		initWithFrame:NSMakeRect(0.0, 0.0, 548.0, documentHeight)] autorelease];
 	[scroll setDocumentView:rows];
 	[content addSubview:scroll];
 	[scroll release];
@@ -84,10 +84,10 @@
 	NSUInteger index = 0;
 	NSEnumerator *e = [permissions objectEnumerator];
 	NekoPermission *permission;
-	while((permission = [e nextObject]) != nil) {
+	for(permission in e) {
 		/* Measured down from the top of the list, which is where somebody reads
 		   from. */
-		float top = documentHeight - (float)index * rowHeight;
+		CGFloat top = documentHeight - (CGFloat)index * rowHeight;
 		index++;
 
 		NekoPermissionState state = [permission permissionState];

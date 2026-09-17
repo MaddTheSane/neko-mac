@@ -12,11 +12,10 @@ static NSLocale *NekoClockLocale(void)
 
 /* Whichever of these the sentence starts with, and what is left after it. Longest
    first, so that "quanti giorni mancano a" is tried before "quanto manca a". */
-static NSString *NekoTailAfterAny(NSString *lowered, NSArray *triggers)
+static NSString *NekoTailAfterAny(NSString *lowered, NSArray<NSString*> *triggers)
 {
 	NSEnumerator *e = [triggers objectEnumerator];
-	NSString *trigger;
-	while((trigger = [e nextObject]) != nil) {
+	for(NSString *trigger in triggers) {
 		NSRange found = [lowered rangeOfString:trigger];
 		if(found.location == NSNotFound)
 			continue;
@@ -32,26 +31,23 @@ static NSString *NekoTailAfterAny(NSString *lowered, NSArray *triggers)
    phrase; "3 marzo" comes back as the third of March. */
 static NSString *NekoWithoutLeadingWords(NSString *tail)
 {
-	static NSArray *words = nil;
-	if(words == nil)
-		words = [[NSArray alloc] initWithObjects:
-			/* Italian */
-			@"al", @"alla", @"allo", @"agli", @"alle", @"ai", @"all'", @"a",
-			@"il", @"lo", @"la", @"i", @"gli", @"le", @"l'", @"del", @"di",
-			/* English */
-			@"until", @"till", @"to", @"the", @"for",
-			/* French */
-			@"jusqu'au", @"jusqu'à", @"au", @"aux", @"le", @"la", @"les",
-			/* Spanish */
-			@"hasta", @"para", @"el", @"los", @"las", nil];
+	static NSArray *const words =
+	@[
+		/* Italian */
+		@"al", @"alla", @"allo", @"agli", @"alle", @"ai", @"all'", @"a",
+		@"il", @"lo", @"la", @"i", @"gli", @"le", @"l'", @"del", @"di",
+		/* English */
+		@"until", @"till", @"to", @"the", @"for",
+		/* French */
+		@"jusqu'au", @"jusqu'à", @"au", @"aux", @"le", @"la", @"les",
+		/* Spanish */
+		@"hasta", @"para", @"el", @"los", @"las"];
 
 	NSString *text = tail;
 	BOOL cut = YES;
 	while(cut) {
 		cut = NO;
-		NSEnumerator *e = [words objectEnumerator];
-		NSString *word;
-		while((word = [e nextObject]) != nil) {
+		for(NSString *word in words) {
 			/* An apostrophe is not a word boundary the way a space is, so the
 			   two shapes are asked for separately. */
 			NSString *withSpace = [word stringByAppendingString:@" "];
@@ -103,9 +99,7 @@ static NSNumber *NekoDayOffset(NSString *tail)
 			return [b length] - [a length] > 0 ? NSOrderedAscending
 			     : ([b length] == [a length] ? NSOrderedSame : NSOrderedDescending);
 		}];
-	NSEnumerator *e = [keys objectEnumerator];
-	NSString *word;
-	while((word = [e nextObject]) != nil) {
+	for(NSString *word in keys) {
 		NSRange found = [tail rangeOfString:word];
 		if(found.location == NSNotFound)
 			continue;
@@ -158,11 +152,11 @@ static NSString *NekoTimeWritten(NSDate *when)
 
 + (NSString *)timeIfAsked:(NSString *)lowered
 {
-	NSArray *triggers = [NSArray arrayWithObjects:
+	NSArray *triggers = @[
 		@"che ore sono", @"che ora è", @"che ora e'", @"che ore fa",
 		@"what time is it", @"what's the time", @"what is the time",
 		@"quelle heure est-il", @"quelle heure il est", @"il est quelle heure",
-		@"qué hora es", @"que hora es", nil];
+		@"qué hora es", @"que hora es"];
 	NSString *tail = NekoTailAfterAny(lowered, triggers);
 	if(tail == nil || !NekoNothingLeft(tail))
 		return nil;
@@ -174,7 +168,7 @@ static NSString *NekoTimeWritten(NSDate *when)
 
 + (NSString *)dayIfAsked:(NSString *)lowered
 {
-	NSArray *triggers = [NSArray arrayWithObjects:
+	NSArray *triggers = @[
 		@"che giorno della settimana è", @"che giorno è", @"che giorno e'",
 		@"che giorno siamo", @"in che giorno siamo", @"che giorno era",
 		@"che data è",
@@ -185,8 +179,7 @@ static NSString *NekoTimeWritten(NSDate *when)
 		@"what's the date", @"what is the date", @"what's today's date",
 		@"quel jour sommes-nous", @"quel jour est-ce", @"quel jour est",
 		@"quelle est la date", @"on est quel jour",
-		@"qué día es", @"que dia es", @"qué fecha es", @"en qué fecha estamos",
-		nil];
+		@"qué día es", @"que dia es", @"qué fecha es", @"en qué fecha estamos"];
 	NSString *tail = NekoTailAfterAny(lowered, triggers);
 	if(tail == nil)
 		return nil;
@@ -208,8 +201,8 @@ static NSString *NekoTimeWritten(NSDate *when)
 		   venerdì" are not the same sentence with a different noun in it. */
 		BOOL gone = [dated timeIntervalSinceNow] < 0.0;
 		return [NSString stringWithFormat:
-			gone ? NekoClockLocalized(@"%@ was a %@.")
-			     : NekoClockLocalized(@"%@ will be a %@."),
+			gone ? NSLocalizedString(@"%@ was a %@.", @"%@ was a %@.")
+			     : NSLocalizedString(@"%@ will be a %@.", @"%@ will be a %@."),
 			NekoDateWithoutDay(dated), [weekday stringFromDate:dated]];
 	}
 
@@ -221,13 +214,13 @@ static NSString *NekoTimeWritten(NSDate *when)
 	NSString *written = NekoDateWritten(when);
 	switch([offset intValue]) {
 		case 1:  return [NSString stringWithFormat:
-			NekoClockLocalized(@"Tomorrow is %@."), written];
+						 NSLocalizedString(@"Tomorrow is %@.", @"Tomorrow is %@."), written];
 		case 2:  return [NSString stringWithFormat:
-			NekoClockLocalized(@"The day after tomorrow is %@."), written];
+						 NSLocalizedString(@"The day after tomorrow is %@.", @"The day after tomorrow is %@."), written];
 		case -1: return [NSString stringWithFormat:
-			NekoClockLocalized(@"Yesterday was %@."), written];
+						 NSLocalizedString(@"Yesterday was %@.", @"Yesterday was %@."), written];
 		default: return [NSString stringWithFormat:
-			NekoClockLocalized(@"Today is %@."), written];
+						 NSLocalizedString(@"Today is %@.", @"Today is %@."), written];
 	}
 }
 
@@ -247,22 +240,20 @@ static BOOL NekoLooksLikeADate(NSString *tail)
 			[NSCharacterSet decimalDigitCharacterSet]].location != NSNotFound)
 		return YES;
 
-	static NSArray *months = nil;
-	if(months == nil)
-		months = [[NSArray alloc] initWithObjects:
-			@"gennaio", @"febbraio", @"marzo", @"aprile", @"maggio", @"giugno",
-			@"luglio", @"agosto", @"settembre", @"ottobre", @"novembre", @"dicembre",
-			@"january", @"february", @"march", @"april", @"june", @"july",
-			@"august", @"september", @"october", @"november", @"december",
-			@"janvier", @"février", @"mars", @"avril", @"mai", @"juin", @"juillet",
-			@"août", @"septembre", @"octobre", @"novembre", @"décembre",
-			@"enero", @"febrero", @"marzo", @"abril", @"mayo", @"junio", @"julio",
-			@"agosto", @"septiembre", @"octubre", @"noviembre", @"diciembre", nil];
-	NSEnumerator *e = [months objectEnumerator];
-	NSString *month;
-	while((month = [e nextObject]) != nil)
-		if([tail rangeOfString:month].location != NSNotFound)
+	static NSArray * const months =
+	@[@"gennaio", @"febbraio", @"marzo", @"aprile", @"maggio", @"giugno",
+	  @"luglio", @"agosto", @"settembre", @"ottobre", @"novembre", @"dicembre",
+	  @"january", @"february", @"march", @"april", @"june", @"july",
+	  @"august", @"september", @"october", @"november", @"december",
+	  @"janvier", @"février", @"mars", @"avril", @"mai", @"juin", @"juillet",
+	  @"août", @"septembre", @"octobre", @"novembre", @"décembre",
+	  @"enero", @"febrero", @"marzo", @"abril", @"mayo", @"junio", @"julio",
+	  @"agosto", @"septiembre", @"octubre", @"noviembre", @"diciembre"];
+	for(NSString *month in months) {
+		if([tail rangeOfString:month].location != NSNotFound) {
 			return YES;
+		}
+	}
 	return NO;
 }
 

@@ -21,7 +21,7 @@ extern NSString * const NekoSuggestEveryKey; /* minutes between suggestions */
 extern NSString * const NekoPausedKey;     /* BOOL, cat hidden and frozen */
 
 /* Posted whenever a setting changes. */
-extern NSString * const NekoSettingsDidChangeNotification;
+extern NSNotificationName const NekoSettingsDidChangeNotification;
 
 @interface NekoController : NSObject <NSMenuDelegate>
 {
@@ -92,9 +92,9 @@ extern NSString * const NekoSettingsDidChangeNotification;
 - (void)setPanel:(MyPanel *)thePanel;
 
 - (NekoCharacter *)character;
-- (float)speed;
-- (float)stopRadius;
-- (float)scale;
+- (CGFloat)speed;
+- (CGFloat)stopRadius;
+- (CGFloat)scale;
 - (BOOL)idleSleep;
 - (BOOL)wandersWhenIdle;
 - (BOOL)livesOnWindowEdges;

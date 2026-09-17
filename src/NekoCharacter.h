@@ -49,7 +49,7 @@ typedef enum {
 
 /* Every character bundled with the app, sorted by name. Never empty unless the
    app resources are broken. */
-+ (NSArray *)availableCharacters;
++ (NSArray<NekoCharacter*> *)availableCharacters;
 
 /* Thrown away when a plugin is switched on or off, since plugins can ship
    characters and the list is cached. */
@@ -58,14 +58,14 @@ typedef enum {
 /* The character with that identifier, or the first available one. */
 + (NekoCharacter *)characterWithIdentifier:(NSString *)theIdentifier;
 
-- (NSString *)identifier;
-- (NSString *)name;
+@property (readonly, copy) NSString *identifier;
+@property (readonly, copy) NSString *name;
 
 /* Who this character is, in a phrase, for when it is asked a question. Taken
    from the manifest's Persona key; without one it falls back to being a cat by
    that name, which is what most of them are. */
-- (NSString *)persona;
-- (NSSize)spriteSize;
+@property (readonly, copy) NSString *persona;
+@property (readonly) NSSize spriteSize;
 
 /* Frames of a state, fallbacks already applied: never nil, never empty. */
 - (NSArray *)framesForState:(NekoState)state;

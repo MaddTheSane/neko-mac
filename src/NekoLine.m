@@ -1,9 +1,9 @@
 #import "NekoLine.h"
 
-static const float NekoLineWidth = 320.0f;
-static const float NekoLinePadding = 10.0f;
-static const float NekoLineRadius = 10.0f;
-static const float NekoLineGap = 6.0f;
+static const CGFloat NekoLineWidth = 320.0f;
+static const CGFloat NekoLinePadding = 10.0f;
+static const CGFloat NekoLineRadius = 10.0f;
+static const CGFloat NekoLineGap = 6.0f;
 
 /* The same rounded body as the bubble, without the tail: a field with a tail
    pointing at the cat reads as something the cat said, and this is something
@@ -37,30 +37,31 @@ static const float NekoLineGap = 6.0f;
 
 - (id)init
 {
-	self = [super initWithContentRect:NSMakeRect(0.0f, 0.0f, NekoLineWidth, 44.0f)
+	if (self = [super initWithContentRect:NSMakeRect(0.0, 0.0, NekoLineWidth, 44.0)
 	                       styleMask:NSWindowStyleMaskBorderless
 	                         backing:NSBackingStoreBuffered
-	                           defer:NO];
-	[self setOpaque:NO];
-	[self setBackgroundColor:[NSColor clearColor]];
-	[self setHasShadow:YES];
-	[self setLevel:NSStatusWindowLevel + 1];
-	[self setCollectionBehavior:(NSWindowCollectionBehaviorCanJoinAllSpaces
-	                             | NSWindowCollectionBehaviorStationary
-	                             | NSWindowCollectionBehaviorIgnoresCycle
-	                             | NSWindowCollectionBehaviorFullScreenAuxiliary)];
-	[self setCanHide:NO];
-	[self setHidesOnDeactivate:NO];
-	[self setContentView:[[[NekoLineView alloc] initWithFrame:NSZeroRect] autorelease]];
-
-	field = [[NSTextField alloc] initWithFrame:NSZeroRect];
-	[field setBezelStyle:NSTextFieldRoundedBezel];
-	[field setBezeled:YES];
-	[field setFont:[NSFont systemFontOfSize:0.0]];
-	[field setDelegate:(id)self];
-	[field setTarget:self];
-	[field setAction:@selector(sendIt:)];
-	[[self contentView] addSubview:field];
+									defer:NO]) {
+		[self setOpaque:NO];
+		[self setBackgroundColor:[NSColor clearColor]];
+		[self setHasShadow:YES];
+		[self setLevel:NSStatusWindowLevel + 1];
+		[self setCollectionBehavior:(NSWindowCollectionBehaviorCanJoinAllSpaces
+									 | NSWindowCollectionBehaviorStationary
+									 | NSWindowCollectionBehaviorIgnoresCycle
+									 | NSWindowCollectionBehaviorFullScreenAuxiliary)];
+		[self setCanHide:NO];
+		[self setHidesOnDeactivate:NO];
+		[self setContentView:[[[NekoLineView alloc] initWithFrame:NSZeroRect] autorelease]];
+		
+		field = [[NSTextField alloc] initWithFrame:NSZeroRect];
+		[field setBezelStyle:NSTextFieldRoundedBezel];
+		[field setBezeled:YES];
+		[field setFont:[NSFont systemFontOfSize:0.0]];
+		[field setDelegate:self];
+		[field setTarget:self];
+		[field setAction:@selector(sendIt:)];
+		[[self contentView] addSubview:field];
+	}
 	return self;
 }
 
@@ -96,18 +97,18 @@ static const float NekoLineGap = 6.0f;
 	[field setStringValue:@""];
 	[[field cell] setPlaceholderString:(placeholder ?: @"")];
 
-	float height = 44.0f;
+	CGFloat height = 44.0f;
 	NSScreen *screen = [self screenFor:catFrame];
 	NSRect visible = [screen visibleFrame];
-	float y = NSMaxY(catFrame) + NekoLineGap + height <= NSMaxY(visible)
-		? NSMaxY(catFrame) + NekoLineGap
-		: NSMinY(catFrame) - NekoLineGap - height;
-	float x = NSMidX(catFrame) - NekoLineWidth / 2.0f;
-	x = MIN(MAX(x, NSMinX(visible) + 4.0f), NSMaxX(visible) - NekoLineWidth - 4.0f);
-	y = MIN(MAX(y, NSMinY(visible) + 4.0f), NSMaxY(visible) - height - 4.0f);
+	CGFloat y = NSMaxY(catFrame) + NekoLineGap + height <= NSMaxY(visible)
+		  ? NSMaxY(catFrame) + NekoLineGap
+		  : NSMinY(catFrame) - NekoLineGap - height;
+	CGFloat x = NSMidX(catFrame) - NekoLineWidth / 2.0;
+	x = MIN(MAX(x, NSMinX(visible) + 4.0), NSMaxX(visible) - NekoLineWidth - 4.0);
+	y = MIN(MAX(y, NSMinY(visible) + 4.0), NSMaxY(visible) - height - 4.0);
 	[self setFrame:NSMakeRect(x, y, NekoLineWidth, height) display:NO];
 	[field setFrame:NSMakeRect(NekoLinePadding, NekoLinePadding,
-	                           NekoLineWidth - 2.0f * NekoLinePadding, 24.0f)];
+	                           NekoLineWidth - 2.0 * NekoLinePadding, 24.0)];
 
 	/* Remembered before the theft, not after. */
 	[previous release];

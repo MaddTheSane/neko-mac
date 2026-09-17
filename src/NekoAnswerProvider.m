@@ -127,18 +127,18 @@ BOOL NekoQuestionWantsFacts(NSString *question)
 	if([question length] == 0)
 		return YES;              /* nothing to go on: hand over everything */
 	NSString *lowered = [question lowercaseString];
-	NSArray *words = [NSArray arrayWithObjects:
+	NSArray *words = @[
 		@"ora", @"ore", @"orario", @"giorno", @"data", @"oggi", @"domani", @"ieri",
 		@"batteria", @"acceso", @"accesa", @"quanto manca", @"che mese", @"anno",
 		@"time", @"clock", @"date", @"day", @"today", @"tomorrow", @"battery",
 		@"awake", @"uptime", @"month", @"year",
 		@"heure", @"jour", @"date", @"batterie", @"aujourd", @"allumé",
-		@"hora", @"día", @"dia", @"fecha", @"batería", @"bateria", @"encendido", nil];
-	NSEnumerator *e = [words objectEnumerator];
-	NSString *word;
-	while((word = [e nextObject]) != nil)
-		if([lowered rangeOfString:word].location != NSNotFound)
+		@"hora", @"día", @"dia", @"fecha", @"batería", @"bateria", @"encendido"];
+	for (NSString *word in words) {
+		if([lowered rangeOfString:word].location != NSNotFound) {
 			return YES;
+		}
+	}
 	return NO;
 }
 

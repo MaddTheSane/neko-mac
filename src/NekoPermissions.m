@@ -303,24 +303,21 @@
 
 @implementation NekoPermissions
 
-+ (NSArray *)all
++ (NSArray<NekoPermission*> *)all
 {
 	NSMutableArray *all = [NSMutableArray array];
-	NSEnumerator *e = [[NSArray arrayWithObjects:@"microphone", @"speech",
-		@"accessibility", @"location", @"players", @"folders", @"screen",
-		nil] objectEnumerator];
-	NSString *key;
-	while((key = [e nextObject]) != nil)
+	NSArray *e = @[@"microphone", @"speech",
+				   @"accessibility", @"location", @"players", @"folders", @"screen"];
+	for (NSString *key in e) {
 		[all addObject:[[[NekoPermission alloc] initWithIdentifier:key] autorelease]];
+	}
 	return all;
 }
 
-+ (NSArray *)missing
++ (NSArray<NekoPermission*> *)missing
 {
 	NSMutableArray *missing = [NSMutableArray array];
-	NSEnumerator *e = [[self all] objectEnumerator];
-	NekoPermission *permission;
-	while((permission = [e nextObject]) != nil)
+	for(NekoPermission *permission in [self all])
 		if([permission isNeeded] && [permission permissionState] != NekoPermissionGranted)
 			[missing addObject:permission];
 	return missing;

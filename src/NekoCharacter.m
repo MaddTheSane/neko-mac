@@ -46,7 +46,7 @@ static NSArray *NekoCharacterCache = nil;
 /* The ones inside the app, and then the ones enabled plugins ship. The app's own
    win a collision: a plugin cannot replace Neko with something else called
    "neko", it can only add. */
-+ (NSArray *)availableCharacters
++ (NSArray<NekoCharacter*> *)availableCharacters
 {
 	if(NekoCharacterCache != nil)
 		return NekoCharacterCache;
@@ -56,10 +56,8 @@ static NSArray *NekoCharacterCache = nil;
 
 	NSString *root = [[[NSBundle mainBundle] resourcePath]
 		stringByAppendingPathComponent:NekoCharacterDirectory];
-	NSEnumerator *e = [[[NSFileManager defaultManager]
-		contentsOfDirectoryAtPath:root error:NULL] objectEnumerator];
-	NSString *entry;
-	while((entry = [e nextObject]) != nil) {
+	for (NSString *entry in [[NSFileManager defaultManager]
+							 contentsOfDirectoryAtPath:root error:NULL]) {
 		if(![[entry pathExtension] isEqualToString:NekoCharacterExtension])
 			continue;
 		NekoCharacter *character = [[[NekoCharacter alloc]
@@ -70,18 +68,16 @@ static NSArray *NekoCharacterCache = nil;
 		[characters addObject:character];
 	}
 
-	NSEnumerator *plugins = [[[NekoPlugins sharedPlugins] enabled] objectEnumerator];
-	NekoPlugin *plugin;
-	while((plugin = [plugins nextObject]) != nil) {
-		NSEnumerator *paths = [[plugin characterPaths] objectEnumerator];
-		NSString *path;
-		while((path = [paths nextObject]) != nil) {
-			NekoCharacter *character = [[[NekoCharacter alloc]
-				initWithPath:path] autorelease];
+	NSEnumerator<NekoPlugin*> *plugins = [[[NekoPlugins sharedPlugins] enabled] objectEnumerator];
+	for(NekoPlugin *plugin in plugins) {
+		for(NSString *path in [plugin characterPaths]) {
+			NekoCharacter *character = [[NekoCharacter alloc]
+				initWithPath:path];
 			if(character == nil || [taken containsObject:[character identifier]])
 				continue;
 			[taken addObject:[character identifier]];
 			[characters addObject:character];
+			[character release];
 		}
 	}
 
@@ -101,11 +97,11 @@ static NSArray *NekoCharacterCache = nil;
 + (NekoCharacter *)characterWithIdentifier:(NSString *)theIdentifier
 {
 	NSArray *characters = [self availableCharacters];
-	NSEnumerator *e = [characters objectEnumerator];
-	NekoCharacter *character;
-	while((character = [e nextObject]) != nil)
-		if([[character identifier] isEqualToString:theIdentifier])
+	for(NekoCharacter *character in characters) {
+		if([[character identifier] isEqualToString:theIdentifier]) {
 			return character;
+		}
+	}
 	return ([characters count] > 0) ? [characters objectAtIndex:0] : nil;
 }
 
@@ -137,8 +133,8 @@ static NSArray *NekoCharacterCache = nil;
 		name = [identifier copy];
 	persona = [[manifest objectForKey:@"Persona"] copy];
 
-	float width = [[manifest objectForKey:@"SpriteWidth"] floatValue];
-	float height = [[manifest objectForKey:@"SpriteHeight"] floatValue];
+	CGFloat width = [[manifest objectForKey:@"SpriteWidth"] doubleValue];
+	CGFloat height = [[manifest objectForKey:@"SpriteHeight"] doubleValue];
 	spriteSize = NSMakeSize(width > 0.0f ? width : 32.0f,
 	                        height > 0.0f ? height : 32.0f);
 
@@ -160,12 +156,10 @@ static NSArray *NekoCharacterCache = nil;
 	return self;
 }
 
-- (NSArray *)imagesInDirectory:(NSString *)path fileNames:(NSArray *)fileNames
+- (NSArray<NSImage*> *)imagesInDirectory:(NSString *)path fileNames:(NSArray<NSString*> *)fileNames
 {
 	NSMutableArray *images = [NSMutableArray array];
-	NSEnumerator *e = [fileNames objectEnumerator];
-	NSString *fileName;
-	while((fileName = [e nextObject]) != nil) {
+	for(NSString *fileName in fileNames) {
 		NSString *file = [path stringByAppendingPathComponent:fileName];
 		NSImage *image = [[NSImage alloc] initWithContentsOfFile:file];
 		if(image == nil) {
@@ -191,15 +185,8 @@ static NSArray *NekoCharacterCache = nil;
 
 #pragma mark Accessors
 
-- (NSString *)identifier
-{
-	return identifier;
-}
-
-- (NSString *)name
-{
-	return name;
-}
+@synthesize identifier;
+@synthesize name;
 
 - (NSString *)persona
 {
@@ -209,10 +196,7 @@ static NSArray *NekoCharacterCache = nil;
 		NSLocalizedString(@"a small pixel-art cat named %@", nil), name];
 }
 
-- (NSSize)spriteSize
-{
-	return spriteSize;
-}
+@synthesize spriteSize;
 
 /* Walks the fallback chain until a described state turns up. */
 - (NekoState)resolvedState:(NekoState)state

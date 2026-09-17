@@ -43,8 +43,7 @@ static unsigned NekoIdleTicksFor(NekoState state)
 		if(idleDwell < 1)
 			idleDwell = 1;       /* a pose nobody sees is not a pose */
 	}
-	[stateFrames release];
-	stateFrames = [[character framesForState:theState] retain];
+	stateFrames = [character framesForState:theState];
 	stateTicksPerFrame = [character ticksPerFrameForState:theState];
 	/* Handed over here and not left until the next tick: between the two, a
 	   redraw would draw a frame of the pose this one replaced — and after a
@@ -121,7 +120,7 @@ static unsigned NekoIdleTicksFor(NekoState state)
 
 /* Resizes the window around its own centre so swapping character or size does
    not make the cat drift across the screen. */
-- (void)setSpriteSide:(float)side
+- (void)setSpriteSide:(CGFloat)side
 {
 	NSRect frame = [self frame];
 	if(frame.size.width == side && frame.size.height == side)
@@ -173,9 +172,7 @@ static unsigned NekoIdleTicksFor(NekoState state)
 	
 	NekoCharacter *newCharacter = [controller character];
 	if(newCharacter != character) {
-		[character release];
-		character = [newCharacter retain];
-		[stateFrames release];
+		character = newCharacter;
 		stateFrames = nil;             /* forces setStateTo: to reload */
 		[self setStateTo:NekoStateStop];
 	}
@@ -183,8 +180,8 @@ static unsigned NekoIdleTicksFor(NekoState state)
 	/* Sprites are square in every character shipped so far; the larger side
 	   drives the window so a non-square one is letterboxed instead of cropped. */
 	/* A missing character would otherwise size the window to nothing. */
-	NSSize sprite = (character != nil) ? [character spriteSize] : NSMakeSize(32.0f, 32.0f);
-	float side = MAX(MAX(sprite.width, sprite.height), 8.0f) * scale;
+	NSSize sprite = (character != nil) ? [character spriteSize] : NSMakeSize(32.0, 32.0);
+	CGFloat side = MAX(MAX(sprite.width, sprite.height), 8.0) * scale;
 	[self setSpriteSide:side];
 	[view setFrame:[[self contentView] bounds]];
 	[view setNeedsDisplay:YES];
@@ -217,10 +214,7 @@ static unsigned NekoIdleTicksFor(NekoState state)
 	[self startTimer];           /* the frames keep moving even while it waits */
 }
 
-- (NekoState)state
-{
-	return nekoState;
-}
+@synthesize state = nekoState;
 
 - (void)releaseHold
 {
@@ -228,10 +222,7 @@ static unsigned NekoIdleTicksFor(NekoState state)
 	restedTicks = 0;
 }
 
-- (BOOL)isHeld
-{
-	return held;
-}
+@synthesize held;
 
 /* Roaming, in ticks of an eighth of a second: a couple of seconds' pause
    between errands, and five minutes of that before the cat has earned a nap. */
@@ -248,8 +239,8 @@ static const unsigned NekoRoamNap = 240;         /* half a minute asleep */
    Two different radii on purpose. With one, a cat sitting exactly on the
    boundary steps out, finds itself outside, steps back in, and does that for
    ever. The idea, and the reason for the gap, is ferlor-BSG's. */
-static const float NekoFleeNear = 3.5f;
-static const float NekoFleeFar  = 4.0f;
+static const CGFloat NekoFleeNear = 3.5f;
+static const CGFloat NekoFleeFar  = 4.0f;
 
 #pragma mark Wandering
 
@@ -267,7 +258,7 @@ static const float NekoFleeFar  = 4.0f;
 		away = (double)arc4random_uniform(360) * M_PI / 180.0;
 	/* within a third of a turn either side of straight away */
 	away += ((double)arc4random_uniform(120) - 60.0) * M_PI / 180.0;
-	float reach = 150.0f + (float)arc4random_uniform(200);
+	CGFloat reach = 150.0 + (CGFloat)arc4random_uniform(200);
 
 	wanderTarget = NSMakePoint(NSMidX(frame) + reach * cos(away),
 	                           NSMinY(frame) + reach * sin(away));
@@ -292,8 +283,8 @@ static const float NekoFleeFar  = 4.0f;
 			NSMinX(bounds), NSMinY(bounds), bounds.size.width, 1.0f)]];  /* the desk */
 
 	NSRect surface = [[surfaces objectAtIndex:arc4random_uniform([surfaces count])] rectValue];
-	float room = surface.size.width - frame.size.width;
-	float x = NSMinX(surface) + (room > 0.0f ? (float)arc4random_uniform((unsigned)room) : 0.0f);
+	CGFloat room = surface.size.width - frame.size.width;
+	CGFloat x = NSMinX(surface) + (room > 0.0f ? (CGFloat)arc4random_uniform((unsigned)room) : 0.0f);
 
 	wanderTarget = [self somewhereItCanStand:
 		NSMakePoint(x + frame.size.width / 2.0f, surface.origin.y)];
@@ -308,20 +299,20 @@ static const float NekoFleeFar  = 4.0f;
 {
 	NSRect bounds = [self nekoBounds];
 	NSRect frame = [self frame];
-	float roomX = MAX(bounds.size.width - frame.size.width, 1.0f);
-	float roomY = MAX(bounds.size.height - frame.size.height, 1.0f);
+	CGFloat roomX = MAX(bounds.size.width - frame.size.width, 1.0);
+	CGFloat roomY = MAX(bounds.size.height - frame.size.height, 1.0);
 	NSPoint here = NSMakePoint(NSMidX(frame), NSMinY(frame));
 
 	/* A worthwhile walk rather than a shuffle: somewhere at least a third of
 	   the desk away, given a few tries to find one. Uniform points came out
 	   next door often enough that the cat looked like it could not decide. */
-	float wanted = MIN(bounds.size.width, bounds.size.height) / 3.0f;
+	CGFloat wanted = MIN(bounds.size.width, bounds.size.height) / 3.0f;
 	NSPoint spot = here;
 	unsigned try;
 	for(try = 0; try < 8; try++) {
 		spot = NSMakePoint(NSMinX(bounds) + frame.size.width / 2.0f
-		                   + (float)arc4random_uniform((unsigned)roomX),
-		                   NSMinY(bounds) + (float)arc4random_uniform((unsigned)roomY));
+		                   + (CGFloat)arc4random_uniform((unsigned)roomX),
+		                   NSMinY(bounds) + (CGFloat)arc4random_uniform((unsigned)roomY));
 		if(hypotf(spot.x - here.x, spot.y - here.y) >= wanted)
 			break;
 	}
@@ -408,8 +399,8 @@ static const float NekoFleeFar  = 4.0f;
    That is the mistake this constant exists to record: the first version stepped
    44 points, the radius is 48, and the cat stood still while insisting it had
    set off. */
-static const float NekoTurnSlack = 40.0f;
-static const float NekoTurnStep = 30.0f;
+static const CGFloat NekoTurnSlack = 40.0f;
+static const CGFloat NekoTurnStep = 30.0f;
 
 - (unsigned)turnToward:(NSPoint)point
 {
@@ -421,15 +412,15 @@ static const float NekoTurnStep = 30.0f;
 	   distances disagree by half a cat. */
 	NSRect frame = [self frame];
 	NSPoint here = NSMakePoint(NSMidX(frame), NSMinY(frame));
-	float dx = point.x - here.x, dy = point.y - here.y;
-	float distance = sqrtf(dx * dx + dy * dy);
+	CGFloat dx = point.x - here.x, dy = point.y - here.y;
+	CGFloat distance = sqrt(dx * dx + dy * dy);
 	if(distance < stopRadius + NekoTurnSlack)
 		return 0;               /* it is already looking at the right corner */
 
 	/* A step toward it, not a journey to it. It stops a radius short of
 	   whatever it walks at, so the target has to be that much further out than
 	   the distance actually travelled. */
-	float reach = MIN(stopRadius + NekoTurnStep, distance - stopRadius / 2.0f);
+	CGFloat reach = MIN(stopRadius + NekoTurnStep, distance - stopRadius / 2.0);
 	if(reach <= stopRadius + 4.0f)
 		return 0;
 	NSPoint target = NSMakePoint(here.x + dx / distance * reach,
@@ -450,7 +441,7 @@ static const float NekoTurnStep = 30.0f;
 	/* Ticks for the part it actually walks — the target less the radius it stops
 	   short by — plus the pose at the end, plus the few ticks the chain spends
 	   sitting up before it sets off. */
-	float travel = MAX(reach - stopRadius, 4.0f);
+	CGFloat travel = MAX(reach - stopRadius, 4.0f);
 	unsigned walking = (unsigned)(travel / MAX(speed, 1.0f)) + 1;
 	return walking + errandHold + 4;
 }
@@ -477,10 +468,7 @@ static const float NekoTurnStep = 30.0f;
 	return errandPhase != 0;
 }
 
-- (BOOL)isRoaming
-{
-	return roamMode;
-}
+@synthesize roaming = roamMode;
 
 /* What the cat is walking towards: the pointer, or wherever it decided to go. */
 /* Away from the pointer, while it is close enough to be worth minding.
@@ -493,11 +481,11 @@ static const float NekoTurnStep = 30.0f;
 - (NSPoint)escapeTarget
 {
 	NSRect frame = [self frame];
-	float side = frame.size.width;
+	CGFloat side = frame.size.width;
 	NSPoint here = NSMakePoint(NSMidX(frame), NSMinY(frame));
 	NSPoint mouse = [NSEvent mouseLocation];
-	float dx = here.x - mouse.x, dy = here.y - mouse.y;
-	float distance = hypotf(dx, dy);
+	CGFloat dx = here.x - mouse.x, dy = here.y - mouse.y;
+	CGFloat distance = hypot(dx, dy);
 
 	fleeing = fleeing ? (distance < stopRadius * NekoFleeFar)
 	                  : (distance < stopRadius * NekoFleeNear);
@@ -507,23 +495,23 @@ static const float NekoTurnStep = 30.0f;
 	/* Far enough to be out of range when it arrives, and never less than one
 	   step, so a cat already at the edge of the ring still moves. It stops
 	   stopRadius short of whatever it walks at, so the target carries that. */
-	float wanted = stopRadius * NekoFleeFar - distance;
-	float reach = stopRadius + MAX(wanted, speed);
+	CGFloat wanted = stopRadius * NekoFleeFar - distance;
+	CGFloat reach = stopRadius + MAX(wanted, speed);
 
 	double away = atan2(dy, dx);
 	if(distance < 1.0f || isnan(away))
 		away = (double)arc4random_uniform(360) * M_PI / 180.0;
 
 	NSRect bounds = [self nekoBounds];
-	static const float turns[] = { 0.0f, 45.0f, -45.0f, 90.0f, -90.0f,
-	                               135.0f, -135.0f, 180.0f };
+	static const CGFloat turns[] = { 0.0, 45.0f, -45.0, 90.0, -90.0,
+	                               135.0, -135.0, 180.0 };
 	unsigned i;
 	for(i = 0; i < sizeof(turns) / sizeof(turns[0]); i++) {
 		double angle = away + (double)turns[i] * M_PI / 180.0;
-		NSPoint target = NSMakePoint(here.x + (float)cos(angle) * reach,
-		                             here.y + (float)sin(angle) * reach);
-		if(target.x < NSMinX(bounds) + side / 2.0f
-		   || target.x > NSMaxX(bounds) - side / 2.0f
+		NSPoint target = NSMakePoint(here.x + cos(angle) * reach,
+		                             here.y + sin(angle) * reach);
+		if(target.x < NSMinX(bounds) + side / 2.0
+		   || target.x > NSMaxX(bounds) - side / 2.0
 		   || target.y < NSMinY(bounds)
 		   || target.y > NSMaxY(bounds) - side)
 			continue;
@@ -556,9 +544,7 @@ static const float NekoTurnStep = 30.0f;
 - (NSRect)nekoBounds
 {
 	NSRect bounds = NSZeroRect;
-	NSEnumerator *e = [[NSScreen screens] objectEnumerator];
-	NSScreen *screen;
-	while((screen = [e nextObject]) != nil)
+	for(NSScreen *screen in [NSScreen screens])
 		bounds = NSIsEmptyRect(bounds) ? [screen visibleFrame]
 		                               : NSUnionRect(bounds, [screen visibleFrame]);
 	return NSIsEmptyRect(bounds) ? [[NSScreen mainScreen] visibleFrame] : bounds;
@@ -578,12 +564,12 @@ static const float NekoTurnStep = 30.0f;
 - (NSPoint)somewhereItCanStand:(NSPoint)target
 {
 	NSRect frame = [self frame];
-	float side = MAX((float)frame.size.width, 1.0f);
+	CGFloat side = MAX(frame.size.width, 1.0);
 	/* Through floats of its own rather than the point's fields: NSPoint holds
 	   CGFloat, which is a double here, and handing &origin.x to a float* writes
 	   four bytes into eight. The compiler said so. */
-	float x = (float)(target.x - side / 2.0f);
-	float y = (float)target.y;
+	CGFloat x = (target.x - side / 2.0);
+	CGFloat y = target.y;
 	[self nudgeOntoAScreen:&x Y:&y side:side];
 	return NSMakePoint((CGFloat)x + side / 2.0f, (CGFloat)y);
 }
@@ -609,17 +595,15 @@ static const float NekoTurnStep = 30.0f;
 	NSRect frame = [self frame];
 	NSPoint centre = NSMakePoint(NSMidX(frame), NSMidY(frame));
 	NSRect nearest = NSZeroRect;
-	float nearestDistance = 0.0f;
-	NSEnumerator *e = [[NSScreen screens] objectEnumerator];
-	NSScreen *screen;
-	while((screen = [e nextObject]) != nil) {
+	CGFloat nearestDistance = 0.0;
+	for(NSScreen *screen in [NSScreen screens]) {
 		NSRect visible = [screen visibleFrame];
-		float dx = 0.0f, dy = 0.0f;
+		CGFloat dx = 0.0, dy = 0.0;
 		if(centre.x < NSMinX(visible))      dx = NSMinX(visible) - centre.x;
 		else if(centre.x > NSMaxX(visible)) dx = centre.x - NSMaxX(visible);
 		if(centre.y < NSMinY(visible))      dy = NSMinY(visible) - centre.y;
 		else if(centre.y > NSMaxY(visible)) dy = centre.y - NSMaxY(visible);
-		float distance = dx * dx + dy * dy;
+		CGFloat distance = dx * dx + dy * dy;
 		if(NSIsEmptyRect(nearest) || distance < nearestDistance) {
 			nearest = visible;
 			nearestDistance = distance;
@@ -638,15 +622,15 @@ static const float NekoTurnStep = 30.0f;
 	NSScreen *screen = [self screen] ? [self screen] : [NSScreen mainScreen];
 	NSRect frame = [screen frame];
 	NSRect visible = [screen visibleFrame];
-	float reserved = NSMinY(visible) - NSMinY(frame);
+	CGFloat reserved = NSMinY(visible) - NSMinY(frame);
 	if(reserved < 20.0f)
 		return NSZeroRect;           /* hidden, or on a side */
 
 	/* The Dock sits in the middle of the edge, so the cat is kept over the part
 	   that is actually there rather than the empty desk beside it. */
-	float inset = frame.size.width * 0.15f;
+	CGFloat inset = frame.size.width * 0.15;
 	return NSMakeRect(NSMinX(frame) + inset, NSMinY(visible),
-	                  frame.size.width - 2.0f * inset, 1.0f);
+	                  frame.size.width - 2.0 * inset, 1.0);
 }
 
 /* The surfaces the cat may stand on: the Dock when it is out, otherwise the top
@@ -663,25 +647,22 @@ static const float NekoTurnStep = 30.0f;
 	NSMutableArray *found = [NSMutableArray array];
 	NSRect dock = [self dockSurface];
 	if(!NSIsEmptyRect(dock)) {
-		[shelves release];
-		shelves = [[NSArray arrayWithObject:[NSValue valueWithRect:dock]] retain];
+		shelves = @[[NSValue valueWithRect:dock]];
 		return;
 	}
 
-	CFArrayRef list = CGWindowListCopyWindowInfo(
+	NSArray *list = CFBridgingRelease(CGWindowListCopyWindowInfo(
 		kCGWindowListOptionOnScreenOnly | kCGWindowListExcludeDesktopElements,
-		kCGNullWindowID);
+		kCGNullWindowID));
 	if(list == NULL)
 		return;
 
 	/* Quartz measures from the top of the main display downwards. */
 	NSRect screenFrame = [[[NSScreen screens] objectAtIndex:0] frame];
-	float flip = NSMaxY(screenFrame);
+	CGFloat flip = NSMaxY(screenFrame);
 	double screenArea = screenFrame.size.width * screenFrame.size.height;
 	int mine = [[NSProcessInfo processInfo] processIdentifier];
-	NSEnumerator *e = [(NSArray *)list objectEnumerator];
-	NSDictionary *window;
-	while((window = [e nextObject]) != nil) {
+	for(NSDictionary *window in list) {
 		if([[window objectForKey:(id)kCGWindowLayer] integerValue] != 0)
 			continue;
 		if([[window objectForKey:(id)kCGWindowOwnerPID] intValue] == mine)
@@ -701,27 +682,25 @@ static const float NekoTurnStep = 30.0f;
 		[found addObject:[NSValue valueWithRect:NSMakeRect(
 			bounds.origin.x, flip - bounds.origin.y, bounds.size.width, 1.0f)]];
 	}
-	CFRelease(list);
 
-	[shelves release];
 	shelves = [found copy];
 }
 
 /* The highest surface the cat can stand on at this horizontal position, never
    above where its feet already are: it lands on things, it is not lifted. */
-- (float)floorUnderCentre:(float)centre feet:(float)feet
+- (CGFloat)floorUnderCentre:(CGFloat)centre feet:(CGFloat)feet
 {
-	float floor = NSMinY([self nekoBounds]);
+	CGFloat floor = NSMinY([self nekoBounds]);
 	if(!windowsMode)
 		return floor;
 
 	NSEnumerator *e = [shelves objectEnumerator];
 	NSValue *value;
-	while((value = [e nextObject]) != nil) {
+	for(NSValue *value in e) {
 		NSRect shelf = [value rectValue];
 		if(centre < NSMinX(shelf) || centre > NSMaxX(shelf))
 			continue;
-		float top = shelf.origin.y;
+		CGFloat top = shelf.origin.y;
 		if(top > feet + 1.0f || top <= floor)
 			continue;
 		floor = top;
@@ -738,26 +717,26 @@ static const float NekoTurnStep = 30.0f;
    So a sprite that has come to rest entirely off every screen is put back onto
    the nearest one. Only entirely: a cat halfway across the seam between two
    displays is doing the right thing and is left alone. */
-NSPoint NekoOriginOnAScreen(NSPoint origin, float side, NSArray *visibleFrames)
+NSPoint NekoOriginOnAScreen(NSPoint origin, CGFloat side, NSArray<NSValue*> *visibleFrames)
 {
 	NSRect sprite = NSMakeRect(origin.x, origin.y, side, side);
 	NSPoint centre = NSMakePoint(NSMidX(sprite), NSMidY(sprite));
 	NSRect nearest = NSZeroRect;
-	float nearestDistance = 0.0f;
+	CGFloat nearestDistance = 0.0f;
 
 	NSEnumerator *e = [visibleFrames objectEnumerator];
 	NSValue *value;
-	while((value = [e nextObject]) != nil) {
+	for(NSValue *value in visibleFrames) {
 		NSRect visible = [value rectValue];
 		if(NSIntersectsRect(sprite, visible))
 			return origin;             /* on a screen, or across two of them */
 
-		float dx = 0.0f, dy = 0.0f;
+		CGFloat dx = 0.0f, dy = 0.0f;
 		if(centre.x < NSMinX(visible))      dx = NSMinX(visible) - centre.x;
 		else if(centre.x > NSMaxX(visible)) dx = centre.x - NSMaxX(visible);
 		if(centre.y < NSMinY(visible))      dy = NSMinY(visible) - centre.y;
 		else if(centre.y > NSMaxY(visible)) dy = centre.y - NSMaxY(visible);
-		float distance = dx * dx + dy * dy;
+		CGFloat distance = dx * dx + dy * dy;
 
 		if(NSIsEmptyRect(nearest) || distance < nearestDistance) {
 			nearest = visible;
@@ -771,12 +750,10 @@ NSPoint NekoOriginOnAScreen(NSPoint origin, float side, NSArray *visibleFrames)
 	                   MIN(MAX(origin.y, NSMinY(nearest)), NSMaxY(nearest) - side));
 }
 
-- (void)nudgeOntoAScreen:(float *)x Y:(float *)y side:(float)side
+- (void)nudgeOntoAScreen:(CGFloat *)x Y:(CGFloat *)y side:(CGFloat)side
 {
 	NSMutableArray *frames = [NSMutableArray array];
-	NSEnumerator *e = [[NSScreen screens] objectEnumerator];
-	NSScreen *screen;
-	while((screen = [e nextObject]) != nil)
+	for (NSScreen *screen in [NSScreen screens])
 		[frames addObject:[NSValue valueWithRect:[screen visibleFrame]]];
 
 	NSPoint put = NekoOriginOnAScreen(NSMakePoint(*x, *y), side, frames);
@@ -789,17 +766,17 @@ NSPoint NekoOriginOnAScreen(NSPoint origin, float side, NSArray *visibleFrames)
    there, rather than trusted as written. */
 - (void)placeAt:(NSPoint)origin
 {
-	float side = [self frame].size.width;
-	float x = origin.x, y = origin.y;
+	CGFloat side = [self frame].size.width;
+	CGFloat x = origin.x, y = origin.y;
 	[self settleX:&x Y:&y from:y];
 	[self setFrameOrigin:NSMakePoint(x, y)];
 }
 
 /* Keeps the whole sprite on a screen, and standing on whatever is under it. */
-- (void)settleX:(float *)x Y:(float *)y from:(float)previousY
+- (void)settleX:(CGFloat *)x Y:(CGFloat *)y from:(CGFloat)previousY
 {
 	NSRect bounds = [self nekoBounds];
-	float side = [self frame].size.width;
+	CGFloat side = [self frame].size.width;
 	*x = MIN(MAX(*x, NSMinX(bounds)), NSMaxX(bounds) - side);
 	*y = MIN(MAX(*y, NSMinY(bounds)), NSMaxY(bounds) - side);
 	[self nudgeOntoAScreen:x Y:y side:side];
@@ -812,7 +789,7 @@ NSPoint NekoOriginOnAScreen(NSPoint origin, float side, NSArray *visibleFrames)
 {
 	NSRect bounds = [self nekoBounds];
 	NSRect frame = [self frame];
-	float edge = 1.0f;
+	CGFloat edge = 1.0f;
 
 	if(moveDx < 0.0f && NSMinX(frame) <= NSMinX(bounds) + edge)
 		return NekoStateLTogi;
@@ -821,18 +798,18 @@ NSPoint NekoOriginOnAScreen(NSPoint origin, float side, NSArray *visibleFrames)
 	if(moveDy > 0.0f && NSMaxY(frame) >= NSMaxY(bounds) - edge)
 		return NekoStateUTogi;
 	if(moveDy < 0.0f) {
-		float floor = [self floorUnderCentre:NSMidX(frame) feet:NSMinY(frame)];
+		CGFloat floor = [self floorUnderCentre:NSMidX(frame) feet:NSMinY(frame)];
 		if(NSMinY(frame) <= floor + edge)
 			return NekoStateDTogi;   /* the desk, or the window it is standing on */
 	}
 	return NekoStateCount;
 }
 
-- (void)calcDxDyForX:(float)x Y:(float)y
+- (void)calcDxDyForX:(CGFloat)x Y:(CGFloat)y
 {
-	float		MouseX, MouseY;
-	float		DeltaX, DeltaY;
-	float		Length;
+	CGFloat		MouseX, MouseY;
+	CGFloat		DeltaX, DeltaY;
+	CGFloat		Length;
 	
 	NSPoint p = [self chaseTarget];
 	MouseX = p.x;
@@ -850,11 +827,11 @@ NSPoint NekoOriginOnAScreen(NSPoint origin, float side, NSArray *visibleFrames)
 	   just above zero for ever and the cat would creep towards the pointer a
 	   fraction of a point per tick, walking animation and all. Anything under
 	   a point counts as arrived. */
-	float travel = Length - stopRadius;
+	CGFloat travel = Length - stopRadius;
 	if (travel <= 1.0f) {
 		moveDx = moveDy = 0.0f;
 	} else {
-		float step = (travel < speed) ? travel : speed;
+		CGFloat step = (travel < speed) ? travel : speed;
 		moveDx = (step * DeltaX) / Length;
 		moveDy = (step * DeltaY) / Length;
 	}
@@ -862,7 +839,7 @@ NSPoint NekoOriginOnAScreen(NSPoint origin, float side, NSArray *visibleFrames)
 
 - (BOOL)isNekoMoveStart
 {
-	float threshold = speed / 2.0f;
+	CGFloat threshold = speed / 2.0f;
 	return moveDx > threshold || moveDx < -threshold || moveDy > threshold || moveDy < -threshold;
 }
 
@@ -927,9 +904,9 @@ NSPoint NekoOriginOnAScreen(NSPoint origin, float side, NSArray *visibleFrames)
 
 - (void)handleTimer:(NSTimer*)timer
 {
-	float x = [self frame].origin.x;
-	float y = [self frame].origin.y;
-	float previousY = y;
+	CGFloat x = [self frame].origin.x;
+	CGFloat y = [self frame].origin.y;
+	CGFloat previousY = y;
 	
 	if(stateFrames == nil)
 		return;                        /* not wired up to a character yet */
@@ -971,7 +948,7 @@ NSPoint NekoOriginOnAScreen(NSPoint origin, float side, NSArray *visibleFrames)
 	   roaming, where the pointer was never the point. */
 	if(wandering && !roamMode) {
 		NSPoint mouse = [NSEvent mouseLocation];
-		if(hypotf(mouse.x - wanderMouse.x, mouse.y - wanderMouse.y) > 24.0f)
+		if(hypot(mouse.x - wanderMouse.x, mouse.y - wanderMouse.y) > 24.0f)
 			[self stopWandering];
 	}
 	
@@ -979,7 +956,7 @@ NSPoint NekoOriginOnAScreen(NSPoint origin, float side, NSArray *visibleFrames)
 	BOOL isNekoMoveStart = [self isNekoMoveStart];
 	NekoState wall = [self blockedWallState];
 	
-	unsigned frame = (tickCount / stateTicksPerFrame) % [stateFrames count];
+	NSInteger frame = (tickCount / stateTicksPerFrame) % [stateFrames count];
 	[view setImageTo:(NSImage*)[stateFrames objectAtIndex:frame]];
 	
 	[self advanceClock];
@@ -992,7 +969,7 @@ NSPoint NekoOriginOnAScreen(NSPoint origin, float side, NSArray *visibleFrames)
 		   left alone so it still blinks and washes while you read. */
 		[self stopWandering];
 		errandPhase = 0;
-		moveDx = moveDy = 0.0f;
+		moveDx = moveDy = 0.0;
 		if([self isWalking])
 			[self setStateTo:NekoStateStop];
 		if(nekoState == NekoStateAwake)
@@ -1105,8 +1082,8 @@ NSPoint NekoOriginOnAScreen(NSPoint origin, float side, NSArray *visibleFrames)
 	   rests wherever it stopped, and dragging it to the floor there sent it
 	   into a loop of arriving, falling and setting off again. */
 	if (windowsMode && !held && ![self isWalking]) {
-		float floor = [self floorUnderCentre:x + [self frame].size.width / 2.0f
-		                               feet:previousY];
+		CGFloat floor = [self floorUnderCentre:x + [self frame].size.width / 2.0
+		                                  feet:previousY];
 		if (y > floor)
 			y = MAX(floor, y - speed);
 	}
