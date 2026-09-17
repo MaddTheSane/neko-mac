@@ -42,22 +42,23 @@ extern NSNotificationName const NekoGlanceDidChangeNotification;
 }
 
 + (NekoGlance *)sharedGlance;
+@property (class, readonly, retain) NekoGlance *sharedGlance;
 
-/* How long the question asks it to look for, or 0 when it is not asking. */
+/*! How long the question asks it to look for, or 0 when it is not asking. */
 + (NSTimeInterval)wantedFor:(NSString *)question;
 
-/* Starts it, replacing any stretch already running, and answers what to say. */
+/*! Starts it, replacing any stretch already running, and answers what to say. */
 - (NSString *)lookFor:(NSTimeInterval)seconds;
 
-/* The whole of what the rest of the application asks: may it read right now. */
+/*! The whole of what the rest of the application asks: may it read right now. */
 - (BOOL)isLooking;
 - (NSTimeInterval)secondsLeft;
 
-/* For the menu: "Sto guardando — 4 minuti" while it runs, nil when it does not. */
+/*! For the menu: "Sto guardando — 4 minuti" while it runs, nil when it does not. */
 - (NSString *)menuTitle;
 - (void)stop;
 
-/* What the menu item starts when nobody said how long. */
+/*! What the menu item starts when nobody said how long. */
 + (NSTimeInterval)defaultStretch;
 
 @end

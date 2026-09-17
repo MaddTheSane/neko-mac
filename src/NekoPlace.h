@@ -1,19 +1,20 @@
 /* NekoPlace */
 
 #import <Cocoa/Cocoa.h>
+@class CLLocationManager;
 
 /* What is remembered between launches: a town and a region, never coordinates. */
 extern NSString * const NekoPlaceTownKey;
 extern NSString * const NekoPlaceRegionKey;
 extern NSString * const NekoPlaceAskedKey;   /* the day it last looked */
 
-/* Posted when the town, the region or the permission changes. macOS answers a
+/*! Posted when the town, the region or the permission changes. macOS answers a
    location request when somebody answers a dialog, which is long after the
    button was pressed, so whatever is on screen has to be told rather than
    guessing. */
 extern NSString * const NekoPlaceDidChangeNotification;
 
-/* Roughly where this Mac is, and nothing finer than that.
+/*! Roughly where this Mac is, and nothing finer than that.
 
    Two tiers, and the first needs no permission at all: the time zone says which
    country somebody is in, which is enough to know that "the news" means an
@@ -33,7 +34,7 @@ extern NSString * const NekoPlaceDidChangeNotification;
    name, which is what a person would have typed. */
 @interface NekoPlace : NSObject
 {
-	id manager;                  /* CLLocationManager, kept for its lifetime */
+	CLLocationManager *manager;  /* CLLocationManager, kept for its lifetime */
 	void (^report)(NSString *town, NSString *region);
 	BOOL looking;                /* a request is in flight */
 	BOOL waitingForPermission;   /* the dialog is up, or ought to be */
@@ -78,6 +79,6 @@ extern NSString * const NekoPlaceDidChangeNotification;
    something a test may do, since a refusal can only be undone in System
    Settings. The tests override these; nothing else does. */
 - (NSInteger)permission;     /* defaults to +authorizationStatus */
-- (id)manager;               /* the CLLocationManager, kept for its lifetime */
+- (CLLocationManager *)manager;/* the CLLocationManager, kept for its lifetime */
 
 @end

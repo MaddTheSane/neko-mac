@@ -2,7 +2,7 @@
 
 #import <Cocoa/Cocoa.h>
 
-/* Things about you that the cat was told, and keeps.
+/*! Things about you that the cat was told, and keeps.
 
    The diary already grows durable lines, but it grows them the slow way: a
    reflection over yesterday, once a day, written by whatever engine is best on
@@ -33,18 +33,18 @@
    about a person that they cannot read is not honest, whatever it contains. */
 @interface NekoFact : NSObject
 
-/* What the sentence asks for, or nil when it asks for none of this.
+/*! What the sentence asks for, or nil when it asks for none of this.
    The dictionary carries What ("il venerdì stacco prima"), Kind ("keep",
    "forget", "name"), and Sentence, which is what the cat says back. */
 + (NSDictionary *)wantedFor:(NSString *)question;
 
-/* Does it, and answers with the sentence to say. */
+/*! Does it, and answers with the sentence to say. */
 + (NSString *)act:(NSDictionary *)wanted;
 
-/* Everything it has been told, oldest first, without the dates. */
-+ (NSArray *)all;
+/*! Everything it has been told, oldest first, without the dates. */
++ (NSArray<NSString*> *)all;
 
-/* For the preferences, and for the tests. */
+/*! For the preferences, and for the tests. */
 + (void)forgetEverything;
 
 @end

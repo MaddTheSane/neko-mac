@@ -3,7 +3,7 @@
 #import <Cocoa/Cocoa.h>
 #import "NekoAnswerProvider.h"
 
-/* Hands the question to a Shortcut the user owns and reads back what it put on
+/*! Hands the question to a Shortcut the user owns and reads back what it put on
    the clipboard.
 
    The Shortcut is where the intelligence lives, and it is the user's choice:
@@ -18,8 +18,8 @@
 {
 	NSString *shortcutName;
 	NSTimer *poll;
-	NSInteger baseline;          /* clipboard change count before running */
-	NSArray<NSPasteboardItem*> *saved;             /* what was on the clipboard, to put back */
+	NSInteger baseline;          /*!< clipboard change count before running */
+	NSArray<NSPasteboardItem*> *saved;             /*!< what was on the clipboard, to put back */
 	NSDate *deadline;
 	void (^pending)(NSString *, NSError *);
 }
@@ -31,14 +31,14 @@
    Asked of /usr/bin/shortcuts, which works inside the sandbox. */
 + (NSArray<NSString*> *)availableShortcutNames;
 
-/* Whether the named one is among them. YES when the list is unavailable, so a
+/*! Whether the named one is among them. YES when the list is unavailable, so a
    working setup is never blocked by a failed check. */
 - (BOOL)shortcutExists;
 
-/* The URL that runs the Shortcut with the question as its input. */
+/*! The URL that runs the Shortcut with the question as its input. */
 - (NSURL *)urlForQuestion:(NSString *)question;
 
-/* Hands that URL to the system. Separated out so a test can stand in for
+/*! Hands that URL to the system. Separated out so a test can stand in for
    Shortcuts without a Shortcut being installed. */
 - (BOOL)launchShortcutWithURL:(NSURL *)url;
 

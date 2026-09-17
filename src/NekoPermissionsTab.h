@@ -2,7 +2,7 @@
 
 #import <Cocoa/Cocoa.h>
 
-/* The Permissions tab: six rows, what each is for, and a button per row.
+/*! The Permissions tab: six rows, what each is for, and a button per row.
 
    Taken out of `NekoController`, which had grown to 2,377 lines and 118 methods
    and was the largest thing in the project by a factor of two. This is the first
@@ -22,14 +22,16 @@
    where the folders are chosen. */
 @interface NekoPermissionsTab : NSObject
 {
-	NSView *content;             /* the tab's own view, not owned */
-	NSTextField *summary;        /* the line naming what is missing */
+	/*! the tab's own view, not owned */
+	__unsafe_unretained NSView *content;
+	/*! the line naming what is missing */
+	NSTextField *summary;
 }
 
-/* Builds itself into that view and keeps it. Call once. */
+/*! Builds itself into that view and keeps it. Call once. */
 - (void)buildInView:(NSView *)view;
 
-/* Draws the rows again, from what the system says now. Cheap, and called when a
+/*! Draws the rows again, from what the system says now. Cheap, and called when a
    permission may have changed behind the application's back. */
 - (void)rebuild;
 

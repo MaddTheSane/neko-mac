@@ -6,14 +6,12 @@
 #import "NekoAnswerProvider.h"
 #import <NaturalLanguage/NaturalLanguage.h>
 
-#define NekoMemoryLocalized(text) NSLocalizedString(text, nil)
-
-/* Thirty days of daily files, forty durable lines, and a block for the prompt
+/*! Thirty days of daily files, forty durable lines, and a block for the prompt
    that stays around a thousand characters — roughly two hundred and fifty
    tokens, which the 1.5B can still read and the 4B does not notice. */
 static const NSUInteger NekoMemoryDays = 30;
 static const NSUInteger NekoMemoryDurableLines = 40;
-/* What survives the month-scale pass, and how far the dated lines may pile up
+/*! What survives the month-scale pass, and how far the dated lines may pile up
    while waiting for one. The ceiling exists so that a Mac with no engine cannot
    grow the file for ever; it is three times the usual working set, which is
    months of waiting rather than days. */
@@ -81,7 +79,7 @@ NSString * const NekoMemoryDirectoryKey = @"NekoMemoryDirectory";
 
 #pragma mark Writing it down
 
-/* Words worth nothing in a note. Articles, the copula, the polite scaffolding of
+/*! Words worth nothing in a note. Articles, the copula, the polite scaffolding of
    a sentence — the things a person writing in a notebook leaves out anyway.
    Every one of these is a token that will be read back to a model tomorrow, and
    the small ones have very little room.

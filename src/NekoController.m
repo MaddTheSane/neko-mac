@@ -36,6 +36,7 @@
 #import "NekoMemory.h"
 #import "NekoOpenAIProvider.h"
 #import "NekoModelProvider.h"
+#import "MyPanel.h"
 #import <ServiceManagement/ServiceManagement.h>
 
 NSString * const NekoCharacterKey  = @"NekoCharacter";
@@ -69,20 +70,20 @@ static const CGFloat NekoMaxStopRadius = 200.0;
 	if(self != [NekoController class])
 		return;
 	[[NSUserDefaults standardUserDefaults] registerDefaults:
-		[NSDictionary dictionaryWithObjectsAndKeys:
-			@"neko", NekoCharacterKey,
-			@13.0, NekoSpeedKey,
-			@1.0, NekoScaleKey,
-			@48.0, NekoStopRadiusKey,
-			@YES, NekoIdleSleepKey,
-			@YES, NekoWanderKey,
-			@"follow", NekoBehaviourKey,
-			@NO, NekoPausedKey,
+	 @{
+		NekoCharacterKey: @"neko",
+		NekoSpeedKey: @13.0,
+		NekoScaleKey: @1.0,
+		NekoStopRadiusKey: @48.0,
+		NekoIdleSleepKey: @YES,
+		NekoWanderKey: @YES,
+		NekoBehaviourKey: @"follow",
+		NekoPausedKey: @NO,
 			/* Off: a cat that starts talking about your work on first launch,
 			   sending what it saw to whichever engine is set, would be a
 			   decision made for you. */
-			@NO, NekoSuggestKey,
-			@10, NekoSuggestEveryKey, nil]];
+		NekoSuggestKey: @NO,
+		NekoSuggestEveryKey: @10}];
 }
 
 + (NekoController *)sharedController
@@ -104,17 +105,14 @@ static const CGFloat NekoMaxStopRadius = 200.0;
 - (void)dealloc
 {
 	[[NSStatusBar systemStatusBar] removeStatusItem:statusItem];
-	[statusItem release];
-	[prefsPanel release];
-	[super dealloc];
 }
 
 #pragma mark Status item (tray)
 
 - (void)installStatusItem
 {
-	statusItem = [[[NSStatusBar systemStatusBar]
-		statusItemWithLength:NSSquareStatusItemLength] retain];
+	statusItem = [[NSStatusBar systemStatusBar]
+				  statusItemWithLength:NSSquareStatusItemLength];
 
 	NSMenu *menu = [[NSMenu alloc] initWithTitle:@"Neko"];
 	/* So the minutes left are worked out when somebody looks, rather than being
@@ -220,7 +218,6 @@ static const CGFloat NekoMaxStopRadius = 200.0;
 	[item setTarget:self];
 
 	[statusItem setMenu:menu];
-	[menu release];
 
 	[self disarmQuitShortcut];
 
@@ -317,7 +314,7 @@ static const CGFloat NekoMaxStopRadius = 200.0;
 - (void)takeUpdateCheckFrom:(id)sender
 {
 	[[NSUserDefaults standardUserDefaults]
-		setBool:[sender state] == NSControlStateValueOn forKey:NekoUpdateCheckKey];
+		setBool:[(NSButton*)sender state] == NSControlStateValueOn forKey:NekoUpdateCheckKey];
 }
 
 - (void)updateGlanceItem
@@ -385,10 +382,7 @@ static const CGFloat NekoMaxStopRadius = 200.0;
 
 #pragma mark Panel
 
-- (MyPanel *)panel
-{
-	return panel;
-}
+@synthesize panel;
 
 - (void)setPanel:(MyPanel *)thePanel
 {
@@ -584,7 +578,7 @@ static const CGFloat NekoMaxStopRadius = 200.0;
    says so unless we do. */
 - (void)explainLoginApproval
 {
-	NSAlert *alert = [[[NSAlert alloc] init] autorelease];
+	NSAlert *alert = [[NSAlert alloc] init];
 	[alert setMessageText:NSLocalizedString(@"Neko needs your approval to open at login", @"Neko needs your approval to open at login")];
 	[alert setInformativeText:NSLocalizedString(@"Open System Settings, then Login Items, and allow Neko.", @"Open System Settings, then Login Items, and allow Neko.")];
 	[alert addButtonWithTitle:NSLocalizedString(@"OK", @"OK")];
@@ -595,7 +589,7 @@ static const CGFloat NekoMaxStopRadius = 200.0;
 - (void)takeWanderFrom:(id)sender
 {
 	[[NSUserDefaults standardUserDefaults]
-		setBool:([sender state] == NSControlStateValueOn) forKey:NekoWanderKey];
+		setBool:([(NSButton*)sender state] == NSControlStateValueOn) forKey:NekoWanderKey];
 	[self settingsChanged];
 }
 
@@ -610,7 +604,7 @@ static const CGFloat NekoMaxStopRadius = 200.0;
 
 - (void)takeBehaviourFrom:(id)sender
 {
-	NSArray *names = [NSArray arrayWithObjects:@"follow", @"windows", @"roam", @"flee", nil];
+	static NSArray *const names = @[@"follow", @"windows", @"roam", @"flee"];
 	NSUInteger index = (NSUInteger)[sender indexOfSelectedItem];
 	[[NSUserDefaults standardUserDefaults]
 		setObject:[names objectAtIndex:MIN(index, [names count] - 1)]
@@ -634,7 +628,7 @@ static const CGFloat NekoMaxStopRadius = 200.0;
 
 - (void)takeOpenAtLoginFrom:(id)sender
 {
-	BOOL wanted = ([sender state] == NSControlStateValueOn);
+	BOOL wanted = ([(NSButton*)sender state] == NSControlStateValueOn);
 	BOOL got = [self setOpensAtLogin:wanted];
 	[sender setState:got ? NSControlStateValueOn : NSControlStateValueOff];
 }
@@ -786,7 +780,7 @@ static const CGFloat NekoMaxStopRadius = 200.0;
 
 - (NSTextField *)labelWithString:(NSString *)string frame:(NSRect)frame
 {
-	NSTextField *label = [[[NSTextField alloc] initWithFrame:frame] autorelease];
+	NSTextField *label = [[NSTextField alloc] initWithFrame:frame];
 	[label setStringValue:string];
 	[label setBezeled:NO];
 	[label setDrawsBackground:NO];
@@ -820,48 +814,47 @@ static const CGFloat NekoMaxStopRadius = 200.0;
 	[[prefsPanel contentView] addSubview:tabs];
 	prefsTabs = tabs;            /* to open straight onto a tab */
 
-	NSView *content = [[[NSView alloc]
-		initWithFrame:NSMakeRect(0.0f, 0.0f, 600.0f, 420.0f)] autorelease];
+	NSView *content = [[NSView alloc]
+					   initWithFrame:NSMakeRect(0.0f, 0.0f, 600.0f, 420.0f)];
 	NSTabViewItem *petTab = [[NSTabViewItem alloc] initWithIdentifier:@"pet"];
 	[petTab setLabel:NSLocalizedString(@"Pet", @"Pet")];
 	[petTab setView:content];
 	[tabs addTabViewItem:petTab];
-	[petTab release];
 
-	NSView *askContent = [[[NSView alloc]
-		initWithFrame:NSMakeRect(0.0f, 0.0f, 600.0f, 420.0f)] autorelease];
-	NSTabViewItem *askTab = [[[NSTabViewItem alloc] initWithIdentifier:@"ask"] autorelease];
+	NSView *askContent = [[NSView alloc]
+						  initWithFrame:NSMakeRect(0.0f, 0.0f, 600.0f, 420.0f)];
+	NSTabViewItem *askTab = [[NSTabViewItem alloc] initWithIdentifier:@"ask"];
 	[askTab setLabel:NSLocalizedString(@"Ask Neko", @"Ask Neko")];
 	[askTab setView:askContent];
 	[tabs addTabViewItem:askTab];
 
-	NSView *localContent = [[[NSView alloc]
-		initWithFrame:NSMakeRect(0.0f, 0.0f, 600.0f, 420.0f)] autorelease];
+	NSView *localContent = [[NSView alloc]
+							initWithFrame:NSMakeRect(0.0f, 0.0f, 600.0f, 420.0f)];
 	[self buildLocalTabInView:localContent];
-	NSTabViewItem *localTab = [[[NSTabViewItem alloc] initWithIdentifier:@"local"] autorelease];
+	NSTabViewItem *localTab = [[NSTabViewItem alloc] initWithIdentifier:@"local"];
 	[localTab setLabel:NSLocalizedString(@"Local model", @"Local model")];
 	[localTab setView:localContent];
 	[tabs addTabViewItem:localTab];
 
-	NSView *suggestContent = [[[NSView alloc]
-		initWithFrame:NSMakeRect(0.0f, 0.0f, 600.0f, 420.0f)] autorelease];
+	NSView *suggestContent = [[NSView alloc]
+							  initWithFrame:NSMakeRect(0.0f, 0.0f, 600.0f, 420.0f)];
 	[self buildSuggestTabInView:suggestContent];
-	NSTabViewItem *suggestTab = [[[NSTabViewItem alloc] initWithIdentifier:@"suggest"] autorelease];
+	NSTabViewItem *suggestTab = [[NSTabViewItem alloc] initWithIdentifier:@"suggest"];
 	[suggestTab setLabel:NSLocalizedString(@"Suggestions", @"Suggestions")];
 	[suggestTab setView:suggestContent];
 	[tabs addTabViewItem:suggestTab];
 
-	NSView *drawContent = [[[NSView alloc]
-		initWithFrame:NSMakeRect(0.0f, 0.0f, 600.0f, 420.0f)] autorelease];
+	NSView *drawContent = [[NSView alloc]
+						   initWithFrame:NSMakeRect(0.0f, 0.0f, 600.0f, 420.0f)];
 	[self buildDrawTabInView:drawContent];
-	NSTabViewItem *drawTab = [[[NSTabViewItem alloc] initWithIdentifier:@"draw"] autorelease];
+	NSTabViewItem *drawTab = [[NSTabViewItem alloc] initWithIdentifier:@"draw"];
 	[drawTab setLabel:NSLocalizedString(@"Drawings", @"Drawings")];
 	[drawTab setView:drawContent];
 	[tabs addTabViewItem:drawTab];
 
-	permissionsContent = [[[NSView alloc]
-		initWithFrame:NSMakeRect(0.0f, 0.0f, 600.0f, 420.0f)] autorelease];
-	NSTabViewItem *permissionsTab = [[[NSTabViewItem alloc] initWithIdentifier:@"permissions"] autorelease];
+	permissionsContent = [[NSView alloc]
+						  initWithFrame:NSMakeRect(0.0f, 0.0f, 600.0f, 420.0f)];
+	NSTabViewItem *permissionsTab = [[NSTabViewItem alloc] initWithIdentifier:@"permissions"];
 	[permissionsTab setLabel:NSLocalizedString(@"Permissions", @"Permissions")];
 	[permissionsTab setView:permissionsContent];
 	[tabs addTabViewItem:permissionsTab];
@@ -869,7 +862,6 @@ static const CGFloat NekoMaxStopRadius = 200.0;
 	   first out of the five. */
 	permissions = [[NekoPermissionsTab alloc] init];
 	[permissions buildInView:permissionsContent];
-	[tabs release];
 
 	/* Behaviour */
 	[content addSubview:[self labelWithString:NSLocalizedString(@"Behaviour:", @"Behaviour:")
@@ -885,7 +877,6 @@ static const CGFloat NekoMaxStopRadius = 200.0;
 	[behaviourPopUp setTarget:self];
 	[behaviourPopUp setAction:@selector(takeBehaviourFrom:)];
 	[content addSubview:behaviourPopUp];
-	[behaviourPopUp release];
 
 	/* Character */
 	[content addSubview:[self labelWithString:NSLocalizedString(@"Character:", @"Character:")
@@ -899,7 +890,6 @@ static const CGFloat NekoMaxStopRadius = 200.0;
 	[characterPopUp setTarget:self];
 	[characterPopUp setAction:@selector(takeCharacterFrom:)];
 	[content addSubview:characterPopUp];
-	[characterPopUp release];
 
 	/* Speed */
 	[content addSubview:[self labelWithString:NSLocalizedString(@"Speed:", @"Speed:")
@@ -913,7 +903,6 @@ static const CGFloat NekoMaxStopRadius = 200.0;
 	[speedSlider setTarget:self];
 	[speedSlider setAction:@selector(takeSpeedFrom:)];
 	[content addSubview:speedSlider];
-	[speedSlider release];
 
 	speedField = [self labelWithString:@"" frame:NSMakeRect(362.0f, 338.0f, 90.0f, 17.0f)];
 	[content addSubview:speedField];
@@ -930,7 +919,6 @@ static const CGFloat NekoMaxStopRadius = 200.0;
 	[radiusSlider setTarget:self];
 	[radiusSlider setAction:@selector(takeStopRadiusFrom:)];
 	[content addSubview:radiusSlider];
-	[radiusSlider release];
 
 	radiusField = [self labelWithString:@"" frame:NSMakeRect(362.0f, 298.0f, 90.0f, 17.0f)];
 	[content addSubview:radiusField];
@@ -947,7 +935,6 @@ static const CGFloat NekoMaxStopRadius = 200.0;
 	[sizePopUp setTarget:self];
 	[sizePopUp setAction:@selector(takeScaleFrom:)];
 	[content addSubview:sizePopUp];
-	[sizePopUp release];
 
 	/* Idle sleep */
 	sleepCheck = [[NSButton alloc] initWithFrame:NSMakeRect(154.0f, 224.0f, 300.0f, 18.0f)];
@@ -957,7 +944,6 @@ static const CGFloat NekoMaxStopRadius = 200.0;
 	[sleepCheck setTarget:self];
 	[sleepCheck setAction:@selector(takeIdleSleepFrom:)];
 	[content addSubview:sleepCheck];
-	[sleepCheck release];
 
 	/* Wandering */
 	wanderCheck = [[NSButton alloc] initWithFrame:NSMakeRect(154.0f, 200.0f, 300.0f, 18.0f)];
@@ -967,7 +953,6 @@ static const CGFloat NekoMaxStopRadius = 200.0;
 	[wanderCheck setTarget:self];
 	[wanderCheck setAction:@selector(takeWanderFrom:)];
 	[content addSubview:wanderCheck];
-	[wanderCheck release];
 
 	/* Opening at login */
 	loginCheck = [[NSButton alloc] initWithFrame:NSMakeRect(154.0f, 152.0f, 300.0f, 18.0f)];
@@ -981,7 +966,6 @@ static const CGFloat NekoMaxStopRadius = 200.0;
 		[loginCheck setToolTip:NSLocalizedString(@"Needs macOS 13 or newer", @"Needs macOS 13 or newer")];
 	}
 	[content addSubview:loginCheck];
-	[loginCheck release];
 
 	/* Looking for a new version. On by default, and this is the switch that
 	   stops it: what it sends is one request to this project's own releases and
@@ -998,7 +982,6 @@ static const CGFloat NekoMaxStopRadius = 200.0;
 	   found exactly that here. */
 	[updateCheck setToolTip:NSLocalizedString(@"Neko is not signed, so it never installs anything itself: it tells you, downloads the disk image if you say so, and you drag it across.", @"Neko is not signed, so it never installs anything itself: it tells you, downloads the disk image if you say so, and you drag it across.")];
 	[content addSubview:updateCheck];
-	[updateCheck release];
 
 	/* Restore defaults */
 	NSButton *reset = [[NSButton alloc] initWithFrame:NSMakeRect(16.0f, 62.0f, 180.0f, 32.0f)];
@@ -1007,7 +990,6 @@ static const CGFloat NekoMaxStopRadius = 200.0;
 	[reset setTarget:self];
 	[reset setAction:@selector(restoreDefaults:)];
 	[content addSubview:reset];
-	[reset release];
 
 	NSButton *look = [[NSButton alloc] initWithFrame:NSMakeRect(206.0f, 62.0f, 160.0f, 32.0f)];
 	[look setBezelStyle:NSBezelStyleRounded];
@@ -1015,7 +997,6 @@ static const CGFloat NekoMaxStopRadius = 200.0;
 	[look setTarget:self];
 	[look setAction:@selector(checkNow:)];
 	[content addSubview:look];
-	[look release];
 
 	[self buildAskTab:askContent];
 	[self updateWanderAvailability];
@@ -1035,7 +1016,6 @@ static const CGFloat NekoMaxStopRadius = 200.0;
 	[askCheck setTarget:self];
 	[askCheck setAction:@selector(takeAskEnabledFrom:)];
 	[content addSubview:askCheck];
-	[askCheck release];
 
 	[content addSubview:[self labelWithString:NSLocalizedString(@"Keystroke:", @"Keystroke:")
 	                                    frame:NSMakeRect(20.0f, 342.0f, 125.0f, 17.0f)]];
@@ -1050,7 +1030,6 @@ static const CGFloat NekoMaxStopRadius = 200.0;
 	[askHotKeyPopUp setTarget:self];
 	[askHotKeyPopUp setAction:@selector(takeAskHotKeyFrom:)];
 	[content addSubview:askHotKeyPopUp];
-	[askHotKeyPopUp release];
 
 	[content addSubview:[self labelWithString:NSLocalizedString(@"Answers from:", @"Answers from:")
 	                                    frame:NSMakeRect(20.0f, 302.0f, 125.0f, 17.0f)]];
@@ -1065,7 +1044,6 @@ static const CGFloat NekoMaxStopRadius = 200.0;
 	[askProviderPopUp setTarget:self];
 	[askProviderPopUp setAction:@selector(takeAskProviderFrom:)];
 	[content addSubview:askProviderPopUp];
-	[askProviderPopUp release];
 
 	[content addSubview:[self labelWithString:NSLocalizedString(@"Shortcut name:", @"Shortcut name:")
 	                                    frame:NSMakeRect(20.0f, 262.0f, 125.0f, 17.0f)]];
@@ -1073,7 +1051,6 @@ static const CGFloat NekoMaxStopRadius = 200.0;
 	[askShortcutField setTarget:self];
 	[askShortcutField setAction:@selector(takeAskShortcutNameFrom:)];
 	[content addSubview:askShortcutField];
-	[askShortcutField release];
 
 	[content addSubview:[self labelWithString:NSLocalizedString(@"API key:", @"API key:")
 	                                    frame:NSMakeRect(20.0f, 222.0f, 125.0f, 17.0f)]];
@@ -1081,7 +1058,6 @@ static const CGFloat NekoMaxStopRadius = 200.0;
 	[askKeyField setTarget:self];
 	[askKeyField setAction:@selector(takeAskKeyFrom:)];
 	[content addSubview:askKeyField];
-	[askKeyField release];
 
 	askSpeakCheck = [[NSButton alloc] initWithFrame:NSMakeRect(152.0f, 162.0f, 196.0f, 18.0f)];
 	[askSpeakCheck setButtonType:NSButtonTypeSwitch];
@@ -1089,7 +1065,6 @@ static const CGFloat NekoMaxStopRadius = 200.0;
 	[askSpeakCheck setTarget:self];
 	[askSpeakCheck setAction:@selector(takeAskSpeakFrom:)];
 	[content addSubview:askSpeakCheck];
-	[askSpeakCheck release];
 
 	/* On the same row as the voice because they are the same subject: how a turn
 	   ends, and whether the next one needs a keystroke. */
@@ -1100,15 +1075,13 @@ static const CGFloat NekoMaxStopRadius = 200.0;
 	[followUpCheck setTarget:self];
 	[followUpCheck setAction:@selector(takeFollowUpFrom:)];
 	[content addSubview:followUpCheck];
-	[followUpCheck release];
 
 	wakeCheck = [[NSButton alloc] initWithFrame:NSMakeRect(152.0f, 186.0f, 300.0f, 18.0f)];
 	[wakeCheck setButtonType:NSButtonTypeSwitch];
-	[wakeCheck setTitle:NSLocalizedString(@"Answer when I say “Neko” (beta)", @"Answer when I say “Neko” (beta)")];
+	[wakeCheck setTitle:NSLocalizedString(@"Answer when I say “Neko” (beta)", @"wake word")];
 	[wakeCheck setTarget:self];
 	[wakeCheck setAction:@selector(takeWakeWordFrom:)];
 	[content addSubview:wakeCheck];
-	[wakeCheck release];
 
 	/* Beside the other switch that lets something outside this Mac into the
 	   conversation: one lets it do things here, the other lets it read things
@@ -1119,7 +1092,6 @@ static const CGFloat NekoMaxStopRadius = 200.0;
 	[webCheck setTarget:self];
 	[webCheck setAction:@selector(takeWebFrom:)];
 	[content addSubview:webCheck];
-	[webCheck release];
 
 	actionsCheck = [[NSButton alloc] initWithFrame:NSMakeRect(152.0f, 138.0f, 196.0f, 18.0f)];
 	[actionsCheck setButtonType:NSButtonTypeSwitch];
@@ -1127,7 +1099,6 @@ static const CGFloat NekoMaxStopRadius = 200.0;
 	[actionsCheck setTarget:self];
 	[actionsCheck setAction:@selector(takeActionsFrom:)];
 	[content addSubview:actionsCheck];
-	[actionsCheck release];
 
 	foldersButton = [[NSButton alloc] initWithFrame:NSMakeRect(148.0f, 100.0f, 168.0f, 28.0f)];
 	[foldersButton setBezelStyle:NSBezelStyleRounded];
@@ -1136,7 +1107,6 @@ static const CGFloat NekoMaxStopRadius = 200.0;
 	[foldersButton setTarget:self];
 	[foldersButton setAction:@selector(showFolderPressed:)];
 	[content addSubview:foldersButton];
-	[foldersButton release];
 
 	forgetFoldersButton = [[NSButton alloc] initWithFrame:NSMakeRect(450.0f, 100.0f, 130.0f, 28.0f)];
 	[forgetFoldersButton setBezelStyle:NSBezelStyleRounded];
@@ -1145,7 +1115,6 @@ static const CGFloat NekoMaxStopRadius = 200.0;
 	[forgetFoldersButton setTarget:self];
 	[forgetFoldersButton setAction:@selector(forgetFoldersPressed:)];
 	[content addSubview:forgetFoldersButton];
-	[forgetFoldersButton release];
 
 	/* Same treatment as the suggestions tab, and for the same reason: with
 	   everything switched on this paragraph says more than eighty-six points
@@ -1163,7 +1132,6 @@ static const CGFloat NekoMaxStopRadius = 200.0;
 	[askStatusField setTextColor:[NSColor secondaryLabelColor]];
 	[askScroll setDocumentView:askStatusField];
 	[content addSubview:askScroll];
-	[askScroll release];
 
 	[self syncAskControls];
 }
@@ -1190,7 +1158,7 @@ static const CGFloat NekoMaxStopRadius = 200.0;
 - (void)takeWakeWordFrom:(id)sender
 {
 	[[NSUserDefaults standardUserDefaults]
-		setBool:([sender state] == NSControlStateValueOn) forKey:NekoWakeWordKey];
+		setBool:([(NSButton*)sender state] == NSControlStateValueOn) forKey:NekoWakeWordKey];
 	[[NekoWakeWord sharedWakeWord] applySettings];
 	[self syncAskControls];
 }
@@ -1198,21 +1166,21 @@ static const CGFloat NekoMaxStopRadius = 200.0;
 - (void)takeFollowUpFrom:(id)sender
 {
 	[[NSUserDefaults standardUserDefaults]
-		setBool:([sender state] == NSControlStateValueOn) forKey:NekoAskFollowUpKey];
+		setBool:([(NSButton*)sender state] == NSControlStateValueOn) forKey:NekoAskFollowUpKey];
 	[self syncAskControls];
 }
 
 - (void)takeWebFrom:(id)sender
 {
 	[[NSUserDefaults standardUserDefaults]
-		setBool:([sender state] == NSControlStateValueOn) forKey:NekoWebEnabledKey];
+		setBool:([(NSButton*)sender state] == NSControlStateValueOn) forKey:NekoWebEnabledKey];
 	[self syncAskControls];
 }
 
 - (void)takeActionsFrom:(id)sender
 {
 	[[NSUserDefaults standardUserDefaults]
-		setBool:([sender state] == NSControlStateValueOn) forKey:NekoActionsEnabledKey];
+		setBool:([(NSButton*)sender state] == NSControlStateValueOn) forKey:NekoActionsEnabledKey];
 	[self syncAskControls];
 }
 
@@ -1221,10 +1189,8 @@ static const CGFloat NekoMaxStopRadius = 200.0;
 - (void)showFolderPressed:(id)sender
 {
 	NekoFolderAccess *access = [NekoFolderAccess sharedAccess];
-	NSMenu *menu = [[[NSMenu alloc] initWithTitle:@""] autorelease];
-	NSEnumerator *e = [[NekoFolderAccess folderKeys] objectEnumerator];
-	NSString *key;
-	while((key = [e nextObject]) != nil) {
+	NSMenu *menu = [[NSMenu alloc] initWithTitle:@""];
+	for(NSString *key in [NekoFolderAccess folderKeys]) {
 		NSMenuItem *item = [menu addItemWithTitle:[access displayNameForKey:key]
 		                                   action:@selector(chooseFolder:)
 		                            keyEquivalent:@""];
@@ -1350,7 +1316,6 @@ static const CGFloat NekoMaxStopRadius = 200.0;
 	[drawCheck setTarget:self];
 	[drawCheck setAction:@selector(takeDrawEnabledFrom:)];
 	[content addSubview:drawCheck];
-	[drawCheck release];
 
 	/* Which of them draws. There is more than one now, and until this row
 	   existed the answer was -firstObject in two different files. */
@@ -1366,14 +1331,12 @@ static const CGFloat NekoMaxStopRadius = 200.0;
 	[drawModelPopUp setTarget:self];
 	[drawModelPopUp setAction:@selector(takeDrawModelFrom:)];
 	[content addSubview:drawModelPopUp];
-	[drawModelPopUp release];
 
 	drawActionButton = [[NSButton alloc] initWithFrame:NSMakeRect(20.0f, 306.0f, 180.0f, 32.0f)];
 	[drawActionButton setBezelStyle:NSBezelStyleRounded];
 	[drawActionButton setTarget:self];
 	[drawActionButton setAction:@selector(drawActionPressed:)];
 	[content addSubview:drawActionButton];
-	[drawActionButton release];
 
 	drawProgress = [[NSProgressIndicator alloc]
 		initWithFrame:NSMakeRect(212.0f, 314.0f, 230.0f, 16.0f)];
@@ -1383,7 +1346,6 @@ static const CGFloat NekoMaxStopRadius = 200.0;
 	[drawProgress setMaxValue:1.0];
 	[drawProgress setHidden:YES];
 	[content addSubview:drawProgress];
-	[drawProgress release];
 
 	[content addSubview:[self labelWithString:NSLocalizedString(@"Effort:", @"Effort:")
 	                                    frame:NSMakeRect(20.0f, 277.0f, 125.0f, 17.0f)]];
@@ -1397,7 +1359,6 @@ static const CGFloat NekoMaxStopRadius = 200.0;
 	[drawStepsPopUp setTarget:self];
 	[drawStepsPopUp setAction:@selector(takeDrawStepsFrom:)];
 	[content addSubview:drawStepsPopUp];
-	[drawStepsPopUp release];
 
 	[content addSubview:[self labelWithString:NSLocalizedString(@"Size:", @"Size:")
 	                                    frame:NSMakeRect(20.0f, 243.0f, 125.0f, 17.0f)]];
@@ -1411,7 +1372,6 @@ static const CGFloat NekoMaxStopRadius = 200.0;
 	[drawSizePopUp setTarget:self];
 	[drawSizePopUp setAction:@selector(takeDrawSizeFrom:)];
 	[content addSubview:drawSizePopUp];
-	[drawSizePopUp release];
 
 	drawNowButton = [[NSButton alloc] initWithFrame:NSMakeRect(20.0f, 198.0f, 200.0f, 32.0f)];
 	[drawNowButton setBezelStyle:NSBezelStyleRounded];
@@ -1419,7 +1379,6 @@ static const CGFloat NekoMaxStopRadius = 200.0;
 	[drawNowButton setTarget:self];
 	[drawNowButton setAction:@selector(drawNowPressed:)];
 	[content addSubview:drawNowButton];
-	[drawNowButton release];
 
 	/* Tall enough for the longest translation of it, not the shortest: in
 	   Italian this paragraph runs three lines further than in English. */
@@ -1470,7 +1429,7 @@ static const CGFloat NekoMaxStopRadius = 200.0;
 - (void)takeDrawEnabledFrom:(id)sender
 {
 	[[NSUserDefaults standardUserDefaults]
-		setBool:([sender state] == NSControlStateValueOn) forKey:NekoDrawEnabledKey];
+		setBool:([(NSButton*)sender state] == NSControlStateValueOn) forKey:NekoDrawEnabledKey];
 	[self syncDrawControls];
 }
 
@@ -1609,7 +1568,6 @@ static const CGFloat NekoMaxStopRadius = 200.0;
 	[suggestCheck setTarget:self];
 	[suggestCheck setAction:@selector(takeSuggestFrom:)];
 	[content addSubview:suggestCheck];
-	[suggestCheck release];
 
 	/* Was a switch, on until somebody remembered it; is a stretch of ten minutes
 	   now, with the time left in the menu and one click to end it. The switch was
@@ -1621,7 +1579,6 @@ static const CGFloat NekoMaxStopRadius = 200.0;
 	[lookButton setTarget:self];
 	[lookButton setAction:@selector(takeReadTextFrom:)];
 	[content addSubview:lookButton];
-	[lookButton release];
 
 	[content addSubview:[self labelWithString:NSLocalizedString(@"Speaks at most every:", @"Speaks at most every:")
 	                                    frame:NSMakeRect(20.0f, 320.0f, 125.0f, 17.0f)]];
@@ -1636,7 +1593,6 @@ static const CGFloat NekoMaxStopRadius = 200.0;
 	[suggestEveryPopUp setTarget:self];
 	[suggestEveryPopUp setAction:@selector(takeSuggestEveryFrom:)];
 	[content addSubview:suggestEveryPopUp];
-	[suggestEveryPopUp release];
 
 	suggestNowButton = [[NSButton alloc] initWithFrame:NSMakeRect(20.0f, 272.0f, 200.0f, 32.0f)];
 	[suggestNowButton setBezelStyle:NSBezelStyleRounded];
@@ -1644,7 +1600,6 @@ static const CGFloat NekoMaxStopRadius = 200.0;
 	[suggestNowButton setTarget:self];
 	[suggestNowButton setAction:@selector(suggestNowPressed:)];
 	[content addSubview:suggestNowButton];
-	[suggestNowButton release];
 
 	/* This paragraph is where everything the feature can see, everything it
 	   sends, and how it is going today are written down, and it runs to more
@@ -1662,7 +1617,6 @@ static const CGFloat NekoMaxStopRadius = 200.0;
 	[[suggestStatusField cell] setWraps:YES];
 	[scroll setDocumentView:suggestStatusField];
 	[content addSubview:scroll];
-	[scroll release];
 
 	/* What it remembers, and the two things anyone should be able to do about
 	   it: look at it, and delete it. */
@@ -1679,7 +1633,6 @@ static const CGFloat NekoMaxStopRadius = 200.0;
 	[reveal setTarget:self];
 	[reveal setAction:@selector(revealMemoryPressed:)];
 	[content addSubview:reveal];
-	[reveal release];
 
 	NSButton *forget = [[NSButton alloc] initWithFrame:NSMakeRect(216.0f, 22.0f, 160.0f, 28.0f)];
 	[forget setBezelStyle:NSBezelStyleRounded];
@@ -1688,23 +1641,22 @@ static const CGFloat NekoMaxStopRadius = 200.0;
 	[forget setTarget:self];
 	[forget setAction:@selector(forgetMemoryPressed:)];
 	[content addSubview:forget];
-	[forget release];
 
 	[self syncSuggestControls];
 }
 
 - (NSArray *)suggestIntervalChoices
 {
-	return [NSArray arrayWithObjects:
-		[NSNumber numberWithInt:2], [NSNumber numberWithInt:5],
-		[NSNumber numberWithInt:10], [NSNumber numberWithInt:30],
-		[NSNumber numberWithInt:60], nil];
+	return @[
+		@2, @5,
+		@10, @30,
+		@60];
 }
 
-- (void)takeSuggestFrom:(id)sender
+- (IBAction)takeSuggestFrom:(id)sender
 {
 	[[NSUserDefaults standardUserDefaults]
-		setBool:([sender state] == NSControlStateValueOn) forKey:NekoSuggestKey];
+		setBool:([(NSButton*)sender state] == NSControlStateValueOn) forKey:NekoSuggestKey];
 	[[NekoAdvisor sharedAdvisor] applySettings];
 	[self syncSuggestControls];
 	[self syncAskControls];
@@ -1770,7 +1722,7 @@ static const CGFloat NekoMaxStopRadius = 200.0;
 	   && [[NekoFact all] count] == 0)
 		return;
 
-	NSAlert *alert = [[[NSAlert alloc] init] autorelease];
+	NSAlert *alert = [[NSAlert alloc] init];
 	[alert setMessageText:NSLocalizedString(@"Forget everything Neko remembers?", @"Forget everything Neko remembers?")];
 	/* The things somebody asked it to remember are counted separately, because
 	   they are the ones a person will actually miss: the rest it worked out on
@@ -1896,14 +1848,11 @@ static const CGFloat NekoMaxStopRadius = 200.0;
 
 	localModelPopUp = [[NSPopUpButton alloc]
 		initWithFrame:NSMakeRect(152.0f, 351.0f, 280.0f, 26.0f) pullsDown:NO];
-	NSEnumerator *e = [[[NekoModelStore sharedStore] catalogue] objectEnumerator];
-	NekoLocalModel *model;
-	while((model = [e nextObject]) != nil)
+	for(NekoLocalModel *model in [[NekoModelStore sharedStore] catalogue])
 		[localModelPopUp addItemWithTitle:[model name]];
 	[localModelPopUp setTarget:self];
 	[localModelPopUp setAction:@selector(takeLocalModelFrom:)];
 	[content addSubview:localModelPopUp];
-	[localModelPopUp release];
 
 	/* Two lines, not one. The catalogue's own sentence is the first; whether this
 	   Mac can run the thing is the second, and it only ever appears when there is
@@ -1926,7 +1875,6 @@ static const CGFloat NekoMaxStopRadius = 200.0;
 	[localActionButton setTarget:self];
 	[localActionButton setAction:@selector(localActionPressed:)];
 	[content addSubview:localActionButton];
-	[localActionButton release];
 
 	localProgress = [[NSProgressIndicator alloc]
 		initWithFrame:NSMakeRect(312.0f, 288.0f, 130.0f, 16.0f)];
@@ -1936,14 +1884,12 @@ static const CGFloat NekoMaxStopRadius = 200.0;
 	[localProgress setMaxValue:1.0];
 	[localProgress setHidden:YES];
 	[content addSubview:localProgress];
-	[localProgress release];
 
 	localCleanButton = [[NSButton alloc] initWithFrame:NSMakeRect(20.0f, 240.0f, 556.0f, 32.0f)];
 	[localCleanButton setBezelStyle:NSBezelStyleRounded];
 	[localCleanButton setTarget:self];
 	[localCleanButton setAction:@selector(localCleanPressed:)];
 	[content addSubview:localCleanButton];
-	[localCleanButton release];
 
 	localStatusField = [self labelWithString:@""
 	                                   frame:NSMakeRect(20.0f, 110.0f, 556.0f, 120.0f)];
@@ -1976,7 +1922,7 @@ static const CGFloat NekoMaxStopRadius = 200.0;
 	   the choice stands — it is theirs, and the row keeps saying so in red. */
 	if([[NekoModelStore sharedStore] installedURLForIdentifier:[model identifier]] != nil
 	   && [model fitOnThisMac] == NekoModelWillNotLoad) {
-		NSAlert *alert = [[[NSAlert alloc] init] autorelease];
+		NSAlert *alert = [[NSAlert alloc] init];
 		[alert setAlertStyle:NSAlertStyleCritical];
 		[alert setMessageText:[NSString stringWithFormat:
 			NSLocalizedString(@"%@ will not load on this Mac", @"%@ will not load on this Mac"), [model name]]];
@@ -2008,7 +1954,7 @@ static const CGFloat NekoMaxStopRadius = 200.0;
 	if(cannot == nil && noRoom == nil)
 		return YES;
 
-	NSAlert *alert = [[[NSAlert alloc] init] autorelease];
+	NSAlert *alert = [[NSAlert alloc] init];
 	[alert setAlertStyle:NSAlertStyleCritical];
 	[alert setMessageText:cannot != nil
 		? [NSString stringWithFormat:
@@ -2077,7 +2023,7 @@ static const CGFloat NekoMaxStopRadius = 200.0;
 
 	/* Gigabytes are about to leave the disk, and downloading them again is a
 	   long wait: say plainly what goes and what stays before doing it. */
-	NSAlert *alert = [[[NSAlert alloc] init] autorelease];
+	NSAlert *alert = [[NSAlert alloc] init];
 	[alert setMessageText:[NSString localizedStringWithFormat:
 		NSLocalizedString(@"Remove %lu model(s) you are not using?", @"Remove %lu model(s) you are not using?"), (unsigned long)others]];
 	[alert setInformativeText:[NSString stringWithFormat:
@@ -2183,7 +2129,7 @@ static const CGFloat NekoMaxStopRadius = 200.0;
 {
 	NSMutableString *line = [NSMutableString string];
 	NekoModelStore *store = [NekoModelStore sharedStore];
-	NekoLocalProvider *local = [[[NekoLocalProvider alloc] init] autorelease];
+	NekoLocalProvider *local = [[NekoLocalProvider alloc] init];
 	NSString *chosen = [local chosenModelIdentifier];
 	NSString *using = [local modelIdentifier];
 	if([chosen length] > 0 && ![chosen isEqualToString:using]
@@ -2256,7 +2202,7 @@ static const CGFloat NekoMaxStopRadius = 200.0;
 
 	if([[NSUserDefaults standardUserDefaults] boolForKey:NekoActionsEnabledKey]) {
 		[line appendString:@"\n\n"];
-		[line appendString:NSLocalizedString(@"It can open an application, an address in a browser, one of your folders in the Finder, run one of your own Shortcuts, and copy or move a single file between your folders. That list is all of it. It always shows what it is about to do and waits for a yes; dismissing the bubble is a no. It never overwrites, never deletes, and never acts on text it read from the screen — only on what you said out loud.", @"It can open an application, an address in a browser, one of your folders in the Finder, run one of your own Shortcuts, and copy or move a single file between your folders. That list is all of it. It always shows what it is about to do and waits for a yes; dismissing the bubble is a no. It never overwrites, never deletes, and never acts on text it read from the screen — only on what you said out loud.")];
+		[line appendString:NSLocalizedString(@"It can open an application, an address in a browser, one of your folders in the Finder, run one of your own Shortcuts, and copy or move a single file between your folders. That list is all of it. It always shows what it is about to do and waits for a yes; dismissing the bubble is a no. It never overwrites, never deletes, and never acts on text it read from the screen — only on what you said out loud.", @"It can open an application, an address in a browser, one of your folders in the Finder, or one of your own Shortcuts — those four things and nothing else. It always shows you what it is about to do and waits for a yes; dismissing the bubble is a no. It will not move, copy or delete a file, and it never acts on text it read from the screen: only on what you said out loud.")];
 		NekoFolderAccess *access = [NekoFolderAccess sharedAccess];
 		NSArray *allowed = [access allowedKeys];
 		[line appendString:@"\n\n"];
@@ -2280,7 +2226,7 @@ static const CGFloat NekoMaxStopRadius = 200.0;
 - (void)takeAskEnabledFrom:(id)sender
 {
 	[[NSUserDefaults standardUserDefaults]
-		setBool:([sender state] == NSControlStateValueOn) forKey:NekoAskEnabledKey];
+		setBool:([(NSButton*)sender state] == NSControlStateValueOn) forKey:NekoAskEnabledKey];
 	[[NekoAsk sharedAsk] applySettings];
 	[self updateAskItem];
 	[self syncAskControls];
@@ -2347,7 +2293,7 @@ static const CGFloat NekoMaxStopRadius = 200.0;
 - (void)takeAskSpeakFrom:(id)sender
 {
 	[[NSUserDefaults standardUserDefaults]
-		setBool:([sender state] == NSControlStateValueOn) forKey:NekoAskSpeakKey];
+		setBool:([(NSButton*)sender state] == NSControlStateValueOn) forKey:NekoAskSpeakKey];
 }
 
 - (void)updateValueFields
@@ -2439,7 +2385,7 @@ static const CGFloat NekoMaxStopRadius = 200.0;
 - (void)takeIdleSleepFrom:(id)sender
 {
 	[[NSUserDefaults standardUserDefaults]
-		setBool:([sender state] == NSControlStateValueOn) forKey:NekoIdleSleepKey];
+		setBool:([(NSButton*)sender state] == NSControlStateValueOn) forKey:NekoIdleSleepKey];
 	[self settingsChanged];
 }
 

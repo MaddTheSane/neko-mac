@@ -27,7 +27,7 @@
 	[super dealloc];
 }
 
-- (NSString *)identifier { return identifier; }
+@synthesize identifier;
 
 - (NSString *)name
 {

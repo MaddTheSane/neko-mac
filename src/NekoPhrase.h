@@ -2,7 +2,7 @@
 
 #import <Cocoa/Cocoa.h>
 
-/* Hearing a phrase inside a sentence.
+/*! Hearing a phrase inside a sentence.
 
    Shared by the two things a plugin can ask to be told about — a verb, which does
    something, and a route, which fetches something — because they hear the same

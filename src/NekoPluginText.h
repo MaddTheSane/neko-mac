@@ -2,7 +2,7 @@
 
 #import <Cocoa/Cocoa.h>
 
-/* Passing text through a plugin, on its way in or on its way out.
+/*! Passing text through a plugin, on its way in or on its way out.
 
    The mechanism is one of the user's own Shortcuts, and that is the whole reason
    this is allowed: the Shortcut is theirs, nothing new runs inside this app, and
@@ -23,7 +23,7 @@
       were spoken; the transformed version is what the engine is asked. */
 @interface NekoPluginText : NSObject
 
-/* NO when nothing is enabled that processes text in this direction, which is the
+/*! `NO` when nothing is enabled that processes text in this direction, which is the
    usual case and costs nothing. */
 + (BOOL)anythingProcesses:(BOOL)inward;
 

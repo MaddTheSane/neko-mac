@@ -33,14 +33,15 @@
 		552253EE305BB20400A7AA07 /* NekoPluginText.m in Sources */ = {isa = PBXBuildFile; fileRef = 552253ED305BB20400A7AA07 /* NekoPluginText.m */; };
 		552253EF305BB20400A7AA07 /* NekoPhrase.m in Sources */ = {isa = PBXBuildFile; fileRef = 552253EB305BB20400A7AA07 /* NekoPhrase.m */; };
 		552253F1305BE94200A7AA07 /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = 552253F0305BE94200A7AA07 /* Localizable.xcstrings */; };
+		552253F2305CA3EF00A7AA07 /* NekoLlamaEngine.mm in Sources */ = {isa = PBXBuildFile; fileRef = D1C0117A1B000000000000A0 /* NekoLlamaEngine.mm */; };
 		8D11072A0486CEB800E47090 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 29B97318FDCFA39411CA2CEA /* MainMenu.xib */; };
 		8D11072B0486CEB800E47090 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 089C165CFE840E0CC02AAC07 /* InfoPlist.strings */; };
 		8D11072D0486CEB800E47090 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 29B97316FDCFA39411CA2CEA /* main.m */; settings = {ATTRIBUTES = (); }; };
 		8D11072F0486CEB800E47090 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */; };
 		A700278D0CA641680057F7E4 /* MyPanel.m in Sources */ = {isa = PBXBuildFile; fileRef = A700278C0CA641680057F7E4 /* MyPanel.m */; settings = {COMPILER_FLAGS = "-fobjc-arc"; }; };
-		A70027B30CA6447E0057F7E4 /* MyView.m in Sources */ = {isa = PBXBuildFile; fileRef = A70027B20CA6447E0057F7E4 /* MyView.m */; };
+		A70027B30CA6447E0057F7E4 /* MyView.m in Sources */ = {isa = PBXBuildFile; fileRef = A70027B20CA6447E0057F7E4 /* MyView.m */; settings = {COMPILER_FLAGS = "-fobjc-arc"; }; };
 		A7B9FF1D1A575C310074B4D4 /* Neko.icns in Resources */ = {isa = PBXBuildFile; fileRef = A7B9FF1C1A575C310074B4D4 /* Neko.icns */; };
-		D1C0117A1B00000000000003 /* NekoController.m in Sources */ = {isa = PBXBuildFile; fileRef = D1C0117A1B00000000000002 /* NekoController.m */; };
+		D1C0117A1B00000000000003 /* NekoController.m in Sources */ = {isa = PBXBuildFile; fileRef = D1C0117A1B00000000000002 /* NekoController.m */; settings = {COMPILER_FLAGS = "-fobjc-arc"; }; };
 		D1C0117A1B00000000000011 /* Characters in Resources */ = {isa = PBXBuildFile; fileRef = D1C0117A1B00000000000010 /* Characters */; };
 		D1C0117A1B00000000000014 /* NekoCharacter.m in Sources */ = {isa = PBXBuildFile; fileRef = D1C0117A1B00000000000013 /* NekoCharacter.m */; settings = {COMPILER_FLAGS = "-fobjc-arc"; }; };
 		D1C0117A1B00000000000031 /* ServiceManagement.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D1C0117A1B00000000000030 /* ServiceManagement.framework */; settings = {ATTRIBUTES = (Required, ); }; };
@@ -67,7 +68,7 @@
 		D1C0117A1B000000000000B1 /* NekoDesktop.m in Sources */ = {isa = PBXBuildFile; fileRef = D1C0117A1B000000000000B0 /* NekoDesktop.m */; };
 		D1C0117A1B000000000000C1 /* NekoPainter.m in Sources */ = {isa = PBXBuildFile; fileRef = D1C0117A1B000000000000C0 /* NekoPainter.m */; };
 		D1C0117A1B000000000000D1 /* NekoSense.m in Sources */ = {isa = PBXBuildFile; fileRef = D1C0117A1B000000000000D0 /* NekoSense.m */; };
-		D1C0117A1B000000000000D5 /* NekoAction.m in Sources */ = {isa = PBXBuildFile; fileRef = D1C0117A1B000000000000D4 /* NekoAction.m */; };
+		D1C0117A1B000000000000D5 /* NekoAction.m in Sources */ = {isa = PBXBuildFile; fileRef = D1C0117A1B000000000000D4 /* NekoAction.m */; settings = {COMPILER_FLAGS = "-fobjc-arc"; }; };
 		D1C0117A1B000000000000E1 /* NekoFolderAccess.m in Sources */ = {isa = PBXBuildFile; fileRef = D1C0117A1B000000000000E0 /* NekoFolderAccess.m */; settings = {COMPILER_FLAGS = "-fobjc-arc"; }; };
 		D1C0117A1B000000000000F1 /* NekoWakeWord.m in Sources */ = {isa = PBXBuildFile; fileRef = D1C0117A1B000000000000F0 /* NekoWakeWord.m */; };
 		D1C0117A1B00000000000101 /* NekoPermissions.m in Sources */ = {isa = PBXBuildFile; fileRef = D1C0117A1B00000000000100 /* NekoPermissions.m */; };
@@ -365,30 +366,6 @@
 			path = src;
 			sourceTree = "<group>";
 		};
-		1058C7A0FEA54F0111CA2CBB /* Linked Frameworks */ = {
-			isa = PBXGroup;
-			children = (
-				1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */,
-				D1C0117A1B00000000000060 /* Carbon.framework */,
-				D1C0117A1B00000000000062 /* Security.framework */,
-				D1C0117A1B00000000000064 /* AVFoundation.framework */,
-				D1C0117A1B00000000000066 /* Speech.framework */,
-				D1C0117A1B0000000000007C /* FoundationModels.framework */,
-				D1C0117A1B00000000000030 /* ServiceManagement.framework */,
-			);
-			name = "Linked Frameworks";
-			sourceTree = "<group>";
-		};
-		1058C7A2FEA54F0111CA2CBB /* Other Frameworks */ = {
-			isa = PBXGroup;
-			children = (
-				29B97324FDCFA39411CA2CEA /* AppKit.framework */,
-				13E42FB307B3F0F600E4EEF1 /* CoreData.framework */,
-				29B97325FDCFA39411CA2CEA /* Foundation.framework */,
-			);
-			name = "Other Frameworks";
-			sourceTree = "<group>";
-		};
 		19C28FACFE9D520D11CA2CBB /* Products */ = {
 			isa = PBXGroup;
 			children = (
@@ -436,10 +413,18 @@
 		29B97323FDCFA39411CA2CEA /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				29B97324FDCFA39411CA2CEA /* AppKit.framework */,
+				D1C0117A1B00000000000064 /* AVFoundation.framework */,
+				D1C0117A1B00000000000060 /* Carbon.framework */,
+				1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */,
 				552253A4305BB04F00A7AA07 /* CoreAudio.framework */,
 				552253A5305BB04F00A7AA07 /* CoreAudioTypes.framework */,
-				1058C7A0FEA54F0111CA2CBB /* Linked Frameworks */,
-				1058C7A2FEA54F0111CA2CBB /* Other Frameworks */,
+				13E42FB307B3F0F600E4EEF1 /* CoreData.framework */,
+				29B97325FDCFA39411CA2CEA /* Foundation.framework */,
+				D1C0117A1B0000000000007C /* FoundationModels.framework */,
+				D1C0117A1B00000000000062 /* Security.framework */,
+				D1C0117A1B00000000000030 /* ServiceManagement.framework */,
+				D1C0117A1B00000000000066 /* Speech.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -545,6 +530,7 @@
 				552253E9305BB1CE00A7AA07 /* NekoSums.m in Sources */,
 				D1C0117A1B00000000000014 /* NekoCharacter.m in Sources */,
 				552253AD305BB0B800A7AA07 /* NekoGlance.m in Sources */,
+				552253F2305CA3EF00A7AA07 /* NekoLlamaEngine.mm in Sources */,
 				D1C0117A1B00000000000042 /* NekoAnswerProvider.m in Sources */,
 				D1C0117A1B00000000000045 /* NekoShortcutProvider.m in Sources */,
 				D1C0117A1B00000000000048 /* NekoModelProvider.m in Sources */,
@@ -619,9 +605,12 @@
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = src/Neko_Prefix.pch;
+				HEADER_SEARCH_PATHS = /opt/local/include;
 				INFOPLIST_FILE = Info.plist;
 				INSTALL_PATH = "$(HOME)/Applications";
+				LIBRARY_SEARCH_PATHS = /opt/local/lib;
 				MACOSX_DEPLOYMENT_TARGET = 12.0;
+				OTHER_LDFLAGS = "-lllama";
 				PRODUCT_BUNDLE_IDENTIFIER = com.nekomac.neko;
 				PRODUCT_NAME = Neko;
 				SDKROOT = macosx;
@@ -642,9 +631,12 @@
 				GCC_MODEL_TUNING = G5;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = src/Neko_Prefix.pch;
+				HEADER_SEARCH_PATHS = /opt/local/include;
 				INFOPLIST_FILE = Info.plist;
 				INSTALL_PATH = "$(HOME)/Applications";
+				LIBRARY_SEARCH_PATHS = /opt/local/lib;
 				MACOSX_DEPLOYMENT_TARGET = 12.0;
+				OTHER_LDFLAGS = "-lllama";
 				PRODUCT_BUNDLE_IDENTIFIER = com.nekomac.neko;
 				PRODUCT_NAME = Neko;
 				SDKROOT = macosx;

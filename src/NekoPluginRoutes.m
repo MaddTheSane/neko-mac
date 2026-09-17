@@ -116,7 +116,7 @@ static void NekoReadJSON(id thing, NSMutableArray *into, NSUInteger depth)
 	}
 }
 
-+ (NSArray *)linesIn:(NSData *)body
++ (NSArray<NSString*> *)linesIn:(NSData *)body
 {
 	NSArray *headlines = [[NekoWeb sharedWeb] headlinesInFeed:body];
 	if([headlines count] > 0)
@@ -181,7 +181,7 @@ static void NekoReadJSON(id thing, NSMutableArray *into, NSUInteger depth)
 }
 
 + (void)fetch:(NSDictionary *)route
-   completion:(void (^)(NSArray *lines, NSError *error))done
+   completion:(void (^)(NSArray<NSString*> *lines, NSError *error))done
 {
 	/* Asked again at the moment of fetching and not at the moment of matching: a
 	   plugin switched off in between has to count. */
@@ -212,7 +212,7 @@ static void NekoReadJSON(id thing, NSMutableArray *into, NSUInteger depth)
 
 	[[NekoWeb sharedWeb] get:url completion:^(NSData *body, NSError *error) {
 		if(body == nil) {
-			done([NSArray array], error);
+			done(nil, error);
 			return;
 		}
 		done([self linesIn:body], nil);

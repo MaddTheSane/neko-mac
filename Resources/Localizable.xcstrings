@@ -581,7 +581,7 @@
       }
     },
     "%@, at %@." : {
-      "extractionState" : "manual",
+      "comment" : "%@, at %@.",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -610,7 +610,7 @@
       }
     },
     "%@, on this Mac, is what speaks when Neko speaks on its own." : {
-      "extractionState" : "manual",
+      "comment" : "%@, on this Mac, is what speaks when Neko speaks on its own.",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -696,7 +696,7 @@
       }
     },
     "%ld days, on %@." : {
-      "extractionState" : "manual",
+      "comment" : "%ld days, on %@.",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -1217,7 +1217,6 @@
       }
     },
     "1.6 GB — 512 pixels in about fifteen seconds. The one this app has always drawn with" : {
-      "comment" : "Choosing which model draws.",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -2536,7 +2535,7 @@
       }
     },
     "Answer when I say “Neko” (beta)" : {
-      "comment" : "Answer when I say “Neko” (beta)",
+      "comment" : "wake word",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -2883,35 +2882,6 @@
         }
       }
     },
-    "Asked about today's news or the weather, it can fetch one of a fixed list of feeds: ANSA (the wire, world, technology), la Repubblica, Il Sole 24 Ore (Italy and business), MeteoAlarm's warnings for Italy, Hacker News, BBC News, The Guardian, The New York Times and NPR. The plain forecast comes from open-meteo, because neither 3B Meteo nor meteo.it publishes a feed any more." : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Asked about today's news or the weather, it can fetch one of a fixed list of feeds: ANSA (the wire, world, technology), la Repubblica, Il Sole 24 Ore (Italy and business), MeteoAlarm's warnings for Italy, Hacker News, BBC News, The Guardian, The New York Times and NPR. The plain forecast comes from open-meteo, because neither 3B Meteo nor meteo.it publishes a feed any more."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Si le preguntas por las noticias de hoy o el tiempo, puede descargar uno de una lista fija de fuentes: ANSA (última hora, mundo, tecnología), la Repubblica, Il Sole 24 Ore (Italia y economía), los avisos de MeteoAlarm para Italia, Hacker News, BBC News, The Guardian, The New York Times y NPR. La previsión simple viene de open-meteo, porque ni 3B Meteo ni meteo.it publican ya un feed."
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Interrogé sur les nouvelles du jour ou la météo, il peut aller chercher l’un des flux d’une liste fixe : ANSA (dépêches, monde, technologie), la Repubblica, Il Sole 24 Ore (Italie et économie), les alertes MeteoAlarm pour l’Italie, Hacker News, BBC News, The Guardian, The New York Times et NPR. Les prévisions simples viennent d’open-meteo, car ni 3B Meteo ni meteo.it ne publient plus de flux."
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Se gli chiedi le notizie di oggi o il tempo, può scaricare uno di un elenco fisso di feed: ANSA (ultima ora, mondo, tecnologia), la Repubblica, Il Sole 24 Ore (Italia ed economia), le allerte MeteoAlarm per l'Italia, Hacker News, BBC News, The Guardian, The New York Times e NPR. Le previsioni semplici vengono da open-meteo, perché né 3B Meteo né meteo.it pubblicano più un feed."
-          }
-        }
-      }
-    },
     "Asked about today's news or the weather, it can fetch one of a fixed list of two dozen feeds: ANSA (the wire, world, technology, politics, culture, sport, and your own region), la Repubblica, Corriere della Sera, Il Fatto Quotidiano, Il Sole 24 Ore, RaiNews, Tgcom24, AGI, La Gazzetta dello Sport, Wired, DDay, Focus, MeteoAlarm's warnings for Italy, Hacker News, BBC News, The Guardian, The New York Times and NPR. Every one of them was fetched with this application's own name on the request before it went on the list. The plain forecast comes from open-meteo, because neither 3B Meteo nor meteo.it publishes a feed any more." : {
       "comment" : "Asked about today's news or the weather, it can fetch one of a fixed list of two dozen feeds: ANSA (the wire, world, technology, politics, culture, sport, and your own region), la Repubblica, Corriere della Sera, Il Fatto Quotidiano, Il Sole 24 Ore, RaiNews, Tgcom24, AGI, La Gazzetta dello Sport, Wired, DDay, Focus, MeteoAlarm's warnings for Italy, Hacker News, BBC News, The Guardian, The New York Times and NPR. Every one of them was fetched with this application's own name on the request before it went on the list. The plain forecast comes from open-meteo, because neither 3B Meteo nor meteo.it publishes a feed any more.",
       "localizations" : {
@@ -3116,7 +3086,6 @@
       }
     },
     "bottom left" : {
-      "comment" : "What the cat knows about itself: where it is, and since when.",
       "extractionState" : "manual",
       "localizations" : {
         "en" : {
@@ -3694,8 +3663,7 @@
       }
     },
     "Copy “%@” from %@ to %@?" : {
-      "comment" : "files",
-      "extractionState" : "manual",
+      "comment" : "Copy “%@” from %@ to %@?",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -3748,35 +3716,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "cultura, in italiano"
-          }
-        }
-      }
-    },
-    "Curiosity comes with roaming whatever this switch says: every few minutes the cat comes over to the pointer, or goes to claw the edge of the screen. That part needs no engine and sends nothing anywhere. The interval above governs everything it says on its own, curious questions included — inside it the cat still comes over, but says nothing." : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Curiosity comes with roaming whatever this switch says: every few minutes the cat comes over to the pointer, or goes to claw the edge of the screen. That part needs no engine and sends nothing anywhere. The interval above governs everything it says on its own, curious questions included — inside it the cat still comes over, but says nothing."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "La curiosidad viene con el deambular, diga lo que diga este interruptor: cada pocos minutos el gato se acerca al cursor, o va a arañar el borde de la pantalla. Esa parte no usa ningún motor y no envía nada. El intervalo de arriba vale para todo lo que dice por su cuenta, preguntas curiosas incluidas: dentro del intervalo el gato se acerca igual, pero no dice nada."
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "La curiosité vient avec le vagabondage, quoi que dise cet interrupteur : toutes les quelques minutes le chat s’approche du curseur, ou va griffer le bord de l’écran. Cette partie n’utilise aucun moteur et n’envoie rien. L’intervalle ci-dessus vaut pour tout ce qu’il dit de lui-même, questions curieuses comprises : à l’intérieur, le chat s’approche quand même, mais ne dit rien."
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "La curiosità arriva con il gironzolare qualunque cosa dica questo interruttore: ogni pochi minuti il gatto si avvicina al puntatore, o va a graffiare il bordo dello schermo. Quella parte non usa nessun motore e non invia niente. L'intervallo qui sopra vale per tutto quello che dice di sua iniziativa, domande curiose comprese: dentro l'intervallo il gatto si avvicina lo stesso, ma non dice niente."
           }
         }
       }
@@ -5110,64 +5049,6 @@
         }
       }
     },
-    "I am %@ of screen %ld." : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "I am %@ of screen %ld."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Estoy %@ de la pantalla %ld."
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Je suis %@ de l’écran %ld."
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Sto %@ dello schermo %ld."
-          }
-        }
-      }
-    },
-    "I am %@ of your screen." : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "I am %@ of your screen."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Estoy %@ de tu pantalla."
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Je suis %@ de ton écran."
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Sto %@ del tuo schermo."
-          }
-        }
-      }
-    },
     "I am %@, on screen %ld." : {
       "comment" : "I am %@, on screen %ld.",
       "localizations" : {
@@ -5517,7 +5398,6 @@
       }
     },
     "I cannot see your accounts." : {
-      "comment" : "What it cannot see, said instead of guessed at.",
       "extractionState" : "manual",
       "localizations" : {
         "en" : {
@@ -6184,7 +6064,7 @@
       }
     },
     "It came over to ask what you are writing." : {
-      "extractionState" : "manual",
+      "comment" : "It came over to ask what you are writing.",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -6212,37 +6092,8 @@
         }
       }
     },
-    "It can open an application, an address in a browser, one of your folders in the Finder, or one of your own Shortcuts — those four things and nothing else. It always shows you what it is about to do and waits for a yes; dismissing the bubble is a no. It will not move, copy or delete a file, and it never acts on text it read from the screen: only on what you said out loud." : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "It can open an application, an address in a browser, one of your folders in the Finder, or one of your own Shortcuts — those four things and nothing else. It always shows you what it is about to do and waits for a yes; dismissing the bubble is a no. It will not move, copy or delete a file, and it never acts on text it read from the screen: only on what you said out loud."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Puede abrir una aplicación, una dirección en el navegador, una de tus carpetas en el Finder, o uno de tus atajos: esas cuatro cosas y nada más. Siempre enseña lo que va a hacer y espera un sí; cerrar el globo cuenta como no. No mueve, copia ni borra archivos, y nunca actúa sobre texto leído de la pantalla: solo sobre lo que dijiste en voz alta."
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Il peut ouvrir une application, une adresse dans un navigateur, un de vos dossiers dans le Finder, ou un de vos raccourcis — ces quatre choses et rien d’autre. Il montre toujours ce qu’il s’apprête à faire et attend un oui ; fermer la bulle vaut non. Il ne déplace, ne copie et ne supprime aucun fichier, et n’agit jamais sur du texte lu à l’écran : seulement sur ce que vous avez dit."
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Può aprire un'applicazione, un indirizzo nel browser, una delle tue cartelle nel Finder, o un tuo comando rapido — queste quattro cose e nient'altro. Mostra sempre cosa sta per fare e aspetta un sì; chiudere il fumetto vale come no. Non sposta, non copia e non cancella file, e non agisce mai su testo letto dallo schermo: solo su quello che hai detto tu."
-          }
-        }
-      }
-    },
     "It can open an application, an address in a browser, one of your folders in the Finder, run one of your own Shortcuts, and copy or move a single file between your folders. That list is all of it. It always shows what it is about to do and waits for a yes; dismissing the bubble is a no. It never overwrites, never deletes, and never acts on text it read from the screen — only on what you said out loud." : {
-      "comment" : "It can open an application, an address in a browser, one of your folders in the Finder, run one of your own Shortcuts, and copy or move a single file between your folders. That list is all of it. It always shows what it is about to do and waits for a yes; dismissing the bubble is a no. It never overwrites, never deletes, and never acts on text it read from the screen — only on what you said out loud.",
+      "comment" : "It can open an application, an address in a browser, one of your folders in the Finder, or one of your own Shortcuts — those four things and nothing else. It always shows you what it is about to do and waits for a yes; dismissing the bubble is a no. It will not move, copy or delete a file, and it never acts on text it read from the screen: only on what you said out loud.",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -6561,8 +6412,7 @@
       }
     },
     "It is %@." : {
-      "comment" : "The clock and the calendar, answered without a model.",
-      "extractionState" : "manual",
+      "comment" : "It is %@.",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -7200,7 +7050,7 @@
       }
     },
     "It went to claw the edge of the screen." : {
-      "extractionState" : "manual",
+      "comment" : "It went to claw the edge of the screen.",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -8099,7 +7949,7 @@
       }
     },
     "Looking — %@ left" : {
-      "extractionState" : "manual",
+      "comment" : "Looking — %@ left",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -8446,7 +8296,7 @@
       }
     },
     "Music and Spotify" : {
-      "extractionState" : "manual",
+      "comment" : "Music and Spotify",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -9367,7 +9217,7 @@
       }
     },
     "Nothing on this Mac is up to writing remarks: Apple Intelligence is unavailable and no model of about two gigabytes or more is downloaded. The cat falls back to its own few written-in lines, and says less. Whatever engine is set for questions is untouched by this — it is only that a remark nobody asked for is not sent to a remote service." : {
-      "extractionState" : "manual",
+      "comment" : "Nothing on this Mac is up to writing remarks: Apple Intelligence is unavailable and no model of about two gigabytes or more is downloaded. The cat falls back to its own few written-in lines, and says less. Whatever engine is set for questions is untouched by this — it is only that a remark nobody asked for is not sent to a remote service.",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -12315,7 +12165,7 @@
       }
     },
     "Speech recognition" : {
-      "extractionState" : "manual",
+      "comment" : "Speech recognition",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -12430,7 +12280,7 @@
       }
     },
     "staring out of the window" : {
-      "extractionState" : "manual",
+      "comment" : "staring out of the window",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -12488,7 +12338,7 @@
       }
     },
     "Still here, I see." : {
-      "extractionState" : "manual",
+      "comment" : "Still here, I see.",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -12748,7 +12598,7 @@
       }
     },
     "That did not work." : {
-      "extractionState" : "manual",
+      "comment" : "That did not work.",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -12835,7 +12685,7 @@
       }
     },
     "That folder was not the one I asked for." : {
-      "extractionState" : "manual",
+      "comment" : "That folder was not the one I asked for.",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -12864,6 +12714,7 @@
       }
     },
     "That is “%@”, and I asked for your %@ folder. I can only be given the one I asked for." : {
+      "comment" : "That is “%@”, and I asked for your %@ folder. I can only be given the one I asked for.",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -12892,7 +12743,7 @@
       }
     },
     "That is a folder, and I only carry files." : {
-      "extractionState" : "manual",
+      "comment" : "That is a folder, and I only carry files.",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -12921,7 +12772,7 @@
       }
     },
     "That is a lot of words. Any of them mine?" : {
-      "extractionState" : "manual",
+      "comment" : "That is a lot of words. Any of them mine?",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -12950,7 +12801,7 @@
       }
     },
     "That is today." : {
-      "extractionState" : "manual",
+      "comment" : "That is today.",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -12979,7 +12830,7 @@
       }
     },
     "That is tomorrow." : {
-      "extractionState" : "manual",
+      "comment" : "That is tomorrow.",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -13037,7 +12888,7 @@
       }
     },
     "That one was not added" : {
-      "extractionState" : "manual",
+      "comment" : "That one was not added",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -13066,8 +12917,7 @@
       }
     },
     "That was already yesterday — say a day that is still coming." : {
-      "comment" : "something for the calendar",
-      "extractionState" : "manual",
+      "comment" : "That was already yesterday — say a day that is still coming.",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -13125,7 +12975,7 @@
       }
     },
     "The %@ are up." : {
-      "extractionState" : "manual",
+      "comment" : "The %@ are up.",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -13472,8 +13322,7 @@
       }
     },
     "The Mac is in %@." : {
-      "comment" : "And where the Mac itself is.",
-      "extractionState" : "manual",
+      "comment" : "The Mac is in %@.",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -14050,8 +13899,7 @@
       }
     },
     "The verb “%@” needs exactly one of Url, Shortcut, or Player and Command." : {
-      "comment" : "2.7: Music and Spotify, spoken to directly",
-      "extractionState" : "manual",
+      "comment" : "The verb “%@” needs exactly one of Url, Shortcut, or Player and Command.",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -14254,8 +14102,7 @@
       }
     },
     "There is no readable plugin.plist inside it." : {
-      "comment" : "plugins",
-      "extractionState" : "manual",
+      "comment" : "There is no readable plugin.plist inside it.",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -14428,7 +14275,7 @@
       }
     },
     "they are called %@" : {
-      "extractionState" : "manual",
+      "comment" : "they are called %@",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -14486,7 +14333,7 @@
       }
     },
     "This arrow keeps moving. Suspicious." : {
-      "extractionState" : "manual",
+      "comment" : "This arrow keeps moving. Suspicious.",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -14573,7 +14420,7 @@
       }
     },
     "This build has no drawing program in it." : {
-      "extractionState" : "manual",
+      "comment" : "This build has no drawing program in it.",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -14800,7 +14647,7 @@
       }
     },
     "Timer — %@ left" : {
-      "extractionState" : "manual",
+      "comment" : "Timer — %@ left",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -14915,8 +14762,7 @@
       }
     },
     "Today." : {
-      "comment" : "When, rather than what.",
-      "extractionState" : "manual",
+      "comment" : "Today.",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -15118,7 +14964,7 @@
       }
     },
     "Turns what you said into words. On this Mac it stays on this Mac." : {
-      "extractionState" : "manual",
+      "comment" : "Turns what you said into words. On this Mac it stays on this Mac.",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -15147,7 +14993,7 @@
       }
     },
     "Version %@ is out…" : {
-      "extractionState" : "manual",
+      "comment" : "Version %@ is out…",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -15234,7 +15080,7 @@
       }
     },
     "What changed" : {
-      "extractionState" : "manual",
+      "comment" : "What changed",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -15263,7 +15109,7 @@
       }
     },
     "what it answers" : {
-      "extractionState" : "manual",
+      "comment" : "what it answers",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -15321,7 +15167,7 @@
       }
     },
     "what you say" : {
-      "extractionState" : "manual",
+      "comment" : "what you say",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -15350,7 +15196,7 @@
       }
     },
     "what you say and what it answers" : {
-      "extractionState" : "manual",
+      "comment" : "what you say and what it answers",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -15379,7 +15225,7 @@
       }
     },
     "Whatever I asked never answered." : {
-      "extractionState" : "manual",
+      "comment" : "Whatever I asked never answered.",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -15437,7 +15283,7 @@
       }
     },
     "Where you are" : {
-      "extractionState" : "manual",
+      "comment" : "Where you are",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -15899,7 +15745,7 @@
       }
     },
     "You have no Shortcut called “%@”. The plugin says how to make it." : {
-      "extractionState" : "manual",
+      "comment" : "You have no Shortcut called \"%@\". The plugin says how to make it.",
       "localizations" : {
         "en" : {
           "stringUnit" : {

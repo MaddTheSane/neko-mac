@@ -28,8 +28,8 @@ static NSString * const NekoPluginMarkers[] = { @"ACTION:", @"IMAGE:", @"LOOK:",
 	[super dealloc];
 }
 
-- (NSURL *)folder     { return folder; }
-- (NSString *)refusal { return refusal; }
+@synthesize folder;
+@synthesize refusal;
 - (BOOL)isUsable      { return refusal == nil; }
 
 - (NSString *)identifier
@@ -157,7 +157,7 @@ static NSString * const NekoPluginMarkers[] = { @"ACTION:", @"IMAGE:", @"LOOK:",
 	[self checkStrings];
 }
 
-/* Characters a plugin ships. Named one by one rather than found by scanning the
+/*! Characters a plugin ships. Named one by one rather than found by scanning the
    folder, for the same reason as everything else here: the manifest is the
    contract, and a folder that appears after it was written is not part of it. */
 - (void)checkCharacters:(NSArray *)characters
@@ -201,7 +201,7 @@ static NSString * const NekoPluginMarkers[] = { @"ACTION:", @"IMAGE:", @"LOOK:",
 	}
 }
 
-/* The schemes a verb may open. A closed list, and the reasoning is the same as
+/*! The schemes a verb may open. A closed list, and the reasoning is the same as
    for the feeds: if a plugin could name any scheme, a phrase somebody says would
    be able to reach anything on the Mac that registers one — including the one
    that runs Shortcuts, which would hide behind an address what the Shortcut field
@@ -212,7 +212,7 @@ static NSString * const NekoPluginMarkers[] = { @"ACTION:", @"IMAGE:", @"LOOK:",
 		@"itmss:", @"mailto:"];
 }
 
-/* Phrases the plugin wants to hear, and what it wants fetched when it hears one.
+/*! Phrases the plugin wants to hear, and what it wants fetched when it hears one.
 
    A route is the one thing here that decides what a question is *about*, which is
    the judgement this application has always kept for itself — so the shape is
@@ -299,7 +299,7 @@ static NSString * const NekoPluginMarkers[] = { @"ACTION:", @"IMAGE:", @"LOOK:",
 	}
 }
 
-/* Phrases the plugin wants to hear, and what it wants done. */
+/*! Phrases the plugin wants to hear, and what it wants done. */
 - (void)checkVerbs:(NSArray *)verbs
 {
 	if(verbs == nil)
@@ -432,7 +432,7 @@ static NSString * const NekoPluginMarkers[] = { @"ACTION:", @"IMAGE:", @"LOOK:",
 	}
 }
 
-/* A language folder that cannot be read is an authoring mistake, and a silent
+/*! A language folder that cannot be read is an authoring mistake, and a silent
    fallback would leave the author believing their translations work. */
 - (void)checkStrings
 {
@@ -455,7 +455,7 @@ static NSString * const NekoPluginMarkers[] = { @"ACTION:", @"IMAGE:", @"LOOK:",
 	}
 }
 
-/* Text processing: the plugin is handed what somebody said, or what the cat is
+/*! Text processing: the plugin is handed what somebody said, or what the cat is
    about to say, and hands something back.
 
    It is done by running one of the user's own Shortcuts, which is the whole of
@@ -647,7 +647,7 @@ static NSString * const NekoPluginMarkers[] = { @"ACTION:", @"IMAGE:", @"LOOK:",
 	return paths;
 }
 
-/* The plugin's own strings, for the language the app is running in. Loaded once,
+/*! The plugin's own strings, for the language the app is running in. Loaded once,
    and only if it ships any. */
 - (NSDictionary *)strings
 {

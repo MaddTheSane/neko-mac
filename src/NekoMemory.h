@@ -2,7 +2,22 @@
 
 #import <Cocoa/Cocoa.h>
 
-/* What the cat remembers, and where you can go and read it.
+/*! Where the diary is, when it is not where it lives.
+
+   Not a preference and not in any window: nothing in the application ever sets
+   it. It exists because the test suite used to write into the **real** diary and
+   that is how a fault got in — `tests/memory.m` stages lines carrying its own
+   marker and takes them out again, but while they were in there the advisor read
+   them in a memory block and said one out loud, and `noteSaid` wrote that down
+   where the marker could not reach it. `zzq-test` became "test zqqmark", then
+   "test barge", "test boat" and "test chiatta", and sat in every prompt for a
+   week. `tools/diary.py` can still see the trail.
+
+   So `tests/run.sh` hands every harness a directory of its own and no test can
+   reach somebody's diary again. */
+extern NSString * const NekoMemoryDirectoryKey;
+
+/*! What the cat remembers, and where you can go and read it.
 
    A day at a time, in plain text, in the app's own Application Support folder:
    what it noticed, what it said, what you said back. Plain text is not laziness —
@@ -33,21 +48,6 @@
    And a remembered line is not an instruction: it came from a document or a
    window once, so it can inform what the cat says and can never authorise
    anything. */
-/* Where the diary is, when it is not where it lives.
-
-   Not a preference and not in any window: nothing in the application ever sets
-   it. It exists because the test suite used to write into the **real** diary and
-   that is how a fault got in — `tests/memory.m` stages lines carrying its own
-   marker and takes them out again, but while they were in there the advisor read
-   them in a memory block and said one out loud, and `noteSaid` wrote that down
-   where the marker could not reach it. `zzq-test` became "test zqqmark", then
-   "test barge", "test boat" and "test chiatta", and sat in every prompt for a
-   week. `tools/diary.py` can still see the trail.
-
-   So `tests/run.sh` hands every harness a directory of its own and no test can
-   reach somebody's diary again. */
-extern NSString * const NekoMemoryDirectoryKey;
-
 @interface NekoMemory : NSObject
 {
 	NSDate *reflectedAt;
@@ -66,24 +66,25 @@ extern NSString * const NekoMemoryDirectoryKey;
 }
 
 + (NekoMemory *)sharedMemory;
+@property (class, readonly, retain) NekoMemory *sharedMemory;
 
-/* Where the files are, created on demand. Shown in the preferences so it can be
+/*! Where the files are, created on demand. Shown in the preferences so it can be
    opened in the Finder. */
 - (NSURL *)directory;
 
-/* One line each. Anything empty is dropped, anything long is trimmed: this is a
+/*! One line each. Anything empty is dropped, anything long is trimmed: this is a
    diary, not a transcript. */
 - (void)noteNoticed:(NSString *)observation;
 - (void)noteSaid:(NSString *)line;
 - (void)noteHeard:(NSString *)line;
 
-/* The block handed to a model: the durable lines, then the tail of today. Capped
+/*! The block handed to a model: the durable lines, then the tail of today. Capped
    hard, because the small local models degrade as the prompt grows and one of
    them crashed the engine before the decode was batched. Empty string when there
    is nothing worth saying. */
 - (NSString *)contextForPrompt;
 
-/* The same block, with room made for the handful of older lines that bear on
+/*! The same block, with room made for the handful of older lines that bear on
    what was asked. Without a question this is exactly -contextForPrompt: the
    diary is read by recency when there is nothing to be relevant to.
 
@@ -92,7 +93,7 @@ extern NSString * const NekoMemoryDirectoryKey;
    whole block is a thousand characters and a small model gets worse as it grows. */
 - (NSString *)contextForPrompt:(NSString *)question;
 
-/* Whether the cat has already said this today, near enough — half the words of
+/*! Whether the cat has already said this today, near enough — half the words of
    the shorter of the two. Asked before a remark is made rather than after, so
    that the diary does not fill with one observation written thirty ways.
 
@@ -100,10 +101,10 @@ extern NSString * const NekoMemoryDirectoryKey;
    were distinct**. One of them had been said twenty-two times. */
 - (BOOL)alreadySaidToday:(NSString *)line;
 
-/* Older days that bear on the question, best first. Empty when none do. */
+/*! Older days that bear on the question, best first. Empty when none do. */
 - (NSArray *)linesAbout:(NSString *)question limit:(NSUInteger)limit;
 
-/* The lines that bear on the question, each with the day it was written and who
+/*! The lines that bear on the question, each with the day it was written and who
    said it: Day, Time, Kind and Text. For the one caller that has to quote
    somebody back to themselves, which -linesAbout: cannot do because it drops
    the day with the file name.
@@ -112,7 +113,7 @@ extern NSString * const NekoMemoryDirectoryKey;
    were the record is the loop tools/diary.py found, wearing a tie. */
 - (NSArray *)recordAbout:(NSString *)question limit:(NSUInteger)limit;
 
-/* The diary's own words of substance, rarest first: the nouns and adjectives
+/*! The diary's own words of substance, rarest first: the nouns and adjectives
    somebody actually wrote, without the verbs a line is carried by and without
    the three-letter markers the file itself uses. This is what NekoWords offers a
    model to choose among, and it is worked out on demand rather than with the
@@ -120,11 +121,11 @@ extern NSString * const NekoMemoryDirectoryKey;
    nothing. */
 - (NSArray *)vocabularyOfSubstance;
 
-/* Reduces yesterday to a few durable lines, once a day, using the best on-device
+/*! Reduces yesterday to a few durable lines, once a day, using the best on-device
    engine. Returns immediately; the work happens on a queue. */
 - (void)reflectIfDue;
 
-/* The month-scale pass: dated lines that have aged out, plus the standing ones,
+/*! The month-scale pass: dated lines that have aged out, plus the standing ones,
    reduced to what would still be worth knowing in six months. Does nothing when
    nothing has aged out, and — deliberately — nothing at all when there is no
    on-device engine, so that age alone never deletes anything unread. */
@@ -133,7 +134,7 @@ extern NSString * const NekoMemoryDirectoryKey;
 - (NSArray *)durableLines;
 - (NSArray *)standingLines;
 
-/* Housekeeping, all of it available from the preferences. */
+/*! Housekeeping, all of it available from the preferences. */
 - (NSUInteger)dayCount;
 
 /* The day the two of you met, and the last time they said anything.
@@ -154,17 +155,17 @@ extern NSString * const NekoMemoryDirectoryKey;
    fixes was found. */
 - (NSArray *)durable:(NSArray *)existing after:(NSArray *)fresh;
 
-/* A durable line without its citation — the day and the lesson, which is all a
+/*! A durable line without its citation — the day and the lesson, which is all a
    model should be given. The times are for a person and for tools/diary.py. */
 - (NSString *)durableForPrompt:(NSString *)line;
 
 - (NSDate *)metOn;
 - (NSDate *)lastHeard;
 
-/* The time they said something **before** the thing being handled now.
+/*! The time they said something **before** the thing being handled now.
 
    Which sounds like a nicety and is the difference between a working answer and
-   a useless one. -noteHeard: is called by -ask: before the question reaches any
+   a useless one. `-noteHeard:` is called by `-ask:` before the question reaches any
    recogniser, so by the time "da quanto non ci parliamo?" is answered, the most
    recent thing said is that very question, and the answer was always "un attimo
    fa". The harness had set the stamp by hand and never gone through -ask:, so it

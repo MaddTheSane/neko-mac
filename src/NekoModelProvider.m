@@ -79,7 +79,7 @@ static const NSTimeInterval NekoModelTimeout = 8.0;
 
 	NSDictionary *body = [NSDictionary dictionaryWithObjectsAndKeys:
 		[self model], @"model",
-		[NSNumber numberWithInt:400], @"max_tokens",   /* a bubble, not an essay */
+		@400, @"max_tokens",   /* a bubble, not an essay */
 		instructions, @"system",
 		[NSDictionary dictionaryWithObjectsAndKeys:@"low", @"effort", nil], @"output_config",
 		@"default", @"fallbacks",
@@ -137,7 +137,7 @@ static const NSTimeInterval NekoModelTimeout = 8.0;
 
 	NSDictionary *body = [NSDictionary dictionaryWithObjectsAndKeys:
 		[self model], @"model",
-		[NSNumber numberWithInt:400], @"max_tokens",
+		@400, @"max_tokens",
 		instructions, @"system",
 		[NSDictionary dictionaryWithObjectsAndKeys:@"low", @"effort", nil], @"output_config",
 		@"default", @"fallbacks",
@@ -214,8 +214,7 @@ static const NSTimeInterval NekoModelTimeout = 8.0;
 	   text at all, which is why stop_reason is worth looking at. */
 	NSMutableString *answer = [NSMutableString string];
 	NSEnumerator *e = [[json objectForKey:@"content"] objectEnumerator];
-	NSDictionary *block;
-	while((block = [e nextObject]) != nil) {
+	for(NSDictionary *block in e) {
 		if(![[block objectForKey:@"type"] isEqualToString:@"text"])
 			continue;
 		NSString *text = [block objectForKey:@"text"];

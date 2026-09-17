@@ -3,7 +3,7 @@
 #import <Cocoa/Cocoa.h>
 #import "NekoAnswerProvider.h"
 
-/* ChatGPT, asked directly with a key of the user's own.
+/*! ChatGPT, asked directly with a key of the user's own.
 
    Apple's own ChatGPT integration cannot be reached from another application —
    it answers inside Siri and the writing tools, never to a program — so the

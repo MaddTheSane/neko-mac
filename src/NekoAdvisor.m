@@ -11,8 +11,6 @@
 
 NSString * const NekoSuggestLastKey = @"NekoSuggestLast";
 
-#define NekoAdvisorLocalized(text) NSLocalizedString(text, nil)
-
 /* How often the cat looks up from what it is doing. Cheap: two lookups and a
    couple of comparisons, nothing that touches the disk or the network. */
 static const NSTimeInterval NekoAdvisorHeartbeat = 20.0;
@@ -56,10 +54,7 @@ static const NSTimeInterval NekoAdvisorTyping = 3.0;
 	[super dealloc];
 }
 
-- (BOOL)isThinking
-{
-	return waiting;
-}
+@synthesize thinking = waiting;
 
 - (void)settingsChanged:(NSNotification *)note
 {

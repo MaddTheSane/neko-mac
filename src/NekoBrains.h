@@ -3,7 +3,7 @@
 #import <Cocoa/Cocoa.h>
 #import "NekoAnswerProvider.h"
 
-/* Which engine says the things nobody asked for.
+/*! Which engine says the things nobody asked for.
 
    Two separate questions live here, and they used to be answered by one setting.
 
@@ -25,28 +25,28 @@
    less, which the Suggestions tab states rather than leaving to be discovered. */
 @interface NekoBrains : NSObject
 
-/* The best engine on this Mac for unprompted speech, or nil when none is good
+/*! The best engine on this Mac for unprompted speech, or nil when none is good
    enough. Never a remote one. */
 + (id<NekoAnswerProvider>)bestOnDeviceProvider;
 
-/* Whether anything at all qualifies. */
+/*! Whether anything at all qualifies. */
 + (BOOL)hasSomethingWorthHearing;
 
-/* Whether a given provider keeps what it is told on this Mac. The memory is
+/*! Whether a given provider keeps what it is told on this Mac. The memory is
    offered to a question only when the answer is yes: a diary that goes to a
    remote service on the days somebody picked ChatGPT is not a diary that stays
    on the Mac. */
 + (BOOL)staysOnThisMac:(id<NekoAnswerProvider>)provider;
 
-/* What to show in the preferences: the name of the engine that will speak, or
+/*! What to show in the preferences: the name of the engine that will speak, or
    why nothing will. */
 + (NSString *)describeChoice;
 
-/* A local model at or above this many bytes is considered able to hold a long
+/*! A local model at or above this many bytes is considered able to hold a long
    instruction. */
 + (long long)capableModelBytes;
 
-/* The most capable model actually on the disk, or nil when the largest one there
+/*! The most capable model actually on the disk, or nil when the largest one there
    is still too small. Not necessarily the one chosen for questions: someone may
    ask questions of a small fast model and still have a capable one downloaded. */
 + (id)biggestInstalledModel;

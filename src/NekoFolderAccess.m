@@ -102,7 +102,7 @@ static NSString *NekoBookmarkKeyFor(NSString *key)
 {
 	NSURL *folder = [self realFolderForKey:key];
 	if(chosen == nil || folder == nil)
-		return NSLocalizedString(@"Nothing was chosen.", @"Nothing was chosen.");
+		return NSLocalizedString(@"Nothing was chosen.", @"the folder handover, when the answer is no");
 	if([[[chosen path] lastPathComponent] isEqualToString:[[folder path] lastPathComponent]])
 		return nil;
 	return [NSString stringWithFormat:

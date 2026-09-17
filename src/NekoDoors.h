@@ -2,7 +2,7 @@
 
 #import <Cocoa/Cocoa.h>
 
-/* The ways in, from the rest of the Mac.
+/*! The ways in, from the rest of the Mac.
 
    Until now this application had exactly one door — its own hotkey — which made
    it the only thing on the Mac that could not be reached the way everything else
@@ -34,15 +34,15 @@
    line, where somebody is standing, rather than onto the engine. */
 @interface NekoDoors : NSObject
 
-/* Called once at startup; registers the services provider. */
+/*! Called once at startup; registers the services provider. */
 + (void)open;
 
-/* "Ask Neko about this", from the Services menu of any application. */
+/*! "Ask Neko about this", from the Services menu of any application. */
 - (void)askAboutSelection:(NSPasteboard *)board
                  userData:(NSString *)data
                     error:(NSString **)problem;
 
-/* What a neko:// URL asks for, or nil. Its own method so a test can measure the
+/*! What a neko:// URL asks for, or `nil`. Its own method so a test can measure the
    parsing without opening anything. */
 + (NSString *)questionInURL:(NSURL *)url;
 

@@ -50,7 +50,7 @@ static unsigned NekoIdleTicksFor(NekoState state)
 	   character swap that frame belongs to an array nobody is holding any more.
 	   tickCount is zero, so frame zero is what the next tick would pick anyway. */
 	if([stateFrames count] > 0)
-		[view setImageTo:(NSImage *)[stateFrames objectAtIndex:0]];
+		[view setImage:(NSImage *)[stateFrames objectAtIndex:0]];
 	[view setNeedsDisplay:YES];
 }
 
@@ -239,8 +239,8 @@ static const unsigned NekoRoamNap = 240;         /* half a minute asleep */
    Two different radii on purpose. With one, a cat sitting exactly on the
    boundary steps out, finds itself outside, steps back in, and does that for
    ever. The idea, and the reason for the gap, is ferlor-BSG's. */
-static const CGFloat NekoFleeNear = 3.5f;
-static const CGFloat NekoFleeFar  = 4.0f;
+static const CGFloat NekoFleeNear = 3.5;
+static const CGFloat NekoFleeFar  = 4.0;
 
 #pragma mark Wandering
 
@@ -306,11 +306,11 @@ static const CGFloat NekoFleeFar  = 4.0f;
 	/* A worthwhile walk rather than a shuffle: somewhere at least a third of
 	   the desk away, given a few tries to find one. Uniform points came out
 	   next door often enough that the cat looked like it could not decide. */
-	CGFloat wanted = MIN(bounds.size.width, bounds.size.height) / 3.0f;
+	CGFloat wanted = MIN(bounds.size.width, bounds.size.height) / 3.0;
 	NSPoint spot = here;
 	unsigned try;
 	for(try = 0; try < 8; try++) {
-		spot = NSMakePoint(NSMinX(bounds) + frame.size.width / 2.0f
+		spot = NSMakePoint(NSMinX(bounds) + frame.size.width / 2.0
 		                   + (CGFloat)arc4random_uniform((unsigned)roomX),
 		                   NSMinY(bounds) + (CGFloat)arc4random_uniform((unsigned)roomY));
 		if(hypot(spot.x - here.x, spot.y - here.y) >= wanted)
@@ -441,7 +441,7 @@ static const CGFloat NekoTurnStep = 30.0f;
 	/* Ticks for the part it actually walks — the target less the radius it stops
 	   short by — plus the pose at the end, plus the few ticks the chain spends
 	   sitting up before it sets off. */
-	CGFloat travel = MAX(reach - stopRadius, 4.0f);
+	CGFloat travel = MAX(reach - stopRadius, 4.0);
 	unsigned walking = (unsigned)(travel / MAX(speed, 1.0f)) + 1;
 	return walking + errandHold + 4;
 }
@@ -762,7 +762,7 @@ NSPoint NekoOriginOnAScreen(NSPoint origin, CGFloat side, NSArray<NSValue*> *vis
    there, rather than trusted as written. */
 - (void)placeAt:(NSPoint)origin
 {
-	CGFloat side = [self frame].size.width;
+//	CGFloat side = [self frame].size.width;
 	CGFloat x = origin.x, y = origin.y;
 	[self settleX:&x Y:&y from:y];
 	[self setFrameOrigin:NSMakePoint(x, y)];
@@ -776,7 +776,7 @@ NSPoint NekoOriginOnAScreen(NSPoint origin, CGFloat side, NSArray<NSValue*> *vis
 	*x = MIN(MAX(*x, NSMinX(bounds)), NSMaxX(bounds) - side);
 	*y = MIN(MAX(*y, NSMinY(bounds)), NSMaxY(bounds) - side);
 	[self nudgeOntoAScreen:x Y:y side:side];
-	*y = MAX(*y, [self floorUnderCentre:*x + side / 2.0f feet:previousY]);
+	*y = MAX(*y, [self floorUnderCentre:*x + side / 2.0 feet:previousY]);
 }
 
 /* The scratching state for whatever the cat is pressed against while still
@@ -953,7 +953,7 @@ NSPoint NekoOriginOnAScreen(NSPoint origin, CGFloat side, NSArray<NSValue*> *vis
 	NekoState wall = [self blockedWallState];
 	
 	NSInteger frame = (tickCount / stateTicksPerFrame) % [stateFrames count];
-	[view setImageTo:(NSImage*)[stateFrames objectAtIndex:frame]];
+	[view setImage:[stateFrames objectAtIndex:frame]];
 	
 	[self advanceClock];
 	

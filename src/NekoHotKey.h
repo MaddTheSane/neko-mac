@@ -11,16 +11,16 @@
    of silently doing nothing. */
 @interface NekoHotKey : NSObject
 {
-	id target;                   /* not retained */
+	__unsafe_unretained id target;                   /* not retained */
 	SEL action;
 	SEL releaseAction;           /* optional: the key going back up */
 	void *reference;             /* EventHotKeyRef */
 	unsigned identifier;
 	unsigned short keyCode;
-	NSUInteger modifiers;        /* NSEventModifierFlags */
+	NSEventModifierFlags modifiers;        /* NSEventModifierFlags */
 }
 
-- (id)initWithTarget:(id)aTarget action:(SEL)anAction;
+- (instancetype)initWithTarget:(id)aTarget action:(SEL)anAction;
 
 /* Told when the key is let go as well as when it goes down, which is how a
    press and a hold tell themselves apart. Carbon reports both; nothing else
@@ -28,19 +28,19 @@
 - (void)setReleaseAction:(SEL)anAction;
 
 /* NO when the combination is already taken, or is missing a modifier. */
-- (BOOL)registerKeyCode:(unsigned short)code modifiers:(NSUInteger)flags;
+- (BOOL)registerKeyCode:(unsigned short)code modifiers:(NSEventModifierFlags)flags;
 - (void)unregister;
-- (BOOL)isRegistered;
+@property (readonly, getter=isRegistered) BOOL registered;
 
-- (unsigned short)keyCode;
-- (NSUInteger)modifiers;
+@property (readonly) unsigned short keyCode;
+@property (readonly) NSEventModifierFlags modifiers;
 
 /* "⌃⌥N", for the preferences. */
 - (NSString *)displayName;
-+ (NSString *)displayNameForKeyCode:(unsigned short)code modifiers:(NSUInteger)flags;
++ (NSString *)displayNameForKeyCode:(unsigned short)code modifiers:(NSEventModifierFlags)flags;
 
 /* Control-Option-N. */
-+ (unsigned short)defaultKeyCode;
-+ (NSUInteger)defaultModifiers;
+@property (class, readonly) unsigned short defaultKeyCode;
+@property (class, readonly) NSEventModifierFlags defaultModifiers;
 
 @end

@@ -2,7 +2,7 @@
 
 #import <Cocoa/Cocoa.h>
 
-/* "Dove sei?" — "Da quanto sei qui?" — "Da quanto non ci parliamo?"
+/*! "Dove sei?" — "Da quanto sei qui?" — "Da quanto non ci parliamo?"
 
    The first piece of docs/self.md, and that document's argument is why it looks
    like this rather than like a prompt.
@@ -53,15 +53,15 @@
    claims a feeling it does not have. */
 @interface NekoSelf : NSObject
 
-/* What to say, or nil when the sentence was not asking. */
+/*! What to say, or nil when the sentence was not asking. */
 + (NSString *)wantedFor:(NSString *)question;
 
 /* The pieces, exposed so a harness can check them without a window. */
 
-/* Where the cat is: which screen, and where on it. */
+/*! Where the cat is: which screen, and where on it. */
 + (NSString *)whereItIs;                /* nil when there is no panel yet */
 
-/* Where the **Mac** is, which is a different question and answered in two
+/*! Where the **Mac** is, which is a different question and answered in two
    tiers, both of them NekoPlace's and neither of them sent anywhere.
 
    The town, when somebody has pressed the button for it: measured, at the
@@ -76,7 +76,7 @@
 + (NSInteger)daysHere;
 + (NSString *)howLongSinceHeard;        /* nil when nothing was ever heard */
 
-/* And the mirror of it: how long since the cat itself said something unprompted.
+/*! And the mirror of it: how long since the cat itself said something unprompted.
    The stamp is NekoAsk's, kept in the defaults so that quitting is not a way of
    resetting the quiet period — which means it is also the one number here that
    survives the application being closed and opened again. */

@@ -5,8 +5,6 @@
 #import "NekoShortcutProvider.h"
 #import "NekoPlayer.h"
 
-#define NekoVerbsLocalized(text) NSLocalizedString(text, nil)
-
 @implementation NekoPluginVerbs
 
 + (BOOL)anythingListens
@@ -172,7 +170,7 @@
 		   rather than as "that did not work". */
 		if(problem != NULL)
 			*problem = [NSString stringWithFormat:
-				NekoVerbsLocalized(@"You have no Shortcut called “%@”. The plugin says how to make it."),
+				NSLocalizedString(@"You have no Shortcut called “%@”. The plugin says how to make it.", @"You have no Shortcut called \"%@\". The plugin says how to make it."),
 				shortcut];
 		return NO;
 	}

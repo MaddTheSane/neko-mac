@@ -30,7 +30,7 @@ NSString * const NekoPlaceDidChangeNotification = @"NekoPlaceDidChange";
 	return [CLLocationManager locationServicesEnabled];
 }
 
-/* What the system last told us, which is not the same as what a manager says the
+/*! What the system last told us, which is not the same as what a manager says the
    moment it is made: a fresh CLLocationManager answers "not determined" until the
    answer arrives on the delegate, and the Permissions row is drawn before that.
    Kept in the defaults so the row is right immediately after a relaunch too. */
@@ -40,11 +40,7 @@ static NSString * const NekoPlaceStatusKey = @"NekoPlaceStatus";
 {
 	if(NSClassFromString(@"CLLocationManager") == Nil)
 		return 1;
-	CLAuthorizationStatus status;
-	if(@available(macOS 11.0, *))
-		status = [(CLLocationManager *)[[self sharedPlace] manager] authorizationStatus];
-	else
-		status = [CLLocationManager authorizationStatus];
+	CLAuthorizationStatus status = [(CLLocationManager *)[[self sharedPlace] manager] authorizationStatus];
 	if(status == kCLAuthorizationStatusNotDetermined) {
 		NSInteger remembered = [[NSUserDefaults standardUserDefaults]
 			integerForKey:NekoPlaceStatusKey];

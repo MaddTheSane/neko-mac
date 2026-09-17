@@ -2,7 +2,7 @@
 
 #import <Cocoa/Cocoa.h>
 
-/* The last gate before the cat opens its mouth.
+/*! The last gate before the cat opens its mouth.
 
    Small models fail in ways that are obvious to a reader and easy to spot in
    code: the same word four times over, an answer in the wrong language, one of
@@ -19,13 +19,13 @@
    not at all. */
 @interface NekoSense : NSObject
 
-/* NO when the line should be thrown away. */
+/*! `NO` when the line should be thrown away. */
 + (BOOL)isWorthSaying:(NSString *)line;
 
-/* Why it was thrown away, for the preferences and the logs. nil when it passes. */
+/*! Why it was thrown away, for the preferences and the logs. nil when it passes. */
 + (NSString *)problemWith:(NSString *)line;
 
-/* The same, judged also against **what the cat could actually see** when it said
+/*! The same, judged also against **what the cat could actually see** when it said
    it — the desktop summary and the lines of diary that went into the prompt.
 
    One check needs that and cannot be made without it, and it is here because of
@@ -34,8 +34,10 @@
    what it stopped trying to catch and why. `tools/diary.py`, run on eight days of real
    diary, found 65 remarks carrying 11 distinct thoughts, and the content was:
 
+   ```
        L'orario attuale 10:44, mercoledì 26 agosto 2026, Xcode aperto recente
        build lento perché progetto grande
+   ```
 
    The first reads the clock back — which the suggestion prompt **already
    forbids**, in so many words, and which happened 22 times anyway. The second

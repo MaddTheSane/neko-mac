@@ -3,7 +3,7 @@
 #import <Cocoa/Cocoa.h>
 #import "NekoAnswerProvider.h"
 
-/* What a local engine has to be able to do. Implement this, hand it to the
+/*! What a local engine has to be able to do. Implement this, hand it to the
    provider, and the feature is complete: everything else — the catalogue, the
    download, the file on disk, the settings — is already here.
 
@@ -21,7 +21,7 @@
 - (void)cancel;
 
 @optional
-/* How many tokens the next answer may take. Optional, and asked for only when
+/*! How many tokens the next answer may take. Optional, and asked for only when
    the catalogue says the chosen model reasons before answering.
 
    Measured on Qwen3.5 4B: asked "quotazione oggi borsa Apple" it writes 829
@@ -34,7 +34,7 @@
 @end
 
 
-/* A model running on this Mac, downloaded through the preferences.
+/*! A model running on this Mac, downloaded through the preferences.
 
    Distinct from the Apple Intelligence provider, which is also local but is the
    system's model on the system's terms: this one is a file you chose, on a Mac
@@ -42,18 +42,18 @@
 @interface NekoLocalProvider : NSObject <NekoAnswerProvider>
 {
 	id<NekoLocalEngine> engine;
-	dispatch_queue_t loader;        /* the model file is opened off the main thread */
-	NSString *preferred;           /* set by whoever wants a particular model */
+	dispatch_queue_t loader;        /*!< the model file is opened off the main thread */
+	NSString *preferred;           /*!< set by whoever wants a particular model */
 }
 
-/* The identifier of the model that will actually answer: whatever was chosen if
+/*! The identifier of the model that will actually answer: whatever was chosen if
    it is on the disk, otherwise something that is. */
 - (NSString *)modelIdentifier;
 
-/* What the menu says, installed or not. */
+/*! What the menu says, installed or not. */
 - (NSString *)chosenModelIdentifier;
 
-/* Asks this instance to use one particular model, whatever the preferences say.
+/*! Asks this instance to use one particular model, whatever the preferences say.
    Used by NekoBrains, which needs the most capable model on the disk rather than
    the one someone picked for asking the capital of France. Ignored when that
    model is not installed. */
@@ -92,7 +92,7 @@
    against. */
 + (NSString *)withoutReasoning:(NSString *)text;
 
-/* nil until an engine is compiled into the app. The provider reports itself
+/*! `nil` until an engine is compiled into the app. The provider reports itself
    unconfigured while this is the case, and says so in the preferences rather
    than failing at the moment someone asks a question. */
 + (id<NekoLocalEngine>)makeEngine;

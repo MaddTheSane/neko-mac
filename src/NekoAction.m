@@ -6,10 +6,18 @@ NSString * const NekoActionsEnabledKey = @"NekoActionsEnabled";
 
 static NSString * const NekoActionMarker = @"ACTION:";
 
+@interface NekoAction ()
+@property (readwrite, copy) NSString *verb;
+@property (readwrite, copy) NSString *target;
+@property (readwrite, retain) NSURL *resolved;
+@property (readwrite, copy) NSString *extra;
+@property (readwrite, copy) NSString *other;
+@end
+
 @implementation NekoAction
 
-/* Small models bold what they think is important, so "**ACTION: open-app
-   TextEdit**" arrives and used to be read as a sentence. The markers are looked
+/*! Small models bold what they think is important, so "\*\*ACTION: open-app
+   TextEdit\*\*" arrives and used to be read as a sentence. The markers are looked
    for after the decoration is taken off. */
 NSString *NekoWithoutMarkdown(NSString *line)
 {
@@ -77,25 +85,26 @@ NSString *NekoWithoutMarkdown(NSString *line)
 
 + (NSURL *)folderNamed:(NSString *)name
 {
-	NSDictionary *known = [NSDictionary dictionaryWithObjectsAndKeys:
-		[NSNumber numberWithUnsignedInteger:NSDesktopDirectory], @"desktop",
-		[NSNumber numberWithUnsignedInteger:NSDocumentDirectory], @"documents",
-		[NSNumber numberWithUnsignedInteger:NSDownloadsDirectory], @"downloads",
-		[NSNumber numberWithUnsignedInteger:NSMoviesDirectory], @"movies",
-		[NSNumber numberWithUnsignedInteger:NSMusicDirectory], @"music",
-		[NSNumber numberWithUnsignedInteger:NSPicturesDirectory], @"pictures", nil];
+	static NSDictionary<NSString*,NSNumber*> *const known
+	= @{@"desktop": @(NSDesktopDirectory),
+		@"documents": @(NSDocumentDirectory),
+		@"downloads": @(NSDownloadsDirectory),
+		@"movies": @(NSMoviesDirectory),
+		@"music": @(NSMusicDirectory),
+		@"pictures": @(NSPicturesDirectory)};
 	NSNumber *which = [known objectForKey:[name lowercaseString]];
 	if(which == nil)
 		return nil;
 	/* The real folder, not the sandbox's copy: this is handed to LaunchServices
 	   to open in the Finder, which is allowed even where reading is not. */
-	NSString *path = [NSHomeDirectory() stringByAppendingPathComponent:
-		[[name lowercaseString] capitalizedString]];
-	NSArray *inside = NSSearchPathForDirectoriesInDomains(
-		[which unsignedIntegerValue], NSUserDomainMask, YES);
+	NSURL *path = [NSURL fileURLWithPath:
+				   [NSHomeDirectory() stringByAppendingPathComponent:
+					[[name lowercaseString] capitalizedString]]];
+	NSArray *inside = [[NSFileManager defaultManager] URLsForDirectory:
+					   [which unsignedIntegerValue] inDomains:NSUserDomainMask];
 	if([inside count] > 0)
 		path = [inside firstObject];
-	return [NSURL fileURLWithPath:path];
+	return path;
 }
 
 #pragma mark Reading the line
@@ -127,27 +136,27 @@ NSString *NekoWithoutMarkdown(NSString *line)
 	if([word isEqualToString:@"cannot"])
 		return nil;                 /* the app's own words, not the model's */
 
-	NekoAction *action = [[[NekoAction alloc] init] autorelease];
-	action->verb = [word retain];
+	NekoAction *action = [[NekoAction alloc] init];
+	action.verb = word;
 
 	if([word isEqualToString:@"open-app"]) {
-		action->resolved = [[NekoAction applicationNamed:rest] retain];
-		action->target = [rest retain];
-		return action->resolved != nil ? action : nil;
+		action.resolved = [NekoAction applicationNamed:rest];
+		action.target = rest;
+		return action.resolved != nil ? action : nil;
 	}
 	if([word isEqualToString:@"open-url"]) {
 		NSString *address = rest;
 		/* "in Chrome" at the end names the browser. */
-		NSRange in = [[rest lowercaseString] rangeOfString:@" in "
+		NSRange in_ = [[rest lowercaseString] rangeOfString:@" in "
 		                                          options:NSBackwardsSearch];
-		if(in.location != NSNotFound) {
-			address = [[rest substringToIndex:in.location]
+		if(in_.location != NSNotFound) {
+			address = [[rest substringToIndex:in_.location]
 				stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
-			NSString *browser = [[rest substringFromIndex:NSMaxRange(in)]
+			NSString *browser = [[rest substringFromIndex:NSMaxRange(in_)]
 				stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
-			action->resolved = [[NekoAction applicationNamed:browser] retain];
-			action->extra = [browser retain];
-			if(action->resolved == nil)
+			action.resolved = [NekoAction applicationNamed:browser];
+			action.extra = browser;
+			if(action.resolved == nil)
 				return nil;
 		}
 		if([address rangeOfString:@"://"].location == NSNotFound)
@@ -158,16 +167,16 @@ NSString *NekoWithoutMarkdown(NSString *line)
 		   no custom scheme a model has invented. */
 		if(url == nil || !([scheme isEqualToString:@"http"] || [scheme isEqualToString:@"https"]))
 			return nil;
-		action->target = [[url absoluteString] retain];
+		action.target = [url absoluteString];
 		return action;
 	}
 	if([word isEqualToString:@"open-folder"]) {
-		action->resolved = [[NekoAction folderNamed:rest] retain];
-		action->target = [rest retain];
-		return action->resolved != nil ? action : nil;
+		action.resolved = [NekoAction folderNamed:rest];
+		action.target = rest;
+		return action.resolved != nil ? action : nil;
 	}
 	if([word isEqualToString:@"run-shortcut"]) {
-		action->target = [rest retain];
+		action.target = rest;
 		return action;
 	}
 	if([word isEqualToString:@"copy"] || [word isEqualToString:@"move"]) {
@@ -195,27 +204,20 @@ NSString *NekoWithoutMarkdown(NSString *line)
 		if([source isEqualToString:destination])
 			return nil;
 
-		action->target = [file retain];
-		action->extra = [source retain];
-		action->resolved = nil;
-		action->other = [destination retain];
+		action.target = file;
+		action.extra = source;
+		action.resolved = nil;
+		action.other = destination;
 		return action;
 	}
 	return nil;                     /* an unknown verb is refused, not guessed */
 }
 
-- (void)dealloc
-{
-	[other release];
-	[verb release];
-	[target release];
-	[extra release];
-	[resolved release];
-	[super dealloc];
-}
-
-- (NSString *)verb { return verb; }
-- (NSString *)target { return target; }
+@synthesize verb;
+@synthesize target;
+@synthesize resolved;
+@synthesize extra;
+@synthesize other;
 
 - (NSArray *)needsFolders
 {
@@ -233,7 +235,7 @@ NSString *NekoWithoutMarkdown(NSString *line)
 /* The file as it is actually spelled on disk. "pippo" is asked for, "Pippo.txt"
    is there, and two files called "pippo.txt" and "pippo.md" mean the cat has to
    ask rather than choose. */
-- (NSString *)fileIn:(NSURL *)folder ambiguous:(BOOL *)ambiguous
+- (NSString *)fileInFolderURL:(NSURL *)folder isAmbiguous:(BOOL *)ambiguous
 {
 	NSArray *entries = [[NSFileManager defaultManager]
 		contentsOfDirectoryAtPath:[folder path] error:NULL];
@@ -256,7 +258,7 @@ NSString *NekoWithoutMarkdown(NSString *line)
 }
 
 /* Never over the top of something else: "pippo.txt" becomes "pippo 2.txt". */
-- (NSURL *)freeNameIn:(NSURL *)folder for:(NSString *)name
+- (NSURL *)freeNameInFolderURL:(NSURL *)folder forName:(NSString *)name
 {
 	NSFileManager *files = [NSFileManager defaultManager];
 	NSURL *candidate = [folder URLByAppendingPathComponent:name];
@@ -330,18 +332,18 @@ NSString *NekoWithoutMarkdown(NSString *line)
 		return [self moveOrCopy:error];
 
 	if([verb isEqualToString:@"run-shortcut"]) {
-		NSTask *task = [[[NSTask alloc] init] autorelease];
+		NSTask *task = [[NSTask alloc] init];
 		[task setLaunchPath:@"/usr/bin/shortcuts"];
-		[task setArguments:[NSArray arrayWithObjects:@"run", target, nil]];
-		NS_DURING
+		[task setArguments:@[@"run", target]];
+		@try {
 			[task launch];
-		NS_HANDLER
+		} @catch(id nothing) {
 			if(error != NULL)
 				*error = [NSError errorWithDomain:NekoAskErrorDomain
-				                             code:NekoAskErrorTransport
-				                         userInfo:nil];
+											 code:NekoAskErrorTransport
+										 userInfo:nil];
 			return NO;
-		NS_ENDHANDLER
+		}
 		return YES;
 	}
 	return NO;
@@ -362,7 +364,7 @@ NSString *NekoWithoutMarkdown(NSString *line)
 		complaint = NSLocalizedString(@"I have not been shown that folder.", @"I have not been shown that folder.");
 	} else {
 		BOOL ambiguous = NO;
-		NSString *name = [self fileIn:from ambiguous:&ambiguous];
+		NSString *name = [self fileInFolderURL:from isAmbiguous:&ambiguous];
 		if(ambiguous)
 			complaint = [NSString stringWithFormat:
 				NSLocalizedString(@"There is more than one “%@” there.", @"There is more than one “%@” there."), target];
@@ -376,7 +378,7 @@ NSString *NekoWithoutMarkdown(NSString *line)
 			if([directory boolValue]) {
 				complaint = NSLocalizedString(@"That is a folder, and I only carry files.", @"That is a folder, and I only carry files.");
 			} else {
-				NSURL *destination = [self freeNameIn:to for:name];
+				NSURL *destination = [self freeNameInFolderURL:to forName:name];
 				NSError *problem = nil;
 				NSFileManager *files = [NSFileManager defaultManager];
 				done = [verb isEqualToString:@"move"]
@@ -394,7 +396,7 @@ NSString *NekoWithoutMarkdown(NSString *line)
 		*error = [NSError errorWithDomain:NekoAskErrorDomain
 		                             code:NekoAskErrorTransport
 		                         userInfo:complaint != nil
-			? [NSDictionary dictionaryWithObject:complaint forKey:NSLocalizedDescriptionKey]
+				  ? @{NSLocalizedDescriptionKey: complaint}
 			: nil];
 	return done;
 }

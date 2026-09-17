@@ -14,7 +14,7 @@ extern NSString * const NekoRateIgnoredKey;
 extern NSString * const NekoRateDismissedKey;
 extern NSString * const NekoRateActiveKey;      /* seconds at the Mac today */
 
-/* How often the cat may speak unasked, as a budget for the day rather than a
+/*! How often the cat may speak unasked, as a budget for the day rather than a
    timer.
 
    A colleague says something eight to fifteen times a day; a notification says
@@ -37,10 +37,11 @@ extern NSString * const NekoRateActiveKey;      /* seconds at the Mac today */
    which is what consistently being ignored ought to earn. */
 @interface NekoRate : NSObject
 {
-	NSDate *lastAccrual;         /* when the time at the Mac was last counted */
+	NSDate *lastAccrual;         /*!< when the time at the Mac was last counted */
 }
 
 + (NekoRate *)sharedRate;
+@property (class, readonly, retain) NekoRate *sharedRate;
 
 /* The two questions the advisor and the antics ask. */
 - (BOOL)mayInterruptNow;
@@ -63,10 +64,10 @@ extern NSString * const NekoRateActiveKey;      /* seconds at the Mac today */
 - (NSTimeInterval)gap;           /* the shortest it will leave between remarks */
 - (NSString *)describeToday;
 
-/* Back to the middle of the band, for someone who wants to start again. */
+/*! Back to the middle of the band, for someone who wants to start again. */
 - (void)forgetPace;
 
-/* Seams, so that a day can be replayed in a second: what time it is, how long
+/*! Seams, so that a day can be replayed in a second: what time it is, how long
    since the last remark, whether somebody is at the Mac, and what the
    preferences say. The tests override these; nothing else does. */
 - (NSDate *)now;

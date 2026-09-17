@@ -2,7 +2,7 @@
 
 #import <Cocoa/Cocoa.h>
 
-/* The plugins window.
+/*! The plugins window.
 
    Its own window rather than a seventh tab in the preferences, for two reasons.
    The preferences are settings — things about how the cat behaves — and a plugin
@@ -19,11 +19,12 @@
 }
 
 + (NekoPluginsPanel *)sharedPanel;
+@property (readonly, class, retain) NekoPluginsPanel *sharedPanel;
 
-/* Opens it, brings it forward, and redraws it from what is installed. */
-- (void)show:(id)sender;
+/*! Opens it, brings it forward, and redraws it from what is installed. */
+- (IBAction)show:(id)sender;
 
-/* What the Add… button does. Public so a test can drive it without a mouse. */
-- (void)addPressed:(id)sender;
+/*! What the Add… button does. Public so a test can drive it without a mouse. */
+- (IBAction)addPressed:(id)sender;
 
 @end

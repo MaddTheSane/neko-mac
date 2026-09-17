@@ -8,12 +8,12 @@ static const CGFloat NekoBubbleTail = 9.0f;
 static const CGFloat NekoBubbleGap = 6.0f;
 static const CGFloat NekoBubbleRadius = 10.0f;
 
-/* Draws the rounded body and the tail. The tail points down when the bubble sits
+/*! Draws the rounded body and the tail. The tail points down when the bubble sits
    above the cat, which is the usual case, and up when it had to go below. */
 @interface NekoBubbleView : NSView
 {
 	BOOL tailAtBottom;
-	CGFloat tailOffset;            /* from the centre, to keep it on the cat */
+	CGFloat tailOffset;            /*!< from the centre, to keep it on the cat */
 }
 - (void)setTailAtBottom:(BOOL)atBottom offset:(CGFloat)offset;
 @property (readonly) BOOL tailAtBottom;
@@ -193,10 +193,7 @@ static const CGFloat NekoBubbleRadius = 10.0f;
 	}
 }
 
-- (NSString *)hint
-{
-	return hint;
-}
+@synthesize hint;
 
 + (NSTimeInterval)readingTimeFor:(NSString *)text
 {

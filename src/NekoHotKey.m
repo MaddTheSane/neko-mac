@@ -1,5 +1,5 @@
 #import "NekoHotKey.h"
-#import <Carbon/Carbon.h>
+#include <Carbon/Carbon.h>
 
 static NSMutableDictionary *NekoHotKeysByIdentifier = nil;
 static unsigned NekoNextHotKeyIdentifier = 1;
@@ -42,7 +42,7 @@ static OSStatus NekoHotKeyHandler(EventHandlerCallRef call, EventRef event, void
 	return 0x2D;                 /* kVK_ANSI_N */
 }
 
-+ (NSUInteger)defaultModifiers
++ (NSEventModifierFlags)defaultModifiers
 {
 	return NSEventModifierFlagControl | NSEventModifierFlagOption;
 }
@@ -81,7 +81,7 @@ static OSStatus NekoHotKeyHandler(EventHandlerCallRef call, EventRef event, void
 
 #pragma mark Registration
 
-static UInt32 carbonModifiers(NSUInteger flags)
+static UInt32 carbonModifiers(NSEventModifierFlags flags)
 {
 	UInt32 carbon = 0;
 	if(flags & NSEventModifierFlagCommand)  carbon |= cmdKey;
@@ -91,7 +91,7 @@ static UInt32 carbonModifiers(NSUInteger flags)
 	return carbon;
 }
 
-- (BOOL)registerKeyCode:(unsigned short)code modifiers:(NSUInteger)flags
+- (BOOL)registerKeyCode:(unsigned short)code modifiers:(NSEventModifierFlags)flags
 {
 	[self unregister];
 
@@ -129,15 +129,8 @@ static UInt32 carbonModifiers(NSUInteger flags)
 	return reference != NULL;
 }
 
-- (unsigned short)keyCode
-{
-	return keyCode;
-}
-
-- (NSUInteger)modifiers
-{
-	return modifiers;
-}
+@synthesize keyCode;
+@synthesize modifiers;
 
 #pragma mark Showing it to the user
 
@@ -168,7 +161,7 @@ static UInt32 carbonModifiers(NSUInteger flags)
 	}
 }
 
-+ (NSString *)displayNameForKeyCode:(unsigned short)code modifiers:(NSUInteger)flags
++ (NSString *)displayNameForKeyCode:(unsigned short)code modifiers:(NSEventModifierFlags)flags
 {
 	NSMutableString *name = [NSMutableString string];
 	if(flags & NSEventModifierFlagControl) [name appendString:@"⌃"];

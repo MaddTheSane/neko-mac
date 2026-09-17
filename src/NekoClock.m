@@ -1,8 +1,6 @@
 #import "NekoClock.h"
 #import "NekoWhen.h"
 
-#define NekoClockLocalized(key) NSLocalizedStringFromTable(key, @"Localizable", nil)
-
 /* The application's own language, which is what it answers in. */
 static NSLocale *NekoClockLocale(void)
 {
@@ -159,7 +157,7 @@ static NSString *NekoTimeWritten(NSDate *when)
 	NSString *tail = NekoTailAfterAny(lowered, triggers);
 	if(tail == nil || !NekoNothingLeft(tail))
 		return nil;
-	return [NSString stringWithFormat:NekoClockLocalized(@"It is %@."),
+	return [NSString stringWithFormat:NSLocalizedString(@"It is %@.", @"It is %@."),
 		NekoTimeWritten([NSDate date])];
 }
 
@@ -330,15 +328,15 @@ static BOOL NekoIsNoon(NSDate *when)
 		NSInteger days = [[calendar components:NSCalendarUnitDay fromDate:from toDate:to
 		                               options:0] day];
 		if(days <= 0)
-			return NekoClockLocalized(@"That is today.");
+			return NSLocalizedString(@"That is today.", @"That is today.");
 		if(days == 1)
-			return NekoClockLocalized(@"That is tomorrow.");
+			return NSLocalizedString(@"That is tomorrow.", @"That is tomorrow.");
 		return [NSString stringWithFormat:
-			NekoClockLocalized(@"%ld days, on %@."), (long)days, NekoDateWritten(target)];
+			NSLocalizedString(@"%ld days, on %@.", @"%ld days, on %@."), (long)days, NekoDateWritten(target)];
 	}
 
 	NSTimeInterval away = [target timeIntervalSinceDate:now];
-	return [NSString stringWithFormat:NekoClockLocalized(@"%@, at %@."),
+	return [NSString stringWithFormat:NSLocalizedString(@"%@, at %@.", @"%@, at %@."),
 		[NekoWhen describe:away], NekoTimeWritten(target)];
 }
 

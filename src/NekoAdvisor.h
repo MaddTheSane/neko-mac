@@ -2,11 +2,11 @@
 
 #import <Cocoa/Cocoa.h>
 
-/* NSUserDefaults key: the last thing the cat suggested, so a relaunch does not
+/*! NSUserDefaults key: the last thing the cat suggested, so a relaunch does not
    repeat it word for word. */
 extern NSString * const NekoSuggestLastKey;
 
-/* The cat looking over your shoulder.
+/*! The cat looking over your shoulder.
 
    It runs only in the roaming behaviour — a cat that chases the cursor has its
    attention elsewhere, and one living on the Dock is already busy — and only
@@ -22,25 +22,26 @@ extern NSString * const NekoSuggestLastKey;
 {
 	NSTimer *heartbeat;
 	NSDate *lastSpoke;
-	NSString *lastSubject;       /* the app the last suggestion was about */
-	BOOL waiting;                /* a suggestion is being written */
+	NSString *lastSubject;       /*!< the app the last suggestion was about */
+	BOOL waiting;                /*!< a suggestion is being written */
 }
 
 + (NekoAdvisor *)sharedAdvisor;
+@property (class, readonly, retain) NekoAdvisor *sharedAdvisor;
 
-/* YES while an engine is writing a suggestion. The cat stands still for it:
+/*! `YES` while an engine is writing a suggestion. The cat stands still for it:
    wandering off mid-thought and then speaking from the far side of the desk
    reads as two unrelated events. */
-- (BOOL)isThinking;
+@property (readonly, getter=isThinking) BOOL thinking;
 
-/* Reads the settings and starts or stops accordingly. Safe to call often. */
+/*! Reads the settings and starts or stops accordingly. Safe to call often. */
 - (void)applySettings;
 
-/* Everything that would be sent, as plain text, for the preferences to show
+/*! Everything that would be sent, as plain text, for the preferences to show
    before anyone switches this on. */
 - (NSString *)context;
 
-/* Asks now, whatever the timers think, and reports what came back. The
+/*! Asks now, whatever the timers think, and reports what came back. The
    preferences use it so the feature can be tried once rather than waited for. */
 - (void)suggestNow:(void (^)(NSString *line, NSError *error))report;
 

@@ -39,7 +39,7 @@
    it, and a result that lands in the past is thrown away. */
 @interface NekoClock : NSObject
 
-/* What to say, or nil when the sentence was not one of these. */
+/*! What to say, or nil when the sentence was not one of these. */
 + (NSString *)wantedFor:(NSString *)question;
 
 @end

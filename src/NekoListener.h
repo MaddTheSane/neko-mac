@@ -2,7 +2,7 @@
 
 #import <Cocoa/Cocoa.h>
 
-/* Turns what you say into text, and nothing else.
+/*! Turns what you say into text, and nothing else.
 
    The microphone opens when listening starts and closes when it stops: there is
    no hot word and no background capture. Recognition runs on the device when
@@ -24,36 +24,36 @@
 	BOOL onDevice;
 }
 
-/* NO on systems without the Speech framework. */
+/*! `NO` on systems without the Speech framework. */
 + (BOOL)isAvailable;
 
-/* 0 undetermined, 1 denied, 2 restricted, 3 authorised. Reading it prompts
+/*! 0 undetermined, 1 denied, 2 restricted, 3 authorised. Reading it prompts
    nobody. */
 + (NSInteger)authorizationStatus;
 + (void)requestAuthorization:(void (^)(BOOL granted))completion;
 
-/* Starts capturing. The block is called with partial text as it arrives, then
+/*! Starts capturing. The block is called with partial text as it arrives, then
    once more with final set, or with an error. Stops itself after a few seconds
    of silence. */
 - (BOOL)startListeningWithLocale:(NSLocale *)locale
                           report:(void (^)(NSString *text, BOOL final, NSError *error))block;
 
-/* The same, saying how long to hold the microphone open before giving up on a
+/*! The same, saying how long to hold the microphone open before giving up on a
    sentence that never started. A question deserves fifteen seconds; the moment
    after the cat has spoken deserves a few, and no more. */
 - (BOOL)startListeningWithLocale:(NSLocale *)locale
                         patience:(NSTimeInterval)seconds
                           report:(void (^)(NSString *text, BOOL final, NSError *error))block;
 
-/* Stops the microphone and waits for the last words to be transcribed. */
+/*! Stops the microphone and waits for the last words to be transcribed. */
 - (void)stop;
 
-/* Stops everything and reports nothing. */
+/*! Stops everything and reports nothing. */
 - (void)cancel;
 
 - (BOOL)isListening;
 
-/* Whether the recogniser is keeping the audio on this Mac. */
+/*! Whether the recogniser is keeping the audio on this Mac. */
 - (BOOL)isOnDevice;
 
 @end

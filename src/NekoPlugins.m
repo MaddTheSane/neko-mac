@@ -287,12 +287,8 @@ static NSString * const NekoPluginsSeededKey = @"NekoPluginsSeeded";
 - (NSArray *)feeds
 {
 	NSMutableArray *all = [NSMutableArray array];
-	NSEnumerator *e = [[self enabled] objectEnumerator];
-	NekoPlugin *plugin;
-	while((plugin = [e nextObject]) != nil) {
-		NSEnumerator *f = [[plugin feeds] objectEnumerator];
-		NSDictionary *feed;
-		while((feed = [f nextObject]) != nil) {
+	for(NekoPlugin *plugin in [self enabled]) {
+		for(NSDictionary *feed in [plugin feeds]) {
 			NSMutableDictionary *one = [NSMutableDictionary dictionaryWithDictionary:feed];
 			/* Whose it is, so the panel and the credits can say so. */
 			[one setObject:[plugin identifier] forKey:@"Plugin"];

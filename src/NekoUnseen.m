@@ -3,7 +3,7 @@
 
 #define NekoUnseenLocalized(key) NSLocalizedStringFromTable(key, @"Localizable", nil)
 
-/* Each class of question, the phrases that ask it, and the one sentence that
+/*! Each class of question, the phrases that ask it, and the one sentence that
    answers it. The phrases came from the questions stage 3 measured rather than
    from imagination, which is why there are seven groups and not twenty.
 

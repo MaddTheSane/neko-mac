@@ -2,8 +2,6 @@
 #import "NekoWhen.h"
 #import <math.h>
 
-#define NekoSumsLocalized(key) NSLocalizedStringFromTable(key, @"Localizable", nil)
-
 static NSLocale *NekoSumsLocale(void)
 {
 	NSString *code = [[[NSBundle mainBundle] preferredLocalizations] firstObject];

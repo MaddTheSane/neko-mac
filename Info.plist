@@ -21,7 +21,7 @@
 	<key>CFBundleShortVersionString</key>
 	<string>2.18</string>
 	<key>CFBundleSignature</key>
-	<string>????</string>
+	<string>NEKO</string>
 	<key>CFBundleURLTypes</key>
 	<array>
 		<dict>
@@ -75,6 +75,6 @@
 	<key>NSSpeechRecognitionUsageDescription</key>
 	<string>What you ask Neko is turned into text so that it can be answered. Recognition stays on this Mac when the language allows it.</string>
 	<key>NSUIElement</key>
-	<string>1</string>
+	<true/>
 </dict>
 </plist>

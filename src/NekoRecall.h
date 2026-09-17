@@ -2,7 +2,7 @@
 
 #import <Cocoa/Cocoa.h>
 
-/* Finding the lines of a diary that bear on a question.
+/*! Finding the lines of a diary that bear on a question.
 
    The diary is a month of short lines and the prompt has room for about three of
    them, so the whole problem is which three. Until now the answer was "the newest
@@ -96,26 +96,26 @@
    line that shares the real word always beats a line that shares its synonym. */
 @interface NekoRecall : NSObject
 
-/* The words of a line, lemmatised and folded, with the short ones dropped. */
+/*! The words of a line, lemmatised and folded, with the short ones dropped. */
 + (NSArray *)wordsOf:(NSString *)text;
 
-/* The words of a question, each with what its word class is worth. */
+/*! The words of a question, each with what its word class is worth. */
 + (NSDictionary<NSString*,NSNumber*> *)askedIn:(NSString *)question;
 
-/* The same, with what somebody's diary calls those words added at a discount.
+/*! The same, with what somebody's diary calls those words added at a discount.
    `synonyms` maps a word to the words that mean it; nil is the plain version. */
 + (NSDictionary *)askedIn:(NSString *)question widenedBy:(NSDictionary *)synonyms;
 
-/* How rare each word is across a body of lines. Pass it back to -linesIn:… so a
+/*! How rare each word is across a body of lines. Pass it back to -linesIn:… so a
    month is only measured once. */
 + (NSDictionary *)rarityAcross:(NSArray *)lines;
 
-/* The words of every line, in order, as sets. Lemmatising a month costs a quarter
+/*! The words of every line, in order, as sets. Lemmatising a month costs a quarter
    of a second; doing it again on every question would cost a quarter of a second
    somebody waits for nothing, so it is done once and handed back in. */
 + (NSArray *)wordSetsFor:(NSArray *)lines;
 
-/* The lines that bear on the question, best first, and never more than `limit`.
+/*! The lines that bear on the question, best first, and never more than `limit`.
    Empty when nothing bears on it: a question about the weather may not drag
    somebody's month into the prompt behind it. */
 + (NSArray *)linesIn:(NSArray *)lines
@@ -123,14 +123,14 @@
                limit:(NSUInteger)limit
               rarity:(NSDictionary *)rarity;
 
-/* The same, with the lines' words already worked out. */
+/*! The same, with the lines' words already worked out. */
 + (NSArray *)linesIn:(NSArray *)lines
                words:(NSArray *)sets
                about:(NSString *)question
                limit:(NSUInteger)limit
               rarity:(NSDictionary *)rarity;
 
-/* And the same again, widened by what this Mac has learned the words mean. */
+/*! And the same again, widened by what this Mac has learned the words mean. */
 + (NSArray *)linesIn:(NSArray *)lines
                words:(NSArray *)sets
                about:(NSString *)question
@@ -138,12 +138,12 @@
               rarity:(NSDictionary *)rarity
             synonyms:(NSDictionary *)synonyms;
 
-/* The score a line has to reach to count as being about the question at all.
+/*! The score a line has to reach to count as being about the question at all.
    Exposed because there is now a second caller scoring lines itself, and two
    different bars would be two different ideas of what "about" means. */
 + (double)floor;
 
-/* What a line scored, exposed so a test can say why rather than only whether. */
+/*! What a line scored, exposed so a test can say why rather than only whether. */
 + (double)scoreOf:(NSString *)line asked:(NSDictionary *)asked
            rarity:(NSDictionary *)rarity;
 + (double)scoreOfWords:(NSSet *)words asked:(NSDictionary *)asked

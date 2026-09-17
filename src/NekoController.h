@@ -20,12 +20,12 @@ extern NSString * const NekoSuggestKey;    /* BOOL, unasked suggestions while ro
 extern NSString * const NekoSuggestEveryKey; /* minutes between suggestions */
 extern NSString * const NekoPausedKey;     /* BOOL, cat hidden and frozen */
 
-/* Posted whenever a setting changes. */
+/*! Posted whenever a setting changes. */
 extern NSNotificationName const NekoSettingsDidChangeNotification;
 
 @interface NekoController : NSObject <NSMenuDelegate>
 {
-	MyPanel *panel;              /* not retained, owned by the nib */
+	__weak MyPanel *panel;              /* not retained, owned by the nib */
 	NSStatusItem *statusItem;
 	BOOL naggedAboutPermissions;   /* once a launch, and no more than once */
 	NSMenuItem *newVersionItem;    /* only there when there is one */
@@ -87,9 +87,9 @@ extern NSNotificationName const NekoSettingsDidChangeNotification;
 }
 
 + (NekoController *)sharedController;
+@property (class, readonly, retain) NekoController *sharedController;
 
-- (MyPanel *)panel;
-- (void)setPanel:(MyPanel *)thePanel;
+@property (nonatomic, weak) MyPanel *panel;
 
 - (NekoCharacter *)character;
 - (CGFloat)speed;

@@ -2,7 +2,7 @@
 
 #import <Cocoa/Cocoa.h>
 
-/* The words this Mac has learned mean the same thing.
+/*! The words this Mac has learned mean the same thing.
 
    `NekoRecall` finds the diary's lines by lemma, word class and rarity, and its
    header says at length what it cannot do: asked about *impostazioni* it does not
@@ -73,33 +73,34 @@
      itself: you can open it, read it, and delete a line you disagree with. */
 @interface NekoWords : NSObject
 {
-	NSMutableDictionary *table;      /* word -> the diary's words for it */
-	NSMutableArray *waiting;         /* questions the diary had nothing for */
+	NSMutableDictionary *table;      /*!< word -> the diary's words for it */
+	NSMutableArray *waiting;         /*!< questions the diary had nothing for */
 	NSTimer *later;
 	BOOL asking;
 }
 
 + (NekoWords *)sharedWords;
+@property (class, readonly, retain) NekoWords *sharedWords;
 
-/* Where the file is. Beside the diary, on purpose. */
+/*! Where the file is. Beside the diary, on purpose. */
 - (NSURL *)file;
 
-/* What is known, for NekoRecall to widen a question with. */
+/*! What is known, for NekoRecall to widen a question with. */
 - (NSDictionary *)table;
 
-/* A question the diary had nothing for. Takes the word worth asking about, if
+/*! A question the diary had nothing for. Takes the word worth asking about, if
    there is one, and asks about it later. */
 - (void)missedOn:(NSString *)question;
 
-/* For the harness: ask now and wait, rather than when the cat is idle. */
+/*! For the harness: ask now and wait, rather than when the cat is idle. */
 - (BOOL)learnNowFor:(NSString *)word among:(NSArray *)vocabulary;
 
-/* What survives of an answer: only words that were in the list offered. Exposed
+/*! What survives of an answer: only words that were in the list offered. Exposed
    because this is the guard the whole design rests on, and a guard nothing can
    fail loudly is not a guard. */
 - (NSArray *)wordsOf:(NSString *)answer among:(NSArray<NSString*> *)candidates;
 
-/* The word in a question worth asking about, or nil. Exposed for the same
+/*! The word in a question worth asking about, or nil. Exposed for the same
    reason: "which word" is where this decides to spend a model call. */
 - (NSString *)wordWorthAsking:(NSString *)question among:(NSArray<NSString*> *)vocabulary;
 

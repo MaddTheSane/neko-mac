@@ -2,7 +2,9 @@
 
 #import <Cocoa/Cocoa.h>
 
-/* The half of the plugin interface that answers.
+NS_ASSUME_NONNULL_BEGIN
+
+/*! The half of the plugin interface that answers.
 
    A plugin can *be* things — feeds, characters, translations, a text filter — and
    since 2.6 it can *do* things, through a verb. It could not **answer**. A route
@@ -31,16 +33,18 @@
    application still decides. */
 @interface NekoPluginRoutes : NSObject
 
-/* Is any enabled plugin listening for anything at all. */
+/*! Is any enabled plugin listening for anything at all. */
 + (BOOL)anythingListens;
 
-/* The route whose phrase is in the question, with what followed it, or nil. */
-+ (NSDictionary *)matchFor:(NSString *)question;
+/*! The route whose phrase is in the question, with what followed it, or nil. */
++ (NSDictionary *_Nullable)matchFor:(NSString *)question;
 
-/* Fetches what the route asks for and hands back lines of somebody else's text.
+/*! Fetches what the route asks for and hands back lines of somebody else's text.
    Empty on any failure — a route that cannot be reached is a question answered
    without it, not a question refused. */
-+ (void)fetch:(NSDictionary *)route
-   completion:(void (^)(NSArray *lines, NSError *error))done;
++ (void)fetch:(NSDictionary<NSString*,NSString*> *)route
+   completion:(void (^)(NSArray<NSString*> * _Nullable lines, NSError * _Nullable error))done NS_SWIFT_ASYNC(2);
 
 @end
+
+NS_ASSUME_NONNULL_END

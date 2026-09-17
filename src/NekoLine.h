@@ -2,7 +2,7 @@
 
 #import <Cocoa/Cocoa.h>
 
-/* One line to type, beside the cat.
+/*! One line to type, beside the cat.
 
    The other half of being answerable. Speaking is quicker, but it is not always
    available: an open-plan office, a meeting, a Mac with the microphone denied,
@@ -22,7 +22,7 @@
 
 - (id)init;
 
-/* Opens the line above the cat and waits. The block is called with what was
+/*! Opens the line above the cat and waits. The block is called with what was
    typed, or with nil if it was abandoned — Escape, a click elsewhere, or an
    empty line. */
 - (void)askNearRect:(NSRect)catFrame

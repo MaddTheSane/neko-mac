@@ -2,7 +2,7 @@
 
 #import <Cocoa/Cocoa.h>
 
-/* How long "fra dieci minuti" is.
+/*! How long "fra dieci minuti" is.
 
    `NSDataDetector` parses absolute dates out of ordinary sentences in all four of
    this application's languages, for nothing, with no model and no permission:
@@ -21,18 +21,18 @@
    not a missed timer, it is a timer nobody asked for. */
 @interface NekoWhen : NSObject
 
-/* How many seconds the sentence asks for, or 0 when it does not ask for any.
+/*! How many seconds the sentence asks for, or 0 when it does not ask for any.
    "Un'ora e mezza" is 5400; "quanto fa sette per otto" is 0. */
 + (NSTimeInterval)secondsIn:(NSString *)said;
 
-/* The same, said back in the language of the application: "dieci minuti",
+/*! The same, said back in the language of the application: "dieci minuti",
    "un'ora e mezza". For the sentence somebody is shown before anything starts. */
 + (NSString *)describe:(NSTimeInterval)seconds;
 
-/* When a timer set now would land, as somebody would read it off a clock. */
+/*! When a timer set now would land, as somebody would read it off a clock. */
 + (NSString *)clockTimeIn:(NSTimeInterval)seconds;
 
-/* The numbers written out, in the four languages. Shared with NekoSums so that
+/*! The numbers written out, in the four languages. Shared with NekoSums so that
    "quanto fa sette per otto" and "fra sette minuti" read the same list rather
    than two lists that drift apart. */
 + (NSDictionary *)writtenNumbers;

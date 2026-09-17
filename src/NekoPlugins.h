@@ -4,19 +4,19 @@
 
 @class NekoPlugin;
 
-/* Which ones are switched on. An identifier not in this list is never read,
+/*! Which ones are switched on. An identifier not in this list is never read,
    never asked and never run: disabling is not a flag a plugin can see, it is the
    app not consulting it. */
 extern NSString * const NekoPluginsEnabledKey;
 
-/* Where the folders are, when a harness needs them somewhere else. A test binary
+/*! Where the folders are, when a harness needs them somewhere else. A test binary
    run out of the bundle does not resolve to the sandboxed container. */
 extern NSString * const NekoPluginsDirectoryKey;
 
-/* Posted when one is added, removed, enabled or disabled. */
+/*! Posted when one is added, removed, enabled or disabled. */
 extern NSNotificationName const NekoPluginsDidChangeNotification;
 
-/* The folder of plugins, and what may be done with them.
+/*! The folder of plugins, and what may be done with them.
 
    They live inside the app's container, because the app is sandboxed and that is
    where it can actually read. That has a consequence worth saying out loud: a
@@ -29,18 +29,19 @@ extern NSNotificationName const NekoPluginsDidChangeNotification;
 }
 
 + (NekoPlugins *)sharedPlugins;
+@property (class, readonly, retain) NekoPlugins *sharedPlugins;
 
 - (NSURL *)directory;
 
-/* The examples inside the bundle, if any shipped: read-only, never seeded, and
+/*! The examples inside the bundle, if any shipped: read-only, never seeded, and
    there so that Add… has somewhere to point. */
 - (NSURL *)examplesDirectory;
 - (NSArray<NekoPlugin*> *)examples;
 
-/* Everything installed, refused ones included: a plugin that cannot be used is
+/*! Everything installed, refused ones included: a plugin that cannot be used is
    still shown, with the sentence saying why. */
 - (NSArray<NekoPlugin*> *)all;
-- (NSArray<NekoPlugin*> *)enabled;            /* usable and switched on */
+- (NSArray<NekoPlugin*> *)enabled;            /*!< usable and switched on */
 - (NekoPlugin *)pluginWithIdentifier:(NSString *)identifier;
 
 - (void)reload;
@@ -48,17 +49,17 @@ extern NSNotificationName const NekoPluginsDidChangeNotification;
 - (BOOL)isEnabled:(NekoPlugin *)plugin;
 - (void)setEnabled:(BOOL)enabled for:(NekoPlugin *)plugin;
 
-/* Copies a folder in and leaves it switched off: arriving is not the same as
+/*! Copies a folder in and leaves it switched off: arriving is not the same as
    being on. Returns nil on success, or the sentence that says what was wrong. */
 - (NSString *)installFrom:(NSURL *)chosen;
 
-/* The folder, its switch, and anything it was remembered by. */
+/*! The folder, its switch, and anything it was remembered by. */
 - (void)remove:(NekoPlugin *)plugin;
 
-/* Every feed every enabled plugin adds, as NekoWeb wants them. */
-- (NSArray<NSDictionary*> *)feeds;
+/*! Every feed every enabled plugin adds, as NekoWeb wants them. */
+- (NSArray<NSDictionary<NSString*,id>*> *)feeds;
 
-/* Copies the plugins that ship inside the app into the container, and switches
+/*! Copies the plugins that ship inside the app into the container, and switches
    them on the first time each one arrives.
 
    That last part is the one exception to "arriving is not the same as being on",
@@ -72,7 +73,7 @@ extern NSNotificationName const NekoPluginsDidChangeNotification;
    of the switch. */
 - (void)seedFromBundle;
 
-/* Ships with the app: it can be switched off, and it cannot be removed, because
+/*! Ships with the app: it can be switched off, and it cannot be removed, because
    removing it would only mean it came back at the next launch. */
 - (BOOL)isBundled:(NekoPlugin *)plugin;
 

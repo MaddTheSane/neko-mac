@@ -14,16 +14,16 @@
 #include <string>
 #include <vector>
 
-/* Two short sentences, so there is no reason to let it run on. */
+/*! Two short sentences, so there is no reason to let it run on. */
 static const int NekoLlamaMaxTokens = 200;
 
-/* Raised for one answer when the provider says the chosen model writes its notes
-   first — see -setTokenBudget: in NekoLocalProvider.h for the measurement. Zero
+/*! Raised for one answer when the provider says the chosen model writes its notes
+   first — see `-setTokenBudget:` in NekoLocalProvider.h for the measurement. Zero
    means the ordinary budget. */
 static int NekoLlamaBudget = 0;
 static const int NekoLlamaContext = 4096;
 
-/* How many tokens go into one llama_decode. The prompt is fed in pieces of this
+/*! How many tokens go into one llama_decode. The prompt is fed in pieces of this
    size: handed the whole thing at once, llama.cpp does not return an error when
    it is larger than the batch — it calls abort(), and the app goes with it. That
    is exactly what happened when the instructions grew to carry the time, the
@@ -139,7 +139,7 @@ static const int NekoLlamaBatch = 512;
 
 #pragma mark Generating
 
-/* The model's own chat template when it has one, so Qwen is spoken to the way
+/*! The model's own chat template when it has one, so Qwen is spoken to the way
    Qwen expects; a plain ChatML string otherwise, which is what these models use
    anyway. */
 - (std::string)promptFor:(NSString *)question instructions:(NSString *)instructions

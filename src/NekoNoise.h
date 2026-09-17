@@ -2,7 +2,7 @@
 
 #import <Cocoa/Cocoa.h>
 
-/* Timing that drifts instead of scattering.
+/*! Timing that drifts instead of scattering.
 
    Everything the cat waits for was drawn from a flat distribution: each pause
    independent of the last, every value as likely as every other. It reads as a
@@ -21,25 +21,26 @@
 @interface NekoNoise : NSObject
 {
 	double rows[10];
-	unsigned taps;               /* how many of those rows are in use */
+	unsigned taps;               /*!< how many of those rows are in use */
 	unsigned counter;
 	unsigned long seed;
 }
 
-/* One shared stream: the cat has one sense of time, not one per feature. */
+/*! One shared stream: the cat has one sense of time, not one per feature. */
 + (NekoNoise *)sharedNoise;
+@property (class, readonly, retain) NekoNoise *sharedNoise;
 
-/* A stream that can be replayed. Seed 0 asks for an unpredictable one. */
+/*! A stream that can be replayed. Seed 0 asks for an unpredictable one. */
 - (id)initWithSeed:(unsigned long)aSeed;
 
-/* The next value, 0 to 1, correlated with the last one. */
+/*! The next value, 0 to 1, correlated with the last one. */
 - (double)next;
 
-/* The same, as a whole number below span — the shape of the calls this
+/*! The same, as a whole number below span — the shape of the calls this
    replaces. */
 - (unsigned)nextBelow:(unsigned)span;
 
-/* Around one, for scaling a duration: 0.6 to 1.4, averaging 1. */
+/*! Around one, for scaling a duration: 0.6 to 1.4, averaging 1. */
 - (double)nextScale;
 
 @end

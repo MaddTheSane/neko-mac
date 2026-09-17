@@ -9,7 +9,7 @@
    declared: a defaults key nothing reads is a thing the next person has to work
    out is dead. */
 
-/* How good a moment this is to say something.
+/*! How good a moment this is to say something.
 
    Interruptions cost about ten minutes of task switching plus another ten or
    fifteen before the original work resumes, and the cost depends on when they
@@ -17,14 +17,14 @@
    the breakpoint the cheaper it is (Iqbal & Bailey, CHI 2007/2008). These are
    the breakpoints that can be seen from application switches, typing rate and
    idleness alone — no screen reading, no permission. */
-typedef enum {
-	NekoBreakpointNone = 0,   /* mid-flow: say nothing */
-	NekoBreakpointFine,       /* a few seconds of quiet after working */
-	NekoBreakpointMedium,     /* a burst of typing just ended, or a short visit */
-	NekoBreakpointCoarse      /* a long stretch ended, or a real break did */
-} NekoBreakpoint;
+typedef NS_ENUM(int, NekoBreakpoint) {
+	NekoBreakpointNone = 0,   /*!< mid-flow: say nothing */
+	NekoBreakpointFine,       /*!< a few seconds of quiet after working */
+	NekoBreakpointMedium,     /*!< a burst of typing just ended, or a short visit */
+	NekoBreakpointCoarse      /*!< a long stretch ended, or a real break did */
+};
 
-/* What the cat can tell about your day, in one place.
+/*! What the cat can tell about your day, in one place.
 
    Two tiers, deliberately separated. The first needs no permission at all and is
    what the suggestions and the antics have always run on: which application is
@@ -58,8 +58,9 @@ typedef enum {
 }
 
 + (NekoDesktop *)sharedDesktop;
+@property (class, readonly, retain) NekoDesktop *sharedDesktop;
 
-/* Cheap: two counters and a couple of dates. Call it on whatever timer you
+/*! Cheap: two counters and a couple of dates. Call it on whatever timer you
    already have. */
 - (void)sample;
 
@@ -67,36 +68,36 @@ typedef enum {
 - (NSTimeInterval)secondsInFront;
 - (NSUInteger)switchesInTheLastQuarterHour;
 
-/* How many different programs, which is the honest measure of jumping about. */
+/*! How many different programs, which is the honest measure of jumping about. */
 - (NSUInteger)programsInTheLastQuarterHour;
 - (NSTimeInterval)idleSeconds;
 - (uint32_t)keysPerMinute;
 - (uint32_t)movesPerMinute;
 
-/* Only when screen recording was already granted for some other reason; never
+/*! Only when screen recording was already granted for some other reason; never
    asked for. */
 - (NSString *)windowTitleIfAllowed;
 
-/* The switch and the permission together. */
+/*! The switch and the permission together. */
 - (BOOL)readsText;
 + (BOOL)accessibilityGranted;
 
-/* Asks the system for the permission, which shows the standard alert and opens
+/*! Asks the system for the permission, which shows the standard alert and opens
    the pane. Returns whether it was already granted. */
 + (BOOL)requestAccessibility;
 
-/* The text being worked on, or nil: switch off, permission missing, secure
+/*! The text being worked on, or nil: switch off, permission missing, secure
    input, a password field, or simply nothing there. */
 - (NSString *)nearbyText;
 
-/* The best breakpoint seen in the last few seconds, and how long ago it was.
+/*! The best breakpoint seen in the last few seconds, and how long ago it was.
    A breakpoint is a moment, not a state: it is worth acting on briefly and then
    it is gone. */
 - (NekoBreakpoint)breakpointNow;
 - (NSTimeInterval)secondsSinceBreakpoint;
 - (NSString *)describeBreakpoint;
 
-/* Times when nothing should be said at all, whatever the interval says, with the
+/*! Times when nothing should be said at all, whatever the interval says, with the
    reason for the preferences to show. Focus and Do Not Disturb are deliberately
    absent: macOS keeps that state where no sandboxed app can read it, so this
    uses what can honestly be seen — a full-screen window, secure keyboard entry
@@ -105,7 +106,7 @@ typedef enum {
 - (BOOL)isBusyElsewhere;
 - (NSString *)whyBusyElsewhere;
 
-/* Is the microphone open in some application. Not *what* is being said and not
+/*! Is the microphone open in some application. Not *what* is being said and not
    *which* application: one flag from CoreAudio that needs no permission and
    carries no content, and the plainest sign there is that somebody is on a call
    and should not be spoken to.
@@ -114,22 +115,22 @@ typedef enum {
    then cold again a second after it closed. */
 - (BOOL)microphoneInUse;
 
-/* Nobody is there: the screen is locked, or the display has gone to sleep. Not
+/*! Nobody is there: the screen is locked, or the display has gone to sleep. Not
    the same thing as a bad moment — a bad moment passes in seconds, and this does
    not. What is waiting to be said should wait, rather than being said to an empty
    room and counted as said. */
 - (BOOL)nobodyIsThere;
 - (NSString *)whyNobodyIsThere;
 
-/* Whether the highlight is anything more than "an ordinary few minutes". The
+/*! Whether the highlight is anything more than "an ordinary few minutes". The
    bar a remark has to clear along with the breakpoint. */
 - (BOOL)somethingStandsOut;
 
-/* The single fact worth a remark right now — a long stretch in one program, a
+/*! The single fact worth a remark right now — a long stretch in one program, a
    lot of jumping about, the small hours — in one English sentence. */
 - (NSString *)highlight;
 
-/* Everything above as the plain text a model is given. */
+/*! Everything above as the plain text a model is given. */
 - (NSString *)summary;
 
 @end

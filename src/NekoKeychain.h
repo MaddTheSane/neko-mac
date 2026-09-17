@@ -2,7 +2,7 @@
 
 #import <Cocoa/Cocoa.h>
 
-/* API keys live here, never in the preferences file. One account per provider,
+/*! API keys live here, never in the preferences file. One account per provider,
    so switching between them does not lose either key. */
 @interface NekoKeychain : NSObject
 

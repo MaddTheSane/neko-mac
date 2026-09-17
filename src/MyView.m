@@ -15,24 +15,19 @@
    on: that releases the character list, the panel lets go of the frames it was
    holding, and the next redraw sent a message to a freed image. Two crash reports,
    both EXC_BAD_ACCESS inside this method's one message send. */
-- (void)setImageTo:(NSImage*)theImage
+- (void)setImage:(NSImage*)theImage
 {
 	if(image == theImage)
 		return;
-	[image release];
-	image = [theImage retain];
+	image = theImage;
 	[self setNeedsDisplay:YES];
 }
 
-- (void)dealloc
-{
-	[image release];
-	[super dealloc];
-}
+@synthesize image;
 
-- (NSImage*)image
+- (void)setImageTo:(NSImage*)theImage
 {
-	return image;
+	self.image = image;
 }
 
 - (void)drawRect:(NSRect)rect

@@ -2,7 +2,7 @@
 
 #import <Cocoa/Cocoa.h>
 
-/* What the cat says, in a rounded panel beside it.
+/*! What the cat says, in a rounded panel beside it.
 
    It never becomes the key window: being asked a question should not take the
    focus away from whatever the user was typing in. That also means it cannot
@@ -22,7 +22,7 @@
 	NSButton *noButton;
 	void (^decision)(BOOL yes);
 	NSTimer *dismissal;
-	id owner;                    /* not retained */
+	__unsafe_unretained id owner;                    /* not retained */
 	SEL dismissedAction;
 }
 
@@ -46,11 +46,10 @@
        nearRect:(NSRect)catFrame
         decided:(void (^)(BOOL yes))block;
 
-/* A small dim line under the words, for saying what the app is doing rather
+/*! A small dim line under the words, for saying what the app is doing rather
    than what the cat is saying: "listening" while the microphone is open. Set it
    before showing something; it lasts until it is set to nil. */
-- (void)setHint:(NSString *)line;
-- (NSString *)hint;
+@property (nonatomic, copy) NSString *hint;
 
 /* How long is left before it goes away on its own, and a way to give it longer.
    Used when the microphone stays open after the words: the sign that says so

@@ -160,10 +160,7 @@ static const NSTimeInterval NekoHoldToType = 0.5;
 	                              modifiers:(NSUInteger)[defaults integerForKey:NekoAskHotKeyModifiersKey]];
 }
 
-- (BOOL)hotKeyUnavailable
-{
-	return hotKeyFailed;
-}
+@synthesize hotKeyUnavailable = hotKeyFailed;
 
 - (NekoModelProvider *)modelProvider
 {
@@ -313,7 +310,7 @@ static const NSTimeInterval NekoHoldToType = 0.5;
 /* The whole app's answer to "may the cat say something unasked right now?": the
    interval on the Suggestions tab governs everything, not just suggestions. Two
    systems each keeping their own timer is how five minutes became one. */
-/* The interval is only the first of the questions now. How many have been said
+/*! The interval is only the first of the questions now. How many have been said
    today, how the day is going and how they landed are the rest, and they all
    live in one place. */
 + (BOOL)mayInterruptNow

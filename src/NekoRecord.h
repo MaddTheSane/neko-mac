@@ -2,7 +2,7 @@
 
 #import <Cocoa/Cocoa.h>
 
-/* "Avevo detto venerdì, no?"
+/*! "Avevo detto venerdì, no?"
 
    Stage 2 of docs/personality-roadmap.md, and stage 0 is what promoted it from a
    good idea to the only remaining answer. Measured there, on this Mac: the
@@ -40,7 +40,7 @@
      in `NekoAsk`, where the turns are. */
 @interface NekoRecord : NSObject
 
-/* Whether the sentence is asking what somebody said or wrote before — or
+/*! Whether the sentence is asking what somebody said or wrote before — or
    **when** they did, which is the same diary read for a different answer.
 
    The two are worth telling apart. Asked *what* it quotes the line and puts the
@@ -53,12 +53,12 @@
    one of nine with the date already in the prompt. */
 + (BOOL)wantedFor:(NSString *)question;
 
-/* Whether that question was a *when*. Exposed because the difference is the
+/*! Whether that question was a *when*. Exposed because the difference is the
    whole of this addition and a harness should be able to see it. */
 + (BOOL)asksWhen:(NSString *)question;
 
-/* The lines, quoted with the day they were written — or the sentence that says
-   there are none. Never nil once -wantedFor: has said yes. */
+/*! The lines, quoted with the day they were written — or the sentence that says
+   there are none. Never nil once ``-wantedFor:`` has said yes. */
 + (NSString *)answerFor:(NSString *)question;
 
 @end

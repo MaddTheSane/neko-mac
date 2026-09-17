@@ -2,7 +2,7 @@
 
 #import <Cocoa/Cocoa.h>
 
-/* "Metti in calendario la riunione con Marco venerdì alle 9:30."
+/*! "Metti in calendario la riunione con Marco venerdì alle 9:30."
 
    The route with no permission, which is the one docs/utilities.md ranked first
    and nobody built: the event is written as an `.ics` in this application's own
@@ -31,14 +31,14 @@
    that matters here is not a missed appointment; it is one nobody asked for. */
 @interface NekoAppointment : NSObject
 
-/* What the sentence asks to put in a calendar, or nil. The dictionary carries
+/*! What the sentence asks to put in a calendar, or `nil`. The dictionary carries
    When, Ends, Title and Sentence — the last being what is read back. */
 + (NSDictionary *)wantedFor:(NSString *)question;
 
-/* Writes the file and hands it over. Answers with what to say. */
+/*! Writes the file and hands it over. Answers with what to say. */
 + (NSString *)make:(NSDictionary *)appointment;
 
-/* The text of the file itself, so a test can read it without opening anything. */
+/*! The text of the file itself, so a test can read it without opening anything. */
 + (NSString *)calendarFileFor:(NSDictionary *)appointment;
 
 @end
