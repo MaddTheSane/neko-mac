@@ -36,6 +36,7 @@
 #import "NekoMemory.h"
 #import "NekoOpenAIProvider.h"
 #import "NekoModelProvider.h"
+#import <ServiceManagement/ServiceManagement.h>
 
 NSString * const NekoCharacterKey  = @"NekoCharacter";
 NSString * const NekoSpeedKey      = @"NekoSpeed";
@@ -52,27 +53,6 @@ NSString * const NekoSuggestEveryKey = @"NekoSuggestEvery";
 
 NSString * const NekoSettingsDidChangeNotification = @"NekoSettingsDidChange";
 
-/* SMAppService arrived in macOS 13 and registers the app itself as a login
-   item, no helper bundle involved. It is reached through the runtime rather
-   than linked, so the binary still runs on the older systems this project
-   targets, where the class is simply absent. */
-@protocol NekoAppService <NSObject>
-- (BOOL)registerAndReturnError:(NSError **)error;
-- (BOOL)unregisterAndReturnError:(NSError **)error;
-- (NSInteger)status;
-@end
-
-@protocol NekoAppServiceClass <NSObject>
-- (id)mainAppService;
-@end
-
-/* SMAppServiceStatus */
-enum {
-	NekoLoginNotRegistered = 0,
-	NekoLoginEnabled = 1,
-	NekoLoginRequiresApproval = 2,
-	NekoLoginNotFound = 3
-};
 
 static const CGFloat NekoMinSpeed = 4.0f;
 static const CGFloat NekoMaxSpeed = 30.0f;
@@ -557,45 +537,47 @@ static const CGFloat NekoMaxStopRadius = 200.0;
 
 #pragma mark Opening at login
 
-- (id<NekoAppService>)loginService
-{
-	Class serviceClass = NSClassFromString(@"SMAppService");
-	if (serviceClass == Nil)
-		return nil;
-	return [(id<NekoAppServiceClass>)serviceClass mainAppService];
-}
-
 - (BOOL)canOpenAtLogin
 {
-	return [self loginService] != nil;
+	if (@available(macOS 13.0, *)) {
+		return [SMAppService mainAppService] != nil;
+	} else {
+		return NO;
+	}
 }
 
 - (BOOL)opensAtLogin
 {
-	id<NekoAppService> service = [self loginService];
-	if (service == nil)
+	if (@available(macOS 13.0, *)) {
+		SMAppService *service = [SMAppService mainAppService];
+		SMAppServiceStatus status = [service status];
+		return status == SMAppServiceStatusEnabled || status == SMAppServiceStatusRequiresApproval;
+	} else {
 		return NO;
-	NSInteger status = [service status];
-	return status == NekoLoginEnabled || status == NekoLoginRequiresApproval;
+	}
 }
 
 /* Returns whether the system now agrees, so the checkbox can follow it rather
    than the click. */
 - (BOOL)setOpensAtLogin:(BOOL)wanted
 {
-	id<NekoAppService> service = [self loginService];
-	if (service == nil)
+	if (@available(macOS 13.0, *)) {
+		SMAppService *service = [SMAppService mainAppService];
+		if (service == nil)
+			return NO;
+	
+		NSError *error = nil;
+		BOOL ok = wanted ? [service registerAndReturnError:&error]
+		: [service unregisterAndReturnError:&error];
+		if (!ok)
+			NSLog(@"Neko: could not %@ as a login item: %@",
+				  wanted ? @"register" : @"unregister", error);
+		else if (wanted && [service status] == SMAppServiceStatusRequiresApproval)
+			[self explainLoginApproval];
+		return [self opensAtLogin];
+	} else {
 		return NO;
-
-	NSError *error = nil;
-	BOOL ok = wanted ? [service registerAndReturnError:&error]
-	                 : [service unregisterAndReturnError:&error];
-	if (!ok)
-		NSLog(@"Neko: could not %@ as a login item: %@",
-		      wanted ? @"register" : @"unregister", error);
-	else if (wanted && [service status] == NekoLoginRequiresApproval)
-		[self explainLoginApproval];
-	return [self opensAtLogin];
+	}
 }
 
 /* Registering succeeds but stays inert until the user allows it, and nothing
