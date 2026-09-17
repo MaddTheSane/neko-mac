@@ -3,8 +3,6 @@
 #import "NekoPlugin.h"
 #import "NekoShortcutProvider.h"
 
-#define NekoPanelLocalized(text) NSLocalizedString(text, nil)
-
 static const CGFloat NekoPanelWidth = 560.0f;
 static const CGFloat NekoPanelHeight = 460.0f;
 static const CGFloat NekoRowHeight = 86.0f;
@@ -27,7 +25,7 @@ static const CGFloat NekoRowHeight = 86.0f;
 		                     | NSWindowStyleMaskResizable)
 		            backing:NSBackingStoreBuffered
 		              defer:NO] autorelease];
-	[panel setTitle:NekoPanelLocalized(@"Neko Plugins")];
+	[panel setTitle:NSLocalizedString(@"Neko Plugins", @"Neko Plugins")];
 	[panel setReleasedWhenClosed:NO];
 	[panel setHidesOnDeactivate:NO];
 	/* Same rule as the preferences: it comes to whichever desktop you are on
@@ -75,7 +73,7 @@ static const CGFloat NekoRowHeight = 86.0f;
 	NSButton *add = [[[NSButton alloc] initWithFrame:
 		NSMakeRect(16.0f, 56.0f, 140.0f, 30.0f)] autorelease];
 	[add setBezelStyle:NSBezelStyleRounded];
-	[add setTitle:NekoPanelLocalized(@"Add…")];
+	[add setTitle:NSLocalizedString(@"Add…", @"Add…")];
 	[add setTarget:self];
 	[add setAction:@selector(addPressed:)];
 	[add setAutoresizingMask:NSViewMaxXMargin | NSViewMaxYMargin];
@@ -84,7 +82,7 @@ static const CGFloat NekoRowHeight = 86.0f;
 	NSButton *folder = [[[NSButton alloc] initWithFrame:
 		NSMakeRect(164.0f, 56.0f, 180.0f, 30.0f)] autorelease];
 	[folder setBezelStyle:NSBezelStyleRounded];
-	[folder setTitle:NekoPanelLocalized(@"Show the folder")];
+	[folder setTitle:NSLocalizedString(@"Show the folder", @"Show the folder")];
 	[folder setTarget:self];
 	[folder setAction:@selector(revealFolderPressed:)];
 	[folder setAutoresizingMask:NSViewMaxXMargin | NSViewMaxYMargin];
@@ -96,7 +94,7 @@ static const CGFloat NekoRowHeight = 86.0f;
 		NSButton *examples = [[[NSButton alloc] initWithFrame:
 			NSMakeRect(352.0f, 56.0f, 170.0f, 30.0f)] autorelease];
 		[examples setBezelStyle:NSBezelStyleRounded];
-		[examples setTitle:NekoPanelLocalized(@"Examples…")];
+		[examples setTitle:NSLocalizedString(@"Examples…", @"Examples…")];
 		[examples setTarget:self];
 		[examples setAction:@selector(revealExamplesPressed:)];
 		[examples setAutoresizingMask:NSViewMaxXMargin | NSViewMaxYMargin];
@@ -110,7 +108,7 @@ static const CGFloat NekoRowHeight = 86.0f;
 	   failing on. */
 	NSTextField *footer = [[[NSTextField alloc] initWithFrame:
 		NSMakeRect(16.0f, 6.0f, NekoPanelWidth - 32.0f, 48.0f)] autorelease];
-	[footer setStringValue:NekoPanelLocalized(@"Plugins live in Neko’s own folder in Application Support. Nothing here runs inside Neko, and nothing here can see your diary, your screen, your files or where you are — or make the cat speak on its own.")];
+	[footer setStringValue:NSLocalizedString(@"Plugins live in Neko’s own folder in Application Support. Nothing here runs inside Neko, and nothing here can see your diary, your screen, your files or where you are — or make the cat speak on its own.", @"Plugins live in Neko’s own folder in Application Support. Nothing here runs inside Neko, and nothing here can see your diary, your screen, your files or where you are — or make the cat speak on its own.")];
 	[footer setBezeled:NO];
 	[footer setDrawsBackground:NO];
 	[footer setEditable:NO];
@@ -159,7 +157,7 @@ static const CGFloat NekoRowHeight = 86.0f;
 	NSString *what = [plugin isUsable]
 		? [NSString stringWithFormat:@"%@ — %@", [plugin describeWhatItAdds],
 			[[plugin summary] length] > 0 ? [plugin summary]
-				: NekoPanelLocalized(@"no summary")]
+				: NSLocalizedString(@"no summary", @"no summary")]
 		: [plugin refusal];
 	NSTextField *ruler = [self labelAt:NSMakeRect(0.0, 0.0, width, 32.0)
 	                              text:what small:YES];
@@ -189,7 +187,7 @@ static const CGFloat NekoRowHeight = 86.0f;
 	for(NekoPlugin *measured in all) {
 		CGFloat needed = [self heightOfDetailFor:measured width:width - 150.0f];
 		CGFloat row = MAX(NekoRowHeight, 52.0f + needed + 16.0f);
-		[heights addObject:[NSNumber numberWithFloat:row]];
+		[heights addObject:@(row)];
 		height += row;
 	}
 	height = MAX(height, NSHeight([scroll frame]));
@@ -197,7 +195,7 @@ static const CGFloat NekoRowHeight = 86.0f;
 
 	if([all count] == 0) {
 		[rows addSubview:[self labelAt:NSMakeRect(8.0f, height - 60.0f, width - 16.0f, 40.0f)
-		                          text:NekoPanelLocalized(@"Nothing installed. A plugin is a folder whose name ends in .nekoplugin; add one and it arrives switched off.")
+		                          text:NSLocalizedString(@"Nothing installed. A plugin is a folder whose name ends in .nekoplugin; add one and it arrives switched off.", @"Nothing installed. A plugin is a folder whose name ends in .nekoplugin; add one and it arrives switched off.")
 		                         small:YES]];
 		return;
 	}
@@ -225,7 +223,7 @@ static const CGFloat NekoRowHeight = 86.0f;
 		NSString *what = [plugin isUsable]
 			? [NSString stringWithFormat:@"%@ — %@", [plugin describeWhatItAdds],
 				[[plugin summary] length] > 0 ? [plugin summary]
-					: NekoPanelLocalized(@"no summary")]
+					: NSLocalizedString(@"no summary", @"no summary")]
 			: [plugin refusal];
 		CGFloat detailHeight = [self heightOfDetailFor:plugin width:width - 150.0];
 		NSTextField *detail = [self labelAt:
@@ -238,7 +236,7 @@ static const CGFloat NekoRowHeight = 86.0f;
 		NSButton *switchOn = [[[NSButton alloc] initWithFrame:
 			NSMakeRect(width - 134.0f, top - 26.0f, 60.0f, 20.0f)] autorelease];
 		[switchOn setButtonType:NSButtonTypeSwitch];
-		[switchOn setTitle:NekoPanelLocalized(@"On")];
+		[switchOn setTitle:NSLocalizedString(@"On", @"On")];
 		[switchOn setState:[registry isEnabled:plugin]
 			? NSControlStateValueOn : NSControlStateValueOff];
 		[switchOn setEnabled:[plugin isUsable]];
@@ -264,7 +262,7 @@ static const CGFloat NekoRowHeight = 86.0f;
 			NSTextField *needs = [self labelAt:
 				NSMakeRect(8.0f, top - 90.0f, width - 150.0f, 16.0f)
 			                              text:[NSString stringWithFormat:
-				NekoPanelLocalized(@"Shortcuts you have not made yet: %@"),
+				NSLocalizedString(@"Shortcuts you have not made yet: %@", @"Shortcuts you have not made yet: %@"),
 				[missing componentsJoinedByString:@", "]]
 			                             small:YES];
 			[needs setTextColor:[NSColor systemOrangeColor]];
@@ -277,7 +275,7 @@ static const CGFloat NekoRowHeight = 86.0f;
 			   at the next launch. The switch is the whole of what to offer. */
 			NSTextField *note = [self labelAt:
 				NSMakeRect(width - 134.0f, top - 52.0f, 126.0f, 16.0f)
-			                             text:NekoPanelLocalized(@"ships with Neko")
+			                             text:NSLocalizedString(@"ships with Neko", @"ships with Neko")
 			                            small:YES];
 			[rows addSubview:note];
 		} else {
@@ -287,10 +285,11 @@ static const CGFloat NekoRowHeight = 86.0f;
 			[remove setControlSize:NSControlSizeSmall];
 			[remove setFont:[NSFont systemFontOfSize:
 				[NSFont systemFontSizeForControlSize:NSControlSizeSmall]]];
-			[remove setTitle:NekoPanelLocalized(@"Remove…")];
+			[remove setTitle:NSLocalizedString(@"Remove…", @"Remove…")];
 			[remove setTarget:self];
 			[remove setAction:@selector(removePressed:)];
 			[remove setIdentifier:[plugin identifier]];
+			[remove setHasDestructiveAction:YES];
 			[rows addSubview:remove];
 		}
 	}
@@ -323,8 +322,8 @@ static const CGFloat NekoRowHeight = 86.0f;
 	[choose setCanChooseDirectories:YES];
 	[choose setCanChooseFiles:NO];
 	[choose setAllowsMultipleSelection:NO];
-	[choose setPrompt:NekoPanelLocalized(@"Add")];
-	[choose setMessage:NekoPanelLocalized(@"Choose a plugin folder — its name ends in .nekoplugin. It will be copied in and left switched off.")];
+	[choose setPrompt:NSLocalizedString(@"Add", @"Add")];
+	[choose setMessage:NSLocalizedString(@"Choose a plugin folder — its name ends in .nekoplugin. It will be copied in and left switched off.", @"Choose a plugin folder — its name ends in .nekoplugin. It will be copied in and left switched off.")];
 
 	/* A sheet on this window, not an application-modal panel.
 	   Measured, and it is why "Add does absolutely nothing" was true: this app is
@@ -344,9 +343,9 @@ static const CGFloat NekoRowHeight = 86.0f;
 			return;
 
 		NSAlert *alert = [[[NSAlert alloc] init] autorelease];
-		[alert setMessageText:NekoPanelLocalized(@"That one was not added")];
+		[alert setMessageText:NSLocalizedString(@"That one was not added", @"That one was not added")];
 		[alert setInformativeText:problem];
-		[alert addButtonWithTitle:NekoPanelLocalized(@"All right")];
+		[alert addButtonWithTitle:NSLocalizedString(@"All right", @"All right")];
 		[alert beginSheetModalForWindow:[self window] completionHandler:nil];
 	}];
 }
@@ -359,12 +358,12 @@ static const CGFloat NekoRowHeight = 86.0f;
 
 	NSAlert *alert = [[[NSAlert alloc] init] autorelease];
 	[alert setMessageText:[NSString stringWithFormat:
-		NekoPanelLocalized(@"Remove “%@”?"), [plugin name]]];
+		NSLocalizedString(@"Remove “%@”?", @"Remove “%@”?"), [plugin name]]];
 	[alert setInformativeText:[NSString stringWithFormat:
-		NekoPanelLocalized(@"Its folder and everything it added — %@ — go. Nothing else changes. This cannot be undone."),
+		NSLocalizedString(@"Its folder and everything it added — %@ — go. Nothing else changes. This cannot be undone.", @"Its folder and everything it added — %@ — go. Nothing else changes. This cannot be undone."),
 		[plugin describeWhatItAdds]]];
-	[alert addButtonWithTitle:NekoPanelLocalized(@"Remove")];
-	[alert addButtonWithTitle:NekoPanelLocalized(@"Cancel")];
+	[alert addButtonWithTitle:NSLocalizedString(@"Remove", @"Remove")].hasDestructiveAction = YES;
+	[alert addButtonWithTitle:NSLocalizedString(@"Cancel", @"Cancel")];
 
 	/* A sheet, for the same reason as the one above. */
 	NekoPlugin *kept = [plugin retain];

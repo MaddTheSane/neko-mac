@@ -14,7 +14,6 @@ static NSLocale *NekoClockLocale(void)
    first, so that "quanti giorni mancano a" is tried before "quanto manca a". */
 static NSString *NekoTailAfterAny(NSString *lowered, NSArray<NSString*> *triggers)
 {
-	NSEnumerator *e = [triggers objectEnumerator];
 	for(NSString *trigger in triggers) {
 		NSRange found = [lowered rangeOfString:trigger];
 		if(found.location == NSNotFound)

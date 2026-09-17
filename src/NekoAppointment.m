@@ -2,9 +2,6 @@
 #import "NekoWhen.h"
 #import "NekoMemory.h"
 
-#define NekoAppointmentLocalized(key) \
-	NSLocalizedStringFromTable(key, @"Localizable", nil)
-
 /* An hour, when nobody said. Long enough to be worth blocking out and short
    enough that correcting it in Calendar is one drag. */
 static const NSTimeInterval NekoAppointmentDefault = 3600.0;
@@ -13,21 +10,19 @@ static const NSTimeInterval NekoAppointmentDefault = 3600.0;
    è durata due ore" would put something in somebody's calendar. */
 static NSArray *NekoCalendarOpenings(void)
 {
-	static NSArray *openings = nil;
-	if(openings == nil)
-		openings = [@[
-			/* Italian */
-			@"metti in calendario", @"in calendario", @"segna in agenda",
-			@"segna un appuntamento", @"appuntamento", @"aggiungi al calendario",
-			@"metti in agenda",
-			/* English */
-			@"add to my calendar", @"add to calendar", @"put in my calendar",
-			@"in my calendar", @"schedule ", @"appointment",
-			/* French */
-			@"dans mon calendrier", @"au calendrier", @"rendez-vous",
-			/* Spanish */
-			@"en mi calendario", @"al calendario", @"añade al calendario",
-			@"cita ", @"agenda "] retain];
+	static NSArray * const openings = @[
+		/* Italian */
+		   @"metti in calendario", @"in calendario", @"segna in agenda",
+		   @"segna un appuntamento", @"appuntamento", @"aggiungi al calendario",
+		   @"metti in agenda",
+		   /* English */
+		   @"add to my calendar", @"add to calendar", @"put in my calendar",
+		   @"in my calendar", @"schedule ", @"appointment",
+		   /* French */
+		   @"dans mon calendrier", @"au calendrier", @"rendez-vous",
+		   /* Spanish */
+		   @"en mi calendario", @"al calendario", @"añade al calendario",
+		   @"cita ", @"agenda "];
 	return openings;
 }
 
@@ -86,7 +81,7 @@ static NSArray *NekoCalendarOpenings(void)
 	if(when == nil)
 		return [NSDictionary dictionaryWithObjectsAndKeys:
 			@"past", @"Problem",
-			NekoAppointmentLocalized(@"That was already yesterday — say a day that is still coming."),
+			NSLocalizedString(@"That was already yesterday — say a day that is still coming.", @"That was already yesterday — say a day that is still coming."),
 			@"Sentence", nil];
 
 	/* However long they said, or an hour. "Per un'ora" is a duration and
@@ -114,7 +109,7 @@ static NSArray *NekoCalendarOpenings(void)
 	NSString *plain = [title stringByTrimmingCharactersInSet:
 		[NSCharacterSet characterSetWithCharactersInString:@" \t\n\r,;:.!?-–—"]];
 	/* Leading joining words left behind by the cut: "la riunione con Marco". */
-	NSArray *const leading = @[@"la ", @"il ", @"lo ", @"le ",
+	static NSArray *const leading = @[@"la ", @"il ", @"lo ", @"le ",
 		@"un ", @"una ", @"the ", @"a ", @"an ", @"per ", @"for ", @"di ", @"of "];
 	NSEnumerator *l = [leading objectEnumerator];
 	NSString *word;
@@ -126,7 +121,7 @@ static NSArray *NekoCalendarOpenings(void)
 			l = [leading objectEnumerator];       /* and again, "per la riunione" */
 		}
 	if([plain length] == 0)
-		plain = NekoAppointmentLocalized(@"Appointment");
+		plain = NSLocalizedString(@"Appointment", @"Appointment");
 
 	NSDateFormatter *readable = [[[NSDateFormatter alloc] init] autorelease];
 	[readable setDateStyle:NSDateFormatterFullStyle];
@@ -136,17 +131,16 @@ static NSArray *NekoCalendarOpenings(void)
 	[clock setTimeStyle:NSDateFormatterShortStyle];
 
 	NSString *sentence = [NSString stringWithFormat:
-		NekoAppointmentLocalized(@"%@ to %@ — “%@”. Shall I put it in your calendar?"),
+		NSLocalizedString(@"%@ to %@ — “%@”. Shall I put it in your calendar?", @"%@ to %@ — “%@”. Shall I put it in your calendar?"),
 		[readable stringFromDate:when],
 		[clock stringFromDate:[when dateByAddingTimeInterval:lasts]],
 		plain];
 
-	return [NSDictionary dictionaryWithObjectsAndKeys:
-		when, @"When",
-		[when dateByAddingTimeInterval:lasts], @"Ends",
-		plain, @"Title",
-		sentence, @"Sentence",
-		[NSNumber numberWithBool:wasBare], @"MovedToTomorrow", nil];
+	return @{@"When": when,
+			 @"Ends": [when dateByAddingTimeInterval:lasts],
+			 @"Title": plain,
+			 @"Sentence": sentence,
+			 @"MovedToTomorrow": @(wasBare)};
 }
 
 #pragma mark Handing it over
@@ -201,7 +195,7 @@ static NSArray *NekoCalendarOpenings(void)
 {
 	NSString *body = [self calendarFileFor:appointment];
 	if([body length] == 0)
-		return NekoAppointmentLocalized(@"That did not work.");
+		return NSLocalizedString(@"That did not work.", @"That did not work.");
 
 	/* In this application's own folder, beside the diary, and named after the
 	   thing so that somebody who goes looking knows what they are looking at. */
@@ -210,15 +204,15 @@ static NSArray *NekoCalendarOpenings(void)
 	NSError *problem = nil;
 	if(![body writeToURL:file atomically:YES
 	            encoding:NSUTF8StringEncoding error:&problem])
-		return NekoAppointmentLocalized(@"That did not work.");
+		return NSLocalizedString(@"That did not work.", @"That did not work.");
 
 	if(![[NSWorkspace sharedWorkspace] openURL:file])
-		return NekoAppointmentLocalized(@"That did not work.");
+		return NSLocalizedString(@"That did not work.", @"That did not work.");
 
 	[[NekoMemory sharedMemory] noteNoticed:[NSString stringWithFormat:
 		@"handed the calendar an appointment: %@",
 		[appointment objectForKey:@"Title"]]];
-	return NekoAppointmentLocalized(@"It is in front of your calendar — press Add there.");
+	return NSLocalizedString(@"It is in front of your calendar — press Add there.", @"It is in front of your calendar — press Add there.");
 }
 
 @end

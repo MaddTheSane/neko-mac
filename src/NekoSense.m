@@ -262,17 +262,14 @@ static NSSet *NekoConcreteWords(NSString *text)
 	if([seen length] == 0)
 		return NO;                     /* nothing to judge against */
 
-	static NSArray *because = nil;
-	if(because == nil)
-		because = [[NSArray alloc] initWithObjects:
-			@"perché", @"perche", @"poiché", @"poiche", @"siccome", @"dato che",
-			@"visto che", @"because", @"since ", @"parce que", @"puisque",
-			@"porque", @"ya que", nil];
+	static NSArray *const because =
+	@[@"perché", @"perche", @"poiché", @"poiche", @"siccome", @"dato che",
+	  @"visto che", @"because", @"since ", @"parce que", @"puisque",
+	  @"porque", @"ya que"];
+	
 	NSString *text = [line lowercaseString];
 	BOOL explains = NO;
-	NSEnumerator *e = [because objectEnumerator];
-	NSString *word;
-	while((word = [e nextObject]) != nil)
+	for(NSString *word in because)
 		if([text rangeOfString:word].location != NSNotFound) {
 			explains = YES;
 			break;
@@ -295,24 +292,22 @@ static NSSet *NekoConcreteWords(NSString *text)
    "ti conviene una pausa" is advice and stays. */
 + (BOOL)isAReproach:(NSString *)line
 {
-	static NSArray *blaming = nil;
-	if(blaming == nil)
-		blaming = [[NSArray alloc] initWithObjects:
-			/* Italian */
-			@"dovresti", @"avresti dovuto", @"non dovresti", @"avresti potuto",
-			@"hai sbagliato", @"è colpa tua", @"te l'avevo detto",
-			/* English */
-			@"you should have", @"you shouldn't have", @"you ought to have",
-			@"your fault", @"i told you so", @"you were wrong",
-			/* French */
-			@"tu aurais dû", @"tu devrais", @"c'est ta faute",
-			/* Spanish */
-			@"deberías", @"deberías haber", @"es tu culpa", @"te lo dije",
-			nil];
+	static NSArray *const blaming =
+	@[
+		/* Italian */
+		@"dovresti", @"avresti dovuto", @"non dovresti", @"avresti potuto",
+		@"hai sbagliato", @"è colpa tua", @"te l'avevo detto",
+		/* English */
+		@"you should have", @"you shouldn't have", @"you ought to have",
+		@"your fault", @"i told you so", @"you were wrong",
+		/* French */
+		@"tu aurais dû", @"tu devrais", @"c'est ta faute",
+		/* Spanish */
+		@"deberías", @"deberías haber", @"es tu culpa", @"te lo dije",
+	];
+	
 	NSString *text = [line lowercaseString];
-	NSEnumerator *e = [blaming objectEnumerator];
-	NSString *one;
-	while((one = [e nextObject]) != nil)
+	for(NSString *one in blaming)
 		if([text rangeOfString:one].location != NSNotFound)
 			return YES;
 	return NO;

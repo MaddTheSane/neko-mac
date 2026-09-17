@@ -6,9 +6,6 @@
 
 NSString * const NekoTimerDidChangeNotification = @"NekoTimerDidChange";
 
-#define NekoTimerLocalized(key) \
-	NSLocalizedStringFromTable(key, @"Localizable", nil)
-
 /* How long it will wait for a decent moment before saying it anyway.
 
    Eight seconds, not twenty. This is the one thing in the application worth
@@ -28,7 +25,7 @@ static const NSTimeInterval NekoTimerWaitsForYou = 3600.0;
 static BOOL NekoAsksForATimer(NSString *question)
 {
 	NSString *text = [question lowercaseString];
-	NSArray *triggers = [NSArray arrayWithObjects:
+	static NSArray *const triggers = @[
 		/* Italian */
 		@"timer", @"sveglia", @"svegliami", @"ricordamelo", @"ricordami",
 		@"avvisami", @"avvertimi", @"dimmelo", @"conta",
@@ -37,22 +34,22 @@ static BOOL NekoAsksForATimer(NSString *question)
 		/* French */
 		@"rappelle", @"réveille", @"minuteur", @"préviens",
 		/* Spanish */
-		@"recuérdame", @"despiértame", @"avísame", @"temporizador", nil];
-	NSEnumerator *e = [triggers objectEnumerator];
-	NSString *word;
-	while((word = [e nextObject]) != nil)
-		if([text rangeOfString:word].location != NSNotFound)
+		@"recuérdame", @"despiértame", @"avísame", @"temporizador"];
+	for(NSString *word in triggers) {
+		if([text rangeOfString:word].location != NSNotFound) {
 			return YES;
+		}
+	}
 
 	/* Or the sentence is nothing but the waiting: "fra venti minuti", said on its
 	   own, is a request and not a remark. */
-	NSArray *openings = [NSArray arrayWithObjects:
-		@"fra ", @"tra ", @"in ", @"dans ", @"en ", @"dentro di ", @"dentro de ", nil];
-	NSEnumerator *o = [openings objectEnumerator];
-	NSString *opening;
-	while((opening = [o nextObject]) != nil)
-		if([text hasPrefix:opening] && [text length] < 40)
+	static NSArray * const openings = @[
+		@"fra ", @"tra ", @"in ", @"dans ", @"en ", @"dentro di ", @"dentro de "];
+	for(NSString *opening in openings) {
+		if([text hasPrefix:opening] && [text length] < 40) {
 			return YES;
+		}
+	}
 	return NO;
 }
 
@@ -98,7 +95,7 @@ static BOOL NekoAsksForATimer(NSString *question)
 	   lands. A duration repeated back proves nothing about whether it was heard
 	   right; a clock time does. */
 	return [NSString stringWithFormat:
-		NekoTimerLocalized(@"%@: I will tell you at %@."),
+		NSLocalizedString(@"%@: I will tell you at %@.", @"%@: I will tell you at %@."),
 		[NekoWhen describe:seconds], [NekoWhen clockTimeIn:seconds]];
 }
 
@@ -136,7 +133,7 @@ static BOOL NekoAsksForATimer(NSString *question)
 	}
 
 	NSString *said = [NSString stringWithFormat:
-		NekoTimerLocalized(@"The %@ are up."), [NekoWhen describe:asked]];
+		NSLocalizedString(@"The %@ are up.", @"The %@ are up."), [NekoWhen describe:asked]];
 	[self cancel];
 	[[NekoMemory sharedMemory] noteNoticed:said];
 	[[NekoAsk sharedAsk] sayUnprompted:said];
@@ -165,7 +162,7 @@ static BOOL NekoAsksForATimer(NSString *question)
 	NSString *remaining = left < 60.0
 		? [NekoWhen describe:(double)((int)left + 1)]
 		: [NekoWhen describe:(double)(((int)left / 60) * 60)];
-	return [NSString stringWithFormat:NekoTimerLocalized(@"Timer — %@ left"),
+	return [NSString stringWithFormat:NSLocalizedString(@"Timer — %@ left", @"Timer — %@ left"),
 		remaining];
 }
 

@@ -7,8 +7,6 @@ NSString * const NekoDrawModelKey   = @"NekoDrawModel";
 NSString * const NekoDrawStepsKey   = @"NekoDrawSteps";
 NSString * const NekoDrawSizeKey    = @"NekoDrawSize";
 
-#define NekoPainterLocalized(text) NSLocalizedString(text, nil)
-
 @implementation NekoPainter
 
 + (void)initialize
@@ -79,11 +77,11 @@ NSString * const NekoDrawSizeKey    = @"NekoDrawSize";
 - (NSString *)hint
 {
 	if([self helperPath] == nil)
-		return NekoPainterLocalized(@"This build has no drawing program in it.");
+		return NSLocalizedString(@"This build has no drawing program in it.", @"This build has no drawing program in it.");
 	if([self modelURL] == nil)
-		return NekoPainterLocalized(@"Download the picture model first.");
+		return NSLocalizedString(@"Download the picture model first.", @"Download the picture model first.");
 	if(![[NSUserDefaults standardUserDefaults] boolForKey:NekoDrawEnabledKey])
-		return NekoPainterLocalized(@"Drawing is switched off.");
+		return NSLocalizedString(@"Drawing is switched off.", @"Drawing is switched off.");
 	return nil;
 }
 
@@ -162,7 +160,7 @@ NSString * const NekoDrawSizeKey    = @"NekoDrawSize";
 			[NSError errorWithDomain:NekoAskErrorDomain
 			                    code:NekoAskErrorNoAnswer
 			                userInfo:[NSDictionary dictionaryWithObject:
-				NekoPainterLocalized(@"The drawing did not come out.")
+				NSLocalizedString(@"The drawing did not come out.", @"The drawing did not come out.")
 				                                                 forKey:NSLocalizedDescriptionKey]];
 		dispatch_async(dispatch_get_main_queue(), ^{
 			done(picture, problem);

@@ -1,7 +1,5 @@
 #import "NekoPlayer.h"
 
-#define NekoPlayerLocalized(text) NSLocalizedString(text, nil)
-
 NSString * const NekoPlayerPlay       = @"play";
 NSString * const NekoPlayerPause      = @"pause";
 NSString * const NekoPlayerPlayPause  = @"playpause";
@@ -180,7 +178,7 @@ static NSString *NekoConsentKeyFor(NSString *player)
 	if(![self isInstalled:player]) {
 		if(problem != NULL)
 			*problem = [NSString stringWithFormat:
-				NekoPlayerLocalized(@"%@ is not on this Mac."),
+				NSLocalizedString(@"%@ is not on this Mac.", @"%@ is not on this Mac."),
 				[self displayNameFor:player]];
 		return NO;
 	}
@@ -189,7 +187,7 @@ static NSString *NekoConsentKeyFor(NSString *player)
 	   && ![[player lowercaseString] isEqualToString:@"music"]) {
 		if(problem != NULL)
 			*problem = [NSString stringWithFormat:
-				NekoPlayerLocalized(@"%@ does not let anything else search it; only its own window can."),
+				NSLocalizedString(@"%@ does not let anything else search it; only its own window can.", @"%@ does not let anything else search it; only its own window can."),
 				[self displayNameFor:player]];
 		return NO;
 	}
@@ -212,10 +210,10 @@ static NSString *NekoConsentKeyFor(NSString *player)
 			   only failure here they can do something about. */
 			*problem = (code == -1743)
 				? [NSString stringWithFormat:
-					NekoPlayerLocalized(@"macOS will not let me control %@ until you allow it in Privacy & Security, under Automation."),
+					NSLocalizedString(@"macOS will not let me control %@ until you allow it in Privacy & Security, under Automation.", @"macOS will not let me control %@ until you allow it in Privacy & Security, under Automation."),
 					[self displayNameFor:player]]
 				: [NSString stringWithFormat:
-					NekoPlayerLocalized(@"%@ would not do it."),
+					NSLocalizedString(@"%@ would not do it.", @"%@ would not do it."),
 					[self displayNameFor:player]];
 		}
 		return NO;
@@ -228,7 +226,7 @@ static NSString *NekoConsentKeyFor(NSString *player)
 	   && [[answer stringValue] isEqualToString:@"none"]) {
 		if(problem != NULL)
 			*problem = [NSString stringWithFormat:
-				NekoPlayerLocalized(@"There is nothing by “%@” in your library."), argument];
+				NSLocalizedString(@"There is nothing by “%@” in your library.", @"There is nothing by “%@” in your library."), argument];
 		return NO;
 	}
 	return YES;

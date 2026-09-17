@@ -1,8 +1,6 @@
 #import "NekoRecord.h"
 #import "NekoMemory.h"
 
-#define NekoRecordLocalized(key) NSLocalizedStringFromTable(key, @"Localizable", nil)
-
 /* Two, not three: the bubble holds a sentence or two, and a third quotation is
    somebody's diary being read out at them. */
 static const NSUInteger NekoRecordMost = 2;
@@ -12,10 +10,8 @@ static const NSUInteger NekoRecordMost = 2;
    scrive?", which is a question about spelling and none of this file's business. */
 static NSArray *NekoRecordAsking(void)
 {
-	static NSArray *asking = nil;
-	if(asking != nil)
-		return asking;
-	asking = [[NSArray alloc] initWithObjects:
+	static NSArray *const asking =
+	@[
 		/* Italian */
 		@"cosa avevo detto", @"che cosa avevo detto", @"che avevo detto",
 		@"avevo detto", @"avevo scritto", @"l'avevo detto", @"te l'avevo detto",
@@ -32,8 +28,8 @@ static NSArray *NekoRecordAsking(void)
 		@"tu te souviens de ce que",
 		/* Spanish */
 		@"había dicho", @"habia dicho", @"te había dicho", @"qué había dicho",
-		@"que habia dicho", @"te acuerdas de lo que", @"te acuerdas cuándo",
-		nil];
+		@"que habia dicho", @"te acuerdas de lo que", @"te acuerdas cuándo"];
+	
 	return asking;
 }
 
@@ -56,7 +52,7 @@ static NSString *NekoRecordDay(NSString *stamp)
 	NSInteger back = [[calendar components:NSCalendarUnitDay fromDate:thatDay
 	                               toDate:midnight options:0] day];
 	if(back == 1)
-		return NekoRecordLocalized(@"yesterday");
+		return NSLocalizedString(@"yesterday", @"yesterday");
 
 	NSDateFormatter *said = [[[NSDateFormatter alloc] init] autorelease];
 	[said setLocale:[NSLocale localeWithLocaleIdentifier:
@@ -73,10 +69,8 @@ static NSString *NekoRecordDay(NSString *stamp)
    because "quando ti ho detto" contains "ti ho detto". */
 static NSArray *NekoRecordAskingWhen(void)
 {
-	static NSArray *asking = nil;
-	if(asking != nil)
-		return asking;
-	asking = [[NSArray alloc] initWithObjects:
+	static NSArray *const asking =
+	@[
 		/* Italian */
 		@"quando te l'ho detto", @"quando te l'avevo detto",
 		@"quando ne abbiamo parlato", @"quando ne ho parlato",
@@ -91,7 +85,8 @@ static NSArray *NekoRecordAskingWhen(void)
 		@"quand t'ai-je dit",
 		/* Spanish */
 		@"cuándo te lo dije", @"cuando te lo dije", @"cuándo hablamos de",
-		@"cuando hablamos de", nil];
+		@"cuando hablamos de"];
+	
 	return asking;
 }
 
@@ -145,7 +140,7 @@ static NSInteger NekoRecordDaysAgo(NSString *stamp)
 	NSArray *found = [[NekoMemory sharedMemory] recordAbout:question
 	                                                  limit:NekoRecordMost];
 	if([found count] == 0)
-		return NekoRecordLocalized(@"I have nothing written down about that.");
+		return NSLocalizedString(@"I have nothing written down about that.", @"I have nothing written down about that.");
 
 	/* Asked *when*, the day and how long ago is the whole answer: quoting the
 	   line back would be answering a different question. */
@@ -164,13 +159,13 @@ static NSInteger NekoRecordDaysAgo(NSString *stamp)
 		NSString *stamp = [first objectForKey:@"Day"];
 		NSInteger ago = NekoRecordDaysAgo(stamp);
 		if(ago == 0)
-			return NekoRecordLocalized(@"Today.");
+			return NSLocalizedString(@"Today.", @"Today.");
 		if(ago == 1)
-			return NekoRecordLocalized(@"Yesterday.");
+			return NSLocalizedString(@"Yesterday.", @"Yesterday.");
 		if(ago < 0)
 			return NekoRecordDay(stamp);
 		return [NSString stringWithFormat:
-			NekoRecordLocalized(@"On %@, %ld days ago."),
+			NSLocalizedString(@"On %@, %ld days ago.", @"On %@, %ld days ago."),
 			NekoRecordDay(stamp), (long)ago];
 	}
 
@@ -180,8 +175,8 @@ static NSInteger NekoRecordDaysAgo(NSString *stamp)
 	while((one = [e nextObject]) != nil) {
 		BOOL theirs = [[one objectForKey:@"Kind"] isEqualToString:@"you"];
 		[sentences addObject:[NSString stringWithFormat:
-			theirs ? NekoRecordLocalized(@"On %@ you said: “%@”")
-			       : NekoRecordLocalized(@"On %@ I noted: “%@”"),
+			theirs ? NSLocalizedString(@"On %@ you said: “%@”", @"On %@ you said: “%@”")
+			       : NSLocalizedString(@"On %@ I noted: “%@”", @"On %@ I noted: \"%@\""),
 			NekoRecordDay([one objectForKey:@"Day"]),
 			[one objectForKey:@"Text"]]];
 	}

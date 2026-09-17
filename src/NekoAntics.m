@@ -9,8 +9,6 @@
 #import "NekoCharacter.h"
 #import "NekoNoise.h"
 
-#define NekoAnticsLocalized(text) NSLocalizedString(text, nil)
-
 /* How often it considers being curious, and how long it waits between antics.
    Often enough to feel alive, rare enough not to be a colleague who taps you on
    the shoulder every minute. */
@@ -119,21 +117,21 @@ static const NSTimeInterval NekoAnticsAway = 150.0;
 
 - (NSString *)questionAboutTyping
 {
-	NSArray *lines = [NSArray arrayWithObjects:
-		NekoAnticsLocalized(@"What are you writing?"),
-		NekoAnticsLocalized(@"Is it about me?"),
-		NekoAnticsLocalized(@"That is a lot of words. Any of them mine?"),
-		NekoAnticsLocalized(@"May I watch you type?"),
-		NekoAnticsLocalized(@"Need a hand? I only have paws."), nil];
+	NSArray *lines = @[
+		NSLocalizedString(@"What are you writing?", @"What are you writing?"),
+		NSLocalizedString(@"Is it about me?", @"Is it about me?"),
+		NSLocalizedString(@"That is a lot of words. Any of them mine?", @"That is a lot of words. Any of them mine?"),
+		NSLocalizedString(@"May I watch you type?", @"May I watch you type?"),
+		NSLocalizedString(@"Need a hand? I only have paws.", @"Need a hand? I only have paws.")];
 	return [lines objectAtIndex:arc4random_uniform((unsigned)[lines count])];
 }
 
 - (NSString *)lineAboutThePointer
 {
-	NSArray *lines = [NSArray arrayWithObjects:
-		NekoAnticsLocalized(@"Got it. It was getting away."),
-		NekoAnticsLocalized(@"This arrow keeps moving. Suspicious."),
-		NekoAnticsLocalized(@"Caught your cursor. You may have it back."), nil];
+	NSArray *lines = @[
+		NSLocalizedString(@"Got it. It was getting away.", @"Got it. It was getting away."),
+		NSLocalizedString(@"This arrow keeps moving. Suspicious.", @"This arrow keeps moving. Suspicious."),
+		NSLocalizedString(@"Caught your cursor. You may have it back.", @"Caught your cursor. You may have it back.")];
 	return [lines objectAtIndex:arc4random_uniform((unsigned)[lines count])];
 }
 
@@ -343,7 +341,7 @@ static const CGFloat NekoAnticsSideMax = 70.0f;
 	[[NekoDesktop sharedDesktop] sample];
 	MyPanel *panel = [[NekoController sharedController] panel];
 	if(panel == nil || ![panel isRoaming])
-		return NekoAnticsLocalized(@"Only while roaming.");
+		return NSLocalizedString(@"Only while roaming.", @"Only while roaming.");
 
 	NekoDesktop *desktop = [NekoDesktop sharedDesktop];
 	NSTimeInterval idle = [desktop idleSeconds];
@@ -354,7 +352,7 @@ static const CGFloat NekoAnticsSideMax = 70.0f;
 		         goingTo:[self pointerSpot]
 		            pose:NekoStateKaki
 		        forTicks:40];
-		return NekoAnticsLocalized(@"It came over to ask what you are writing.");
+		return NSLocalizedString(@"It came over to ask what you are writing.", @"It came over to ask what you are writing.");
 	}
 	if([desktop movesPerMinute] > 120) {
 		/* The one antic that is supposed to land on the pointer: pouncing beside
@@ -363,7 +361,7 @@ static const CGFloat NekoAnticsSideMax = 70.0f;
 		         goingTo:[NSEvent mouseLocation]
 		            pose:NekoStateKaki
 		        forTicks:16];
-		return NekoAnticsLocalized(@"It pounced on the cursor.");
+		return NSLocalizedString(@"It pounced on the cursor.", @"It pounced on the cursor.");
 	}
 	if(idle > 20.0) {
 		/* Nobody typing, nobody clicking: it goes and claws the edge of the
@@ -382,7 +380,7 @@ static const CGFloat NekoAnticsSideMax = 70.0f;
 		                             NSMinY(frame))
 		            pose:NekoStateCount
 		        forTicks:0];
-		return NekoAnticsLocalized(@"It went to claw the edge of the screen.");
+		return NSLocalizedString(@"It went to claw the edge of the screen.", @"It went to claw the edge of the screen.");
 	}
 
 	/* Something is happening, just not much: a look in your direction. */
@@ -390,7 +388,7 @@ static const CGFloat NekoAnticsSideMax = 70.0f;
 	         goingTo:[self pointerSpot]
 	            pose:NekoStateJare
 	        forTicks:24];
-	return NekoAnticsLocalized(@"It wandered over to see what you were up to.");
+	return NSLocalizedString(@"It wandered over to see what you were up to.", @"It wandered over to see what you were up to.");
 }
 
 @end

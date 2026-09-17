@@ -3,8 +3,6 @@
 #import "NekoLocalProvider.h"
 #import "NekoModelStore.h"
 
-#define NekoBrainsLocalized(text) NSLocalizedString(text, nil)
-
 /* Two gigabytes. Qwen2.5 3B and the two 4B models clear it; the 1.5B, which
    measurably cannot hold the instructions, does not. */
 static const long long NekoBrainsCapable = 2000000000LL;
@@ -82,15 +80,15 @@ static const long long NekoBrainsCapable = 2000000000LL;
 + (NSString *)describeChoice
 {
 	if([[self apple] isConfigured])
-		return NekoBrainsLocalized(@"Apple Intelligence, on this Mac, is what speaks when Neko speaks on its own.");
+		return NSLocalizedString(@"Apple Intelligence, on this Mac, is what speaks when Neko speaks on its own.", @"Apple Intelligence, on this Mac, is what speaks when Neko speaks on its own.");
 
 	NekoLocalModel *model = [self biggestInstalledModel];
 	if(model != nil)
 		return [NSString stringWithFormat:
-			NekoBrainsLocalized(@"%@, on this Mac, is what speaks when Neko speaks on its own."),
+			NSLocalizedString(@"%@, on this Mac, is what speaks when Neko speaks on its own.", @"%@, on this Mac, is what speaks when Neko speaks on its own."),
 			[model name]];
 
-	return NekoBrainsLocalized(@"Nothing on this Mac is up to writing remarks: Apple Intelligence is unavailable and no model of about two gigabytes or more is downloaded. The cat falls back to its own few written-in lines, and says less. Whatever engine is set for questions is untouched by this — it is only that a remark nobody asked for is not sent to a remote service.");
+	return NSLocalizedString(@"Nothing on this Mac is up to writing remarks: Apple Intelligence is unavailable and no model of about two gigabytes or more is downloaded. The cat falls back to its own few written-in lines, and says less. Whatever engine is set for questions is untouched by this — it is only that a remark nobody asked for is not sent to a remote service.", @"Nothing on this Mac is up to writing remarks: Apple Intelligence is unavailable and no model of about two gigabytes or more is downloaded. The cat falls back to its own few written-in lines, and says less. Whatever engine is set for questions is untouched by this — it is only that a remark nobody asked for is not sent to a remote service.");
 }
 
 @end

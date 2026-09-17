@@ -10,8 +10,6 @@ NSString * const NekoPluginsDidChangeNotification = @"NekoPluginsDidChange";
    that somebody switched off. */
 static NSString * const NekoPluginsSeededKey = @"NekoPluginsSeeded";
 
-#define NekoPluginsLocalized(text) NSLocalizedString(text, nil)
-
 @implementation NekoPlugins
 
 + (NekoPlugins *)sharedPlugins
@@ -168,7 +166,7 @@ static NSString * const NekoPluginsSeededKey = @"NekoPluginsSeeded";
 - (NSString *)installFrom:(NSURL *)chosen
 {
 	if(![[chosen pathExtension] isEqualToString:@"nekoplugin"])
-		return NekoPluginsLocalized(@"A plugin is a folder whose name ends in .nekoplugin.");
+		return NSLocalizedString(@"A plugin is a folder whose name ends in .nekoplugin.", @"A plugin is a folder whose name ends in .nekoplugin.");
 
 	/* Read before it is copied: a manifest that cannot be used should be refused
 	   where somebody is looking at a panel, not later in a list. */
@@ -177,7 +175,7 @@ static NSString * const NekoPluginsSeededKey = @"NekoPluginsSeeded";
 		return [reading refusal];
 	if([self pluginWithIdentifier:[reading identifier]] != nil)
 		return [NSString stringWithFormat:
-			NekoPluginsLocalized(@"“%@” is already installed."), [reading name]];
+			NSLocalizedString(@"“%@” is already installed.", @"\"%@\" is already installed."), [reading name]];
 
 	NSURL *destination = [[self directory]
 		URLByAppendingPathComponent:[chosen lastPathComponent]];
@@ -186,7 +184,7 @@ static NSString * const NekoPluginsSeededKey = @"NekoPluginsSeeded";
 	NSError *problem = nil;
 	if(![files copyItemAtURL:chosen toURL:destination error:&problem])
 		return [problem localizedDescription]
-			?: NekoPluginsLocalized(@"It could not be copied in.");
+			?: NSLocalizedString(@"It could not be copied in.", @"It could not be copied in.");
 
 	[self reload];
 	/* Left switched off. Arriving is not the same as being on. */

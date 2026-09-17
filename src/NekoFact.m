@@ -1,8 +1,6 @@
 #import "NekoFact.h"
 #import "NekoMemory.h"
 
-#define NekoFactLocalized(key) NSLocalizedStringFromTable(key, @"Localizable", nil)
-
 /* Forty, which is more than anybody will tell a cat on purpose and few enough
    that the block handed to a model stays a block. Past it the oldest goes, and
    the diary records that it went — silently dropping the oldest is what the
@@ -16,38 +14,35 @@ static const NSUInteger NekoFactsKept = 40;
    "ricordami **di**" is exactly the difference between a fact and an errand. */
 static NSArray *NekoKeepOpenings(void)
 {
-	static NSArray *openings = nil;
-	if(openings == nil)
-		openings = [[NSArray arrayWithObjects:
-			@"ricordati che ", @"ricorda che ", @"tieni presente che ",
-			@"segnati che ", @"non dimenticare che ",
-			@"remember that ", @"remember i ", @"remember my ", @"keep in mind that ",
-			@"note that i ", @"don't forget that ",
-			@"souviens-toi que ", @"rappelle-toi que ", @"n'oublie pas que ",
-			@"recuerda que ", @"ten en cuenta que ", @"no olvides que ", nil] retain];
+	static NSArray *const openings =
+	@[@"ricordati che ", @"ricorda che ", @"tieni presente che ",
+	  @"segnati che ", @"non dimenticare che ",
+	  @"remember that ", @"remember i ", @"remember my ", @"keep in mind that ",
+	  @"note that i ", @"don't forget that ",
+	  @"souviens-toi que ", @"rappelle-toi que ", @"n'oublie pas que ",
+	  @"recuerda que ", @"ten en cuenta que ", @"no olvides que "];
+	
 	return openings;
 }
 
 static NSArray *NekoForgetOpenings(void)
 {
-	static NSArray *openings = nil;
-	if(openings == nil)
-		openings = [[NSArray arrayWithObjects:
-			@"dimentica ", @"dimenticati ", @"scordati ", @"non ricordare ",
-			@"forget ", @"forget about ",
-			@"oublie ", @"olvida ", @"olvídate de ", nil] retain];
+	static NSArray *const openings =
+	@[@"dimentica ", @"dimenticati ", @"scordati ", @"non ricordare ",
+	  @"forget ", @"forget about ",
+	  @"oublie ", @"olvida ", @"olvídate de "];
+	
 	return openings;
 }
 
 static NSArray *NekoNameOpenings(void)
 {
-	static NSArray *openings = nil;
-	if(openings == nil)
-		openings = [[NSArray arrayWithObjects:
-			@"mi chiamo ", @"il mio nome è ",
-			@"my name is ", @"i'm called ", @"call me ",
-			@"je m'appelle ", @"mon nom est ",
-			@"me llamo ", @"mi nombre es ", nil] retain];
+	static NSArray *const openings =
+	@[@"mi chiamo ", @"il mio nome è ",
+	  @"my name is ", @"i'm called ", @"call me ",
+	  @"je m'appelle ", @"mon nom est ",
+	  @"me llamo ", @"mi nombre es "];
+	
 	return openings;
 }
 
@@ -184,12 +179,12 @@ static NSArray *NekoNameOpenings(void)
 		[self write:kept];
 		return gone > 0
 			? [NSString stringWithFormat:
-				NekoFactLocalized(@"Forgotten: %@"), thing]
-			: NekoFactLocalized(@"I was not remembering that.");
+				NSLocalizedString(@"Forgotten: %@", @"Forgotten: %@"), thing]
+			: NSLocalizedString(@"I was not remembering that.", @"I was not remembering that.");
 	}
 
 	NSString *keeping = [kind isEqualToString:@"name"]
-		? [NSString stringWithFormat:NekoFactLocalized(@"they are called %@"), thing]
+		? [NSString stringWithFormat:NSLocalizedString(@"they are called %@", @"they are called %@"), thing]
 		: thing;
 
 	NSMutableArray *lines = [NSMutableArray arrayWithArray:[self lines]];
@@ -204,8 +199,8 @@ static NSArray *NekoNameOpenings(void)
 			continue;
 		/* A name replaces a name rather than sitting beside it. */
 		if([kind isEqualToString:@"name"]
-		   && [had hasPrefix:[NekoFactLocalized(@"they are called %@")
-		        substringToIndex:[NekoFactLocalized(@"they are called %@") length] - 2]])
+		   && [had hasPrefix:[NSLocalizedString(@"they are called %@", @"they are called %@")
+		        substringToIndex:[NSLocalizedString(@"they are called %@", @"they are called %@") length] - 2]])
 			continue;
 		[without addObject:line];
 	}
@@ -228,8 +223,8 @@ static NSArray *NekoNameOpenings(void)
 	[self write:lines];
 
 	return [kind isEqualToString:@"name"]
-		? [NSString stringWithFormat:NekoFactLocalized(@"Hello, %@."), thing]
-		: NekoFactLocalized(@"I will remember that.");
+		? [NSString stringWithFormat:NSLocalizedString(@"Hello, %@.", @"Hello, %@."), thing]
+		: NSLocalizedString(@"I will remember that.", @"things it was told to remember");
 }
 
 @end

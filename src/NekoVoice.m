@@ -5,8 +5,6 @@
 NSString * const NekoVoiceLastSeenKey = @"NekoVoiceLastSeen";
 NSString * const NekoVoiceGreetedKey  = @"NekoVoiceGreeted";
 
-#define NekoVoiceLocalized(text) NSLocalizedString(text, nil)
-
 @implementation NekoVoice
 
 #pragma mark The mood
@@ -120,8 +118,8 @@ NSString * const NekoVoiceGreetedKey  = @"NekoVoiceGreeted";
 	/* Never seen before: the only greeting that is really a greeting. */
 	if(before == nil)
 		return [self pick:[NSArray arrayWithObjects:
-			NekoVoiceLocalized(@"So this is where you work."),
-			NekoVoiceLocalized(@"Right. I live here now."), nil]];
+			NSLocalizedString(@"So this is where you work.", @"So this is where you work."),
+			NSLocalizedString(@"Right. I live here now.", @"Right. I live here now."), nil]];
 
 	NSTimeInterval away = [when timeIntervalSinceDate:before];
 	if(away < 0.0)
@@ -133,29 +131,29 @@ NSString * const NekoVoiceGreetedKey  = @"NekoVoiceGreeted";
 		return nil;
 
 	if(away > 7.0 * 86400.0)
-		return [self pick:[NSArray arrayWithObjects:
-			NekoVoiceLocalized(@"You have been gone a week. I sat on the desk the whole time."),
-			NekoVoiceLocalized(@"A week. I had almost got used to the quiet."), nil]];
+		return [self pick:@[
+			NSLocalizedString(@"You have been gone a week. I sat on the desk the whole time.", @"You have been gone a week. I sat on the desk the whole time."),
+			NSLocalizedString(@"A week. I had almost got used to the quiet.", @"A week. I had almost got used to the quiet.")]];
 	if(away > 2.0 * 86400.0)
 		return [self pick:[NSArray arrayWithObjects:
-			NekoVoiceLocalized(@"You were away a couple of days. Nothing moved."),
-			NekoVoiceLocalized(@"Back, then."), nil]];
+			NSLocalizedString(@"You were away a couple of days. Nothing moved.", @"You were away a couple of days. Nothing moved."),
+			NSLocalizedString(@"Back, then.", @"Back, then."), nil]];
 
 	if(hour < 5 || hour >= 23)
 		return [self pick:[NSArray arrayWithObjects:
-			NekoVoiceLocalized(@"Working at this hour. All right."),
-			NekoVoiceLocalized(@"It is late. I will keep it down."), nil]];
+			NSLocalizedString(@"Working at this hour. All right.", @"Working at this hour. All right."),
+			NSLocalizedString(@"It is late. I will keep it down.", @"It is late. I will keep it down."), nil]];
 	if(hour < 10)
 		return [self pick:[NSArray arrayWithObjects:
-			NekoVoiceLocalized(@"Morning."),
-			NekoVoiceLocalized(@"Early. Good."), nil]];
+			NSLocalizedString(@"Morning.", @"Morning."),
+			NSLocalizedString(@"Early. Good.", @"Early. Good."), nil]];
 	if(hour >= 19)
 		return [self pick:[NSArray arrayWithObjects:
-			NekoVoiceLocalized(@"Evening."),
-			NekoVoiceLocalized(@"Still here, I see."), nil]];
+			NSLocalizedString(@"Evening.", @"Evening."),
+			NSLocalizedString(@"Still here, I see.", @"Still here, I see."), nil]];
 	return [self pick:[NSArray arrayWithObjects:
-		NekoVoiceLocalized(@"There you are."),
-		NekoVoiceLocalized(@"Back at it."), nil]];
+		NSLocalizedString(@"There you are.", @"There you are."),
+		NSLocalizedString(@"Back at it.", @"Back at it."), nil]];
 }
 
 + (NSString *)openingIfDue
@@ -178,7 +176,7 @@ NSString * const NekoVoiceGreetedKey  = @"NekoVoiceGreeted";
    is a sentence that could be deleted without losing anything. */
 + (NSArray *)complimentOpenings
 {
-	return [NSArray arrayWithObjects:
+	return @[
 		@"great question", @"good question", @"excellent question",
 		@"that's a great", @"that is a great", @"what a good",
 		@"i'm glad you asked", @"im glad you asked", @"happy to help",
@@ -188,7 +186,7 @@ NSString * const NekoVoiceGreetedKey  = @"NekoVoiceGreeted";
 		@"certo!", @"certo,", @"perfetto!", @"ovviamente!", @"sure!", @"sure,",
 		@"excellente question", @"bonne question", @"bien sûr !", @"avec plaisir",
 		@"buena pregunta", @"excelente pregunta", @"por supuesto!", @"por supuesto,",
-		@"claro!", @"claro,", @"bien sûr,", @"bien sûr !", @"évidemment !", nil];
+		@"claro!", @"claro,", @"bien sûr,", @"bien sûr !", @"évidemment !"];
 }
 
 + (NSArray *)sentencesIn:(NSString *)line

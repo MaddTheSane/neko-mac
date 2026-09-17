@@ -5,7 +5,6 @@
 NSString * const NekoUpdateCheckKey = @"NekoUpdateCheck";
 NSString * const NekoUpdateDidChangeNotification = @"NekoUpdateDidChange";
 
-#define NekoUpdateLocalized(key) NSLocalizedStringFromTable(key, @"Localizable", nil)
 
 /* Where the releases are. One address, and it is this project's own. */
 static NSString * const NekoUpdateFeed =
@@ -90,11 +89,11 @@ static NSString * const NekoUpdateSaidKey  = @"NekoUpdateAnnounced";
 {
 	if([self isDownloading])
 		return [NSString stringWithFormat:
-			NekoUpdateLocalized(@"Downloading %.0f%%…"), fraction * 100.0];
+			NSLocalizedString(@"Downloading %.0f%%…", @"Downloading %.0f%%…"), fraction * 100.0];
 	if([version length] == 0)
 		return nil;
 	return [NSString stringWithFormat:
-		NekoUpdateLocalized(@"Version %@ is out…"), version];
+		NSLocalizedString(@"Version %@ is out…", @"Version %@ is out…"), version];
 }
 
 - (void)checkQuietly
@@ -200,9 +199,9 @@ static NSString * const NekoUpdateSaidKey  = @"NekoUpdateAnnounced";
 		if(outLoud)
 			[self say:[data length] > 0
 				? [NSString stringWithFormat:
-					NekoUpdateLocalized(@"This is the newest one: %@."),
+					NSLocalizedString(@"This is the newest one: %@.", @"This is the newest one: %@."),
 					[NekoUpdate runningVersion]]
-				: NekoUpdateLocalized(@"I could not ask about new versions just now.")];
+				: NSLocalizedString(@"I could not ask about new versions just now.", @"I could not ask about new versions just now.")];
 		[[NSNotificationCenter defaultCenter]
 			postNotificationName:NekoUpdateDidChangeNotification object:self];
 		return;
@@ -227,7 +226,7 @@ static NSString * const NekoUpdateSaidKey  = @"NekoUpdateAnnounced";
 		[[NSUserDefaults standardUserDefaults] setObject:version
 		                                         forKey:NekoUpdateSaidKey];
 		[self say:[NSString stringWithFormat:
-			NekoUpdateLocalized(@"There is a %@ now. It is in my menu when you want it."),
+			NSLocalizedString(@"There is a %@ now. It is in my menu when you want it.", @"There is a %@ now. It is in my menu when you want it."),
 			version]];
 	}
 }
@@ -263,16 +262,16 @@ static NSString * const NekoUpdateSaidKey  = @"NekoUpdateAnnounced";
 	[NSApp activateIgnoringOtherApps:YES];
 	NSAlert *alert = [[[NSAlert alloc] init] autorelease];
 	[alert setMessageText:[NSString stringWithFormat:
-		NekoUpdateLocalized(@"Neko %@ is out."), version]];
+		NSLocalizedString(@"Neko %@ is out.", @"Neko %@ is out."), version]];
 	/* One literal, on one line. A key split across string literals can never
 	   match an entry in Localizable.strings, and tests/docs.m says so now. */
 	[alert setInformativeText:[NSString stringWithFormat:
-		NekoUpdateLocalized(@"Shall I download the disk image%@? Installing it is yours to do: I open it and quit, and you drag Neko into Applications the way you did the first time."),
+		NSLocalizedString(@"Shall I download the disk image%@? Installing it is yours to do: I open it and quit, and you drag Neko into Applications the way you did the first time.", @"Shall I download the disk image%@? Installing it is yours to do: I open it and quit, and you drag Neko into Applications the way you did the first time."),
 		[self sizeSaid]]];
-	[alert addButtonWithTitle:NekoUpdateLocalized(@"Download")];
-	[alert addButtonWithTitle:NekoUpdateLocalized(@"Not now")];
+	[alert addButtonWithTitle:NSLocalizedString(@"Download", @"Download")];
+	[alert addButtonWithTitle:NSLocalizedString(@"Not now", @"Not now")];
 	if([notes length] > 0)
-		[alert addButtonWithTitle:NekoUpdateLocalized(@"What changed")];
+		[alert addButtonWithTitle:NSLocalizedString(@"What changed", @"What changed")];
 
 	NSModalResponse answer = [alert runModal];
 	if(answer == NSAlertThirdButtonReturn) {
@@ -337,8 +336,8 @@ static NSString * const NekoUpdateSaidKey  = @"NekoUpdateAnnounced";
 		fraction = MIN(1.0, (double)got / (double)total);
 
 	[bar setDoubleValue:fraction * 100.0];
-	[progressLabel setStringValue:[NSString stringWithFormat:
-		NekoUpdateLocalized(@"%.0f MB of %.0f MB"),
+	[progressLabel setStringValue:[NSString localizedStringWithFormat:
+		NSLocalizedString(@"%.0f MB of %.0f MB", @"%.0f MB of %.0f MB"),
 		(double)got / 1.0e6, (double)total / 1.0e6]];
 
 	[self performSelector:@selector(tick) withObject:nil afterDelay:0.2];
@@ -372,14 +371,14 @@ static NSString * const NekoUpdateSaidKey  = @"NekoUpdateAnnounced";
 		return;
 
 	if(temporary == nil || error != nil) {
-		[self say:NekoUpdateLocalized(@"The download did not finish.")];
+		[self say:NSLocalizedString(@"The download did not finish.", @"The download did not finish.")];
 		return;
 	}
 
 	NSFileManager *files = [NSFileManager defaultManager];
 	[files removeItemAtURL:destination error:NULL];
 	if(![files moveItemAtURL:temporary toURL:destination error:NULL]) {
-		[self say:NekoUpdateLocalized(@"The download did not finish.")];
+		[self say:NSLocalizedString(@"The download did not finish.", @"The download did not finish.")];
 		return;
 	}
 
@@ -393,14 +392,14 @@ static NSString * const NekoUpdateSaidKey  = @"NekoUpdateAnnounced";
 	[NSApp activateIgnoringOtherApps:YES];
 	NSAlert *alert = [[[NSAlert alloc] init] autorelease];
 	[alert setMessageText:[NSString stringWithFormat:
-		NekoUpdateLocalized(@"Neko %@ is downloaded."), version]];
-	[alert setInformativeText:NekoUpdateLocalized(@"Shall I open it and quit? Then drag Neko into Applications, replacing the one that is there, and start it again. I close first so that the copy you are replacing is not the copy that is running.")];
-	[alert addButtonWithTitle:NekoUpdateLocalized(@"Open it and quit")];
-	[alert addButtonWithTitle:NekoUpdateLocalized(@"Later")];
+		NSLocalizedString(@"Neko %@ is downloaded.", @"Neko %@ is downloaded."), version]];
+	[alert setInformativeText:NSLocalizedString(@"Shall I open it and quit? Then drag Neko into Applications, replacing the one that is there, and start it again. I close first so that the copy you are replacing is not the copy that is running.", @"Shall I open it and quit? Then drag Neko into Applications, replacing the one that is there, and start it again. I close first so that the copy you are replacing is not the copy that is running.")];
+	[alert addButtonWithTitle:NSLocalizedString(@"Open it and quit", @"Open it and quit")];
+	[alert addButtonWithTitle:NSLocalizedString(@"Later", @"Later")];
 
 	if([alert runModal] != NSAlertFirstButtonReturn) {
 		[self say:[NSString stringWithFormat:
-			NekoUpdateLocalized(@"It is in %@ when you want it."),
+			NSLocalizedString(@"It is in %@ when you want it.", @"It is in %@ when you want it."),
 			[[image URLByDeletingLastPathComponent] path]]];
 		return;
 	}
@@ -413,7 +412,7 @@ static NSString * const NekoUpdateSaidKey  = @"NekoUpdateAnnounced";
 		   with a download they cannot find. */
 		[[NSWorkspace sharedWorkspace] selectFile:[image path]
 		                 inFileViewerRootedAtPath:@""];
-		[self say:NekoUpdateLocalized(@"I could not open the disk image.")];
+		[self say:NSLocalizedString(@"I could not open the disk image.", @"I could not open the disk image.")];
 		return;
 	}
 	/* A moment for the image to be mounted by somebody else's process before
@@ -437,7 +436,7 @@ static NSString * const NekoUpdateSaidKey  = @"NekoUpdateAnnounced";
 			                                                | NSWindowStyleMaskClosable
 			                                         backing:NSBackingStoreBuffered
 			                                           defer:NO];
-		[progressPanel setTitle:NekoUpdateLocalized(@"Downloading Neko")];
+		[progressPanel setTitle:NSLocalizedString(@"Downloading Neko", @"Downloading Neko")];
 		[progressPanel setReleasedWhenClosed:NO];
 		[progressPanel center];
 
@@ -465,7 +464,7 @@ static NSString * const NekoUpdateSaidKey  = @"NekoUpdateAnnounced";
 		NSButton *stop = [[[NSButton alloc] initWithFrame:
 			NSMakeRect(250.0, 8.0, 92.0, 24.0)] autorelease];
 		[stop setBezelStyle:NSBezelStyleRounded];
-		[stop setTitle:NekoUpdateLocalized(@"Stop")];
+		[stop setTitle:NSLocalizedString(@"Stop", @"Stop")];
 		[stop setTarget:self];
 		[stop setAction:@selector(cancel:)];
 		[content addSubview:stop];

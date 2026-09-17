@@ -75,6 +75,6 @@ typedef enum {
 + (BOOL)mayControl:(NSString *)player;
 + (void)askToControl:(NSString *)player;
 
-extern NSString * const NekoPlayerConsentDidChangeNotification;
+extern NSNotificationName const NekoPlayerConsentDidChangeNotification;
 
 @end

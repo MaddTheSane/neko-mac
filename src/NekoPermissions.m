@@ -11,8 +11,6 @@
 #import "NekoFolderAccess.h"
 #import <AVFoundation/AVFoundation.h>
 
-#define NekoPermissionLocalized(text) NSLocalizedString(text, nil)
-
 @implementation NekoPermission
 
 - (id)initWithIdentifier:(NSString *)key
@@ -34,36 +32,36 @@
 - (NSString *)name
 {
 	if([identifier isEqualToString:@"microphone"])
-		return NekoPermissionLocalized(@"Microphone");
+		return NSLocalizedString(@"Microphone", @"Microphone");
 	if([identifier isEqualToString:@"speech"])
-		return NekoPermissionLocalized(@"Speech recognition");
+		return NSLocalizedString(@"Speech recognition", @"Speech recognition");
 	if([identifier isEqualToString:@"accessibility"])
-		return NekoPermissionLocalized(@"Accessibility");
+		return NSLocalizedString(@"Accessibility", @"Accessibility");
 	if([identifier isEqualToString:@"screen"])
-		return NekoPermissionLocalized(@"Screen recording");
+		return NSLocalizedString(@"Screen recording", @"Screen recording");
 	if([identifier isEqualToString:@"folders"])
-		return NekoPermissionLocalized(@"Your folders");
+		return NSLocalizedString(@"Your folders", @"Your folders");
 	if([identifier isEqualToString:@"location"])
-		return NekoPermissionLocalized(@"Where you are");
+		return NSLocalizedString(@"Where you are", @"Where you are");
 	if([identifier isEqualToString:@"players"])
-		return NekoPermissionLocalized(@"Music and Spotify");
+		return NSLocalizedString(@"Music and Spotify", @"Music and Spotify");
 	return identifier;
 }
 
 - (NSString *)explanation
 {
 	if([identifier isEqualToString:@"microphone"])
-		return NekoPermissionLocalized(@"Without it the cat cannot hear a question. Asked the first time you use the keystroke, never before.");
+		return NSLocalizedString(@"Without it the cat cannot hear a question. Asked the first time you use the keystroke, never before.", @"Without it the cat cannot hear a question. Asked the first time you use the keystroke, never before.");
 	if([identifier isEqualToString:@"speech"])
-		return NekoPermissionLocalized(@"Turns what you said into words. On this Mac it stays on this Mac.");
+		return NSLocalizedString(@"Turns what you said into words. On this Mac it stays on this Mac.", @"Turns what you said into words. On this Mac it stays on this Mac.");
 	if([identifier isEqualToString:@"accessibility"])
-		return NekoPermissionLocalized(@"Only for reading the text you are working on, which is a switch of its own on the Suggestions tab. Nothing else uses it.");
+		return NSLocalizedString(@"Only for reading the text you are working on, which is a switch of its own on the Suggestions tab. Nothing else uses it.", @"Only for reading the text you are working on, which is a switch of its own on the Suggestions tab. Nothing else uses it.");
 	if([identifier isEqualToString:@"screen"])
-		return NekoPermissionLocalized(@"Window titles, and nothing else. Neko never asks for this one: it is used if you granted it for some other reason, and simply left out if not.");
+		return NSLocalizedString(@"Window titles, and nothing else. Neko never asks for this one: it is used if you granted it for some other reason, and simply left out if not.", @"Window titles, and nothing else. Neko never asks for this one: it is used if you granted it for some other reason, and simply left out if not.");
 	if([identifier isEqualToString:@"folders"])
-		return NekoPermissionLocalized(@"Handed over one folder at a time, in a panel, so the cat can copy or move a file. Nothing is read until you do.");
+		return NSLocalizedString(@"Handed over one folder at a time, in a panel, so the cat can copy or move a file. Nothing is read until you do.", @"Handed over one folder at a time, in a panel, so the cat can copy or move a file. Nothing is read until you do.");
 	if([identifier isEqualToString:@"players"])
-		return NekoPermissionLocalized(@"So that “alza il volume”, “metti in pausa” and “prossima canzone” reach Music and Spotify themselves. Those two applications and no others, with a fixed list of commands Neko sends. macOS asks once for each of them.");
+		return NSLocalizedString(@"So that “alza il volume”, “metti in pausa” and “prossima canzone” reach Music and Spotify themselves. Those two applications and no others, with a fixed list of commands Neko sends. macOS asks once for each of them.", @"So that “alza il volume”, “metti in pausa” and “prossima canzone” reach Music and Spotify themselves. Those two applications and no others, with a fixed list of commands Neko sends. macOS asks once for each of them.");
 	if([identifier isEqualToString:@"location"]) {
 		NSString *town = [[NekoPlace sharedPlace] town];
 		NSString *region = [[NekoPlace sharedPlace] region];
@@ -71,10 +69,10 @@
 		   that does nothing, so when there is an answer the row shows it. */
 		if([town length] > 0)
 			return [NSString stringWithFormat:
-				NekoPermissionLocalized(@"It knows it is in %@%@ — the name of the town and of the region, and nothing finer. No coordinates are kept, and it asks macOS again no oftener than once a day."),
+				NSLocalizedString(@"It knows it is in %@%@ — the name of the town and of the region, and nothing finer. No coordinates are kept, and it asks macOS again no oftener than once a day.", @"It knows it is in %@%@ — the name of the town and of the region, and nothing finer. No coordinates are kept, and it asks macOS again no oftener than once a day."),
 				town, [region length] > 0
 					? [NSString stringWithFormat:@", %@", region] : @""];
-		return NekoPermissionLocalized(@"So that “what is the weather” and “what is happening here” need no city named. It keeps the name of the town and of the region, never the coordinates, and asks macOS for a position no oftener than once a day.");
+		return NSLocalizedString(@"So that “what is the weather” and “what is happening here” need no city named. It keeps the name of the town and of the region, never the coordinates, and asks macOS for a position no oftener than once a day.", @"So that “what is the weather” and “what is happening here” need no city named. It keeps the name of the town and of the region, never the coordinates, and asks macOS for a position no oftener than once a day.");
 	}
 	return @"";
 }
@@ -256,7 +254,7 @@
 		   twice over, so it says what happened where it happened. */
 		if([why length] > 0) {
 			NSAlert *said = [[[NSAlert alloc] init] autorelease];
-			[said setMessageText:NekoPermissionLocalized(@"That folder was not the one I asked for.")];
+			[said setMessageText:NSLocalizedString(@"That folder was not the one I asked for.", @"That folder was not the one I asked for.")];
 			[said setInformativeText:why];
 			NSWindow *host = [[NSApp keyWindow] attachedSheet] == nil
 				? [NSApp keyWindow] : nil;
@@ -306,8 +304,9 @@
 + (NSArray<NekoPermission*> *)all
 {
 	NSMutableArray *all = [NSMutableArray array];
-	NSArray *e = @[@"microphone", @"speech",
-				   @"accessibility", @"location", @"players", @"folders", @"screen"];
+	static NSArray *const e = @[@"microphone", @"speech",
+								@"accessibility", @"location", @"players",
+								@"folders", @"screen"];
 	for (NSString *key in e) {
 		[all addObject:[[[NekoPermission alloc] initWithIdentifier:key] autorelease]];
 	}

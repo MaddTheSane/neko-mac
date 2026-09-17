@@ -124,10 +124,8 @@ NSString * const NekoAskLocalModelKey = @"NekoAskLocalModel";
 /* The tags a reasoning model wraps its notes in. */
 static NSArray *NekoReasoningTags(void)
 {
-	static NSArray *tags = nil;
-	if(tags == nil)
-		tags = [[NSArray alloc] initWithObjects:
-			@"think", @"thinking", @"thought", @"reasoning", nil];
+	static NSArray * const tags = @[@"think", @"thinking", @"thought", @"reasoning"];
+	
 	return tags;
 }
 

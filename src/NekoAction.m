@@ -4,8 +4,6 @@
 
 NSString * const NekoActionsEnabledKey = @"NekoActionsEnabled";
 
-#define NekoActionLocalized(text) NSLocalizedString(text, nil)
-
 static NSString * const NekoActionMarker = @"ACTION:";
 
 @implementation NekoAction
@@ -281,29 +279,29 @@ NSString *NekoWithoutMarkdown(NSString *line)
 - (NSString *)summary
 {
 	if([verb isEqualToString:@"open-app"])
-		return [NSString stringWithFormat:NekoActionLocalized(@"Open %@?"),
+		return [NSString stringWithFormat:NSLocalizedString(@"Open %@?", @"Open %@?"),
 			[[[resolved lastPathComponent] stringByDeletingPathExtension] ?: target
 				stringByReplacingOccurrencesOfString:@".app" withString:@""]];
 	if([verb isEqualToString:@"open-url"])
 		return extra != nil
-			? [NSString stringWithFormat:NekoActionLocalized(@"Open %@ in %@?"), target, extra]
-			: [NSString stringWithFormat:NekoActionLocalized(@"Open %@?"), target];
+			? [NSString stringWithFormat:NSLocalizedString(@"Open %@ in %@?", @"Open %@ in %@?"), target, extra]
+			: [NSString stringWithFormat:NSLocalizedString(@"Open %@?", @"Open %@?"), target];
 	if([verb isEqualToString:@"open-folder"]) {
 		/* The Finder's own name for it, so an Italian is asked about "Documenti"
 		   rather than about the English word the model happened to write. */
 		NSString *shown = [[NSFileManager defaultManager] displayNameAtPath:[resolved path]];
-		return [NSString stringWithFormat:NekoActionLocalized(@"Open the %@ folder?"),
+		return [NSString stringWithFormat:NSLocalizedString(@"Open the %@ folder?", @"Open the %@ folder?"),
 			[shown length] > 0 ? shown : target];
 	}
 	if([verb isEqualToString:@"run-shortcut"])
-		return [NSString stringWithFormat:NekoActionLocalized(@"Run your shortcut “%@”?"), target];
+		return [NSString stringWithFormat:NSLocalizedString(@"Run your shortcut “%@”?", @"Run your shortcut “%@”?"), target];
 
 	NekoFolderAccess *access = [NekoFolderAccess sharedAccess];
 	if([verb isEqualToString:@"copy"])
-		return [NSString stringWithFormat:NekoActionLocalized(@"Copy “%@” from %@ to %@?"),
+		return [NSString stringWithFormat:NSLocalizedString(@"Copy “%@” from %@ to %@?", @"Copy “%@” from %@ to %@?"),
 			target, [access displayNameFor:extra], [access displayNameFor:other]];
 	if([verb isEqualToString:@"move"])
-		return [NSString stringWithFormat:NekoActionLocalized(@"Move “%@” from %@ to %@?"),
+		return [NSString stringWithFormat:NSLocalizedString(@"Move “%@” from %@ to %@?", @"Move “%@” from %@ to %@?"),
 			target, [access displayNameFor:extra], [access displayNameFor:other]];
 	return nil;
 }
@@ -361,22 +359,22 @@ NSString *NekoWithoutMarkdown(NSString *line)
 	NSString *complaint = nil;
 
 	if(from == nil || to == nil) {
-		complaint = NekoActionLocalized(@"I have not been shown that folder.");
+		complaint = NSLocalizedString(@"I have not been shown that folder.", @"I have not been shown that folder.");
 	} else {
 		BOOL ambiguous = NO;
 		NSString *name = [self fileIn:from ambiguous:&ambiguous];
 		if(ambiguous)
 			complaint = [NSString stringWithFormat:
-				NekoActionLocalized(@"There is more than one “%@” there."), target];
+				NSLocalizedString(@"There is more than one “%@” there.", @"There is more than one “%@” there."), target];
 		else if(name == nil)
 			complaint = [NSString stringWithFormat:
-				NekoActionLocalized(@"I cannot find “%@” there."), target];
+				NSLocalizedString(@"I cannot find “%@” there.", @"I cannot find “%@” there."), target];
 		else {
 			NSURL *source = [from URLByAppendingPathComponent:name];
 			NSNumber *directory = nil;
 			[source getResourceValue:&directory forKey:NSURLIsDirectoryKey error:NULL];
 			if([directory boolValue]) {
-				complaint = NekoActionLocalized(@"That is a folder, and I only carry files.");
+				complaint = NSLocalizedString(@"That is a folder, and I only carry files.", @"That is a folder, and I only carry files.");
 			} else {
 				NSURL *destination = [self freeNameIn:to for:name];
 				NSError *problem = nil;

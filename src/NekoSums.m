@@ -309,10 +309,10 @@ static NSArray *NekoKnownUnits(void)
 	NSMutableArray *all = [[NSMutableArray alloc] init];
 	void (^add)(NSString *, NSString *, NSUnit *) =
 		^(NSString *kind, NSString *words, NSUnit *unit) {
-		NSEnumerator *e = [[words componentsSeparatedByString:@","] objectEnumerator];
+		NSArray *seperated = [words componentsSeparatedByString:@","];
 		NSString *word;
-		while((word = [e nextObject]) != nil)
-			[all addObject:[NSArray arrayWithObjects:word, kind, unit, nil]];
+		for(NSString *word in seperated)
+			[all addObject:@[word, kind, unit]];
 	};
 
 	add(@"length", @"chilometri,chilometro,kilometri,kilometers,kilometres,km",

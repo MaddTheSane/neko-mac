@@ -6,8 +6,6 @@
 #import "NekoPlace.h"
 #import "NekoAsk.h"
 
-#define NekoSelfLocalized(key) NSLocalizedStringFromTable(key, @"Localizable", nil)
-
 static NSLocale *NekoSelfLocale(void)
 {
 	NSString *code = [[[NSBundle mainBundle] preferredLocalizations] firstObject];
@@ -24,17 +22,13 @@ static NSLocale *NekoSelfLocale(void)
    harmlessly follow. */
 static BOOL NekoSelfAsks(NSString *text, NSArray *phrases)
 {
-	static NSArray *harmless = nil;
-	if(harmless == nil)
-		harmless = [[NSArray alloc] initWithObjects:
-			@"adesso", @"ora", @"in questo momento", @"di preciso", @"esattamente",
-			@"now", @"right now", @"at the moment", @"exactly",
-			@"maintenant", @"en ce moment",
-			@"ahora", @"ahora mismo", @"en este momento", nil];
+	static NSArray *const harmless =
+	@[@"adesso", @"ora", @"in questo momento", @"di preciso", @"esattamente",
+	  @"now", @"right now", @"at the moment", @"exactly",
+	  @"maintenant", @"en ce moment",
+	  @"ahora", @"ahora mismo", @"en este momento"];
 
-	NSEnumerator *e = [phrases objectEnumerator];
-	NSString *phrase;
-	while((phrase = [e nextObject]) != nil) {
+	for(NSString *phrase in phrases) {
 		NSRange found = [text rangeOfString:phrase];
 		if(found.location == NSNotFound)
 			continue;
@@ -85,7 +79,7 @@ static BOOL NekoSelfAsks(NSString *text, NSArray *phrases)
 		{ @"on the left",  @"in the middle", @"on the right" },
 		{ @"top left",     @"at the top",    @"top right" },
 	};
-	NSString *where = NekoSelfLocalized(parts[up][across]);
+	NSString *where = NSLocalizedString(parts[up][across], nil);
 
 	/* The region phrase carries its own preposition and the frame carries none:
 	   "I am %@ of your screen" reads well for "bottom left" and badly for
@@ -94,11 +88,11 @@ static BOOL NekoSelfAsks(NSString *text, NSArray *phrases)
 	   all four languages. */
 	NSArray *screens = [NSScreen screens];
 	if([screens count] < 2)
-		return [NSString stringWithFormat:NekoSelfLocalized(@"I am %@."), where];
+		return [NSString stringWithFormat:NSLocalizedString(@"I am %@.", @"I am %@."), where];
 
 	NSUInteger which = [screens indexOfObject:screen];
 	return [NSString stringWithFormat:
-		NekoSelfLocalized(@"I am %@, on screen %ld."), where,
+		NSLocalizedString(@"I am %@, on screen %ld.", @"I am %@, on screen %ld."), where,
 		(long)(which == NSNotFound ? 1 : which + 1)];
 }
 
@@ -112,7 +106,7 @@ static BOOL NekoSelfAsks(NSString *text, NSArray *phrases)
 	NSString *town = [place town];
 	if([town length] > 0)
 		return [NSString stringWithFormat:
-			NekoSelfLocalized(@"The Mac is in %@."), town];
+			NSLocalizedString(@"The Mac is in %@.", @"The Mac is in %@."), town];
 
 	/* Deduced, and said as a deduction. The time zone gives a country and
 	   nothing finer, so the sentence does not pretend to. */
@@ -123,7 +117,7 @@ static BOOL NekoSelfAsks(NSString *text, NSArray *phrases)
 	if([named length] == 0)
 		named = code;
 	return [NSString stringWithFormat:
-		NekoSelfLocalized(@"The Mac is somewhere in %@."), named];
+		NSLocalizedString(@"The Mac is somewhere in %@.", @"The Mac is somewhere in %@."), named];
 }
 
 #pragma mark How long it has been here
@@ -147,7 +141,7 @@ static BOOL NekoSelfAsks(NSString *text, NSArray *phrases)
 {
 	NSInteger days = [self daysHere];
 	if(days <= 0)
-		return NekoSelfLocalized(@"Since today.");
+		return NSLocalizedString(@"Since today.", @"Since today.");
 
 	NSDateFormatter *said = [[[NSDateFormatter alloc] init] autorelease];
 	[said setLocale:NekoSelfLocale()];
@@ -157,9 +151,9 @@ static BOOL NekoSelfAsks(NSString *text, NSArray *phrases)
 	NSString *when = [said stringFromDate:[[NekoMemory sharedMemory] metOn]];
 	if(days == 1)
 		return [NSString stringWithFormat:
-			NekoSelfLocalized(@"Since yesterday, %@."), when];
+			NSLocalizedString(@"Since yesterday, %@.", @"Since yesterday, %@."), when];
 	return [NSString stringWithFormat:
-		NekoSelfLocalized(@"%ld days, since %@."), (long)days, when];
+		NSLocalizedString(@"%ld days, since %@.", @"%ld days, since %@."), (long)days, when];
 }
 
 #pragma mark How long since it was spoken to
@@ -177,8 +171,8 @@ static BOOL NekoSelfAsks(NSString *text, NSArray *phrases)
 		return nil;
 	NSTimeInterval ago = -[last timeIntervalSinceNow];
 	if(ago < 60.0)
-		return NekoSelfLocalized(@"A moment ago.");
-	return [NSString stringWithFormat:NekoSelfLocalized(@"%@ ago."),
+		return NSLocalizedString(@"A moment ago.", @"A moment ago.");
+	return [NSString stringWithFormat:NSLocalizedString(@"%@ ago.", @"%@ ago."),
 		[NekoWhen describe:ago]];
 }
 
@@ -190,8 +184,8 @@ static BOOL NekoSelfAsks(NSString *text, NSArray *phrases)
 		return nil;
 	NSTimeInterval ago = -[last timeIntervalSinceNow];
 	if(ago < 60.0)
-		return NekoSelfLocalized(@"A moment ago.");
-	return [NSString stringWithFormat:NekoSelfLocalized(@"%@ ago."),
+		return NSLocalizedString(@"A moment ago.", @"A moment ago.");
+	return [NSString stringWithFormat:NSLocalizedString(@"%@ ago.", @"%@ ago."),
 		[NekoWhen describe:ago]];
 }
 
@@ -222,32 +216,32 @@ static BOOL NekoSelfAsks(NSString *text, NSArray *phrases)
 
 	/* How long since they said anything. Before the next one, because "da quanto
 	   non ci parliamo" and "da quanto sei qui" share their opening. */
-	if(NekoSelfAsks(text, [NSArray arrayWithObjects:
+	if(NekoSelfAsks(text, @[
 			@"da quanto non ci parliamo", @"da quanto non parliamo",
 			@"quando ci siamo parlati", @"da quanto non ti parlo",
 			@"quando ti ho parlato", @"da quanto non mi parli",
 			@"how long since we talked", @"how long since we spoke",
 			@"when did we last talk", @"when did i last ask you",
 			@"depuis quand ne parlons", @"quand nous sommes-nous parlé",
-			@"cuánto hace que no hablamos", @"cuando hablamos", nil])) {
+			@"cuánto hace que no hablamos", @"cuando hablamos"])) {
 		NSString *ago = [self howLongSinceHeard];
-		return ago ?: NekoSelfLocalized(@"This is the first thing you have asked me.");
+		return ago ?: NSLocalizedString(@"This is the first thing you have asked me.", @"This is the first thing you have asked me.");
 	}
 
 	/* And when it last said something of its own accord, which is the mirror of
 	   the question above: one is about you, this one is about it. */
-	if(NekoSelfAsks(text, [NSArray arrayWithObjects:
+	if(NekoSelfAsks(text, @[
 			@"quando hai parlato", @"quando hai detto qualcosa",
 			@"da quanto non parli", @"quando hai parlato l'ultima volta",
 			@"l'ultima volta che hai parlato",
 			@"when did you last speak", @"when did you last say something",
-			@"quand as-tu parlé", @"cuándo hablaste", nil])) {
+			@"quand as-tu parlé", @"cuándo hablaste"])) {
 		NSString *ago = [self howLongSinceSpoke];
-		return ago ?: NekoSelfLocalized(@"I have not said anything yet.");
+		return ago ?: NSLocalizedString(@"I have not said anything yet.", @"I have not said anything yet.");
 	}
 
 	/* How long it has been here, which is also how long you have known it. */
-	if(NekoSelfAsks(text, [NSArray arrayWithObjects:
+	if(NekoSelfAsks(text, @[
 			@"da quanto sei qui", @"da quanto tempo sei qui",
 			@"da quanto ci conosciamo",
 			@"da quanti giorni sei qui", @"da quanto stai qui",
@@ -258,7 +252,7 @@ static BOOL NekoSelfAsks(NSString *text, NSArray *phrases)
 			@"depuis quand es-tu là", @"depuis quand es-tu ici",
 			@"depuis quand nous connaissons",
 			@"cuánto llevas aquí", @"cuanto llevas aqui",
-			@"desde cuándo nos conocemos", nil]))
+			@"desde cuándo nos conocemos"]))
 		return [self howLongHere];
 
 	return nil;

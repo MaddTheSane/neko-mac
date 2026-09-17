@@ -71,8 +71,6 @@ enum { NekoVerdictAnswered = 1, NekoVerdictIgnored, NekoVerdictDismissed };
 /* Held for this long, the keystroke means "let me type it". Below it, a tap. */
 static const NSTimeInterval NekoHoldToType = 0.5;
 
-#define NekoAskLocalized(text) NSLocalizedString(text, nil)
-
 /* The voice is kept rather than made on the spot so that it can be cut off in
    the middle of a sentence, which is what barge-in is. */
 @interface NekoAsk () <AVSpeechSynthesizerDelegate>
@@ -290,7 +288,7 @@ static const NSTimeInterval NekoHoldToType = 0.5;
 	phase = NekoPhaseListening;
 	[panel holdWithState:NekoStateAwake];
 	[typedLine askNearRect:where
-	      placeholder:NekoAskLocalized(@"Ask me something…")
+	      placeholder:NSLocalizedString(@"Ask me something…", @"Ask me something…")
 	         finished:^(NSString *typed) {
 		if([typed length] == 0) {
 			[self finish];
@@ -471,10 +469,10 @@ static const NSTimeInterval NekoHoldToType = 0.5;
 	NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
 	if(![defaults boolForKey:NekoAskExplainedKey]) {
 		NSAlert *alert = [[[NSAlert alloc] init] autorelease];
-		[alert setMessageText:NekoAskLocalized(@"Neko is about to ask for the microphone")];
-		[alert setInformativeText:NekoAskLocalized(@"It listens only while you hold the conversation, from the keystroke until you stop talking. Nothing is recorded and nothing is kept.")];
-		[alert addButtonWithTitle:NekoAskLocalized(@"Continue")];
-		[alert addButtonWithTitle:NekoAskLocalized(@"Not now")];
+		[alert setMessageText:NSLocalizedString(@"Neko is about to ask for the microphone", @"Neko is about to ask for the microphone")];
+		[alert setInformativeText:NSLocalizedString(@"It listens only while you hold the conversation, from the keystroke until you stop talking. Nothing is recorded and nothing is kept.", @"It listens only while you hold the conversation, from the keystroke until you stop talking. Nothing is recorded and nothing is kept.")];
+		[alert addButtonWithTitle:NSLocalizedString(@"Continue", @"Continue")];
+		[alert addButtonWithTitle:NSLocalizedString(@"Not now", @"Not now")];
 		[NSApp activateIgnoringOtherApps:YES];
 		if([alert runModal] != NSAlertFirstButtonReturn)
 			return;
@@ -485,7 +483,7 @@ static const NSTimeInterval NekoHoldToType = 0.5;
 		if(granted)
 			[self startCapture];
 		else
-			[self sayInCharacter:NekoAskLocalized(@"Then I shall keep quiet.")];
+			[self sayInCharacter:NSLocalizedString(@"Then I shall keep quiet.", @"Then I shall keep quiet.")];
 	}];
 }
 
@@ -504,7 +502,7 @@ static const NSTimeInterval NekoHoldToType = 0.5;
 	   is a different thing from the microphone being open and now looks like
 	   one. */
 	[[self panel] holdWithState:NekoStateStop];
-	[self showBubble:NekoAskLocalized(@"Listening…") dismissAfter:0.0];
+	[self showBubble:NSLocalizedString(@"Listening…", @"Listening…") dismissAfter:0.0];
 
 	BOOL started = NO;
 	@try {
@@ -542,7 +540,7 @@ static const NSTimeInterval NekoHoldToType = 0.5;
 
 	if(error != nil || (final && [text length] == 0)) {
 		phase = NekoPhaseIdle;
-		[self sayInCharacter:NekoAskLocalized(@"I did not catch that.")];
+		[self sayInCharacter:NSLocalizedString(@"I did not catch that.", @"I did not catch that.")];
 		return;
 	}
 
@@ -623,7 +621,7 @@ static const NSTimeInterval NekoHoldToType = 0.5;
 
 	phase = NekoPhaseWaiting;
 	heardSomething = NO;
-	[bubble setHint:NekoAskLocalized(@"● listening — just answer")];
+	[bubble setHint:NSLocalizedString(@"● listening — just answer", @"* listening -- just answer")];
 
 	/* The microphone never outlives the sign that says it is open, so a bubble
 	   that was going to leave first is kept until the beat is over. A bubble
@@ -690,7 +688,7 @@ static const NSTimeInterval NekoHoldToType = 0.5;
 
 	if(!final) {
 		[self acknowledgeHearing:text];
-		[bubble setHint:NekoAskLocalized(@"● listening")];
+		[bubble setHint:NSLocalizedString(@"● listening", @"* listening")];
 		[self showBubble:text dismissAfter:0.0];
 		return;
 	}
@@ -811,12 +809,12 @@ static const NSTimeInterval NekoHoldToType = 0.5;
    where the character has the most room. */
 - (NSArray *)thinkingLines
 {
-	return [NSArray arrayWithObjects:
-		NekoAskLocalized(@"sniffing the question"),
-		NekoAskLocalized(@"scratching my head"),
-		NekoAskLocalized(@"consulting the ball of yarn"),
-		NekoAskLocalized(@"staring out of the window"),
-		NekoAskLocalized(@"chasing the thought"), nil];
+	return @[
+		NSLocalizedString(@"sniffing the question", @"sniffing the question"),
+		NSLocalizedString(@"scratching my head", @"scratching my head"),
+		NSLocalizedString(@"consulting the ball of yarn", @"consulting the ball of yarn"),
+		NSLocalizedString(@"staring out of the window", @"staring out of the window"),
+		NSLocalizedString(@"chasing the thought", @"chasing the thought")];
 }
 
 - (void)startThinkingAbout:(NSString *)question
@@ -838,12 +836,12 @@ static const NSTimeInterval NekoHoldToType = 0.5;
    of occupations, and an hourglass that turns over instead of a walking paw. */
 - (NSArray *)drawingLines
 {
-	return [NSArray arrayWithObjects:
-		NekoAskLocalized(@"mixing the colours"),
-		NekoAskLocalized(@"sharpening the pencil"),
-		NekoAskLocalized(@"deciding where the light comes from"),
-		NekoAskLocalized(@"filling in the background"),
-		NekoAskLocalized(@"getting the shape right"), nil];
+	return @[
+		NSLocalizedString(@"mixing the colours", @"mixing the colours"),
+		NSLocalizedString(@"sharpening the pencil", @"sharpening the pencil"),
+		NSLocalizedString(@"deciding where the light comes from", @"deciding where the light comes from"),
+		NSLocalizedString(@"filling in the background", @"filling in the background"),
+		NSLocalizedString(@"getting the shape right", @"getting the shape right")];
 }
 
 - (void)startDrawingAbout:(NSString *)what
@@ -1203,12 +1201,12 @@ static const NSTimeInterval NekoHoldToType = 0.5;
 
 	phase = NekoPhaseAnswering;
 	[[self panel] holdWithState:NekoStateKaki];
-	[self startDrawingAbout:NekoAskLocalized(@"One moment, I will look.")];
+	[self startDrawingAbout:NSLocalizedString(@"One moment, I will look.", @"One moment, I will look.")];
 
 	[NekoPluginRoutes fetch:route completion:^(NSArray *lines, NSError *error) {
 		[self stopThinking];
 		if([lines count] == 0) {
-			[self sayInCharacter:NekoAskLocalized(@"I could not reach it.")];
+			[self sayInCharacter:NSLocalizedString(@"I could not reach it.", @"I could not reach it.")];
 			return;
 		}
 
@@ -1258,11 +1256,11 @@ static const NSTimeInterval NekoHoldToType = 0.5;
 			stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
 		phase = NekoPhaseAnswering;
 		[[self panel] holdWithState:NekoStateKaki];
-		[self startDrawingAbout:NekoAskLocalized(@"One moment, I will look.")];
+		[self startDrawingAbout:NSLocalizedString(@"One moment, I will look.", @"One moment, I will look.")];
 		[web weatherFor:place completion:^(NSString *summary, NSError *error) {
 			[self stopThinking];
 			if([summary length] == 0) {
-				[self sayInCharacter:NekoAskLocalized(@"I could not reach it.")];
+				[self sayInCharacter:NSLocalizedString(@"I could not reach it.", @"I could not reach it.")];
 				return;
 			}
 			fromTheWeb = YES;
@@ -1275,18 +1273,18 @@ static const NSTimeInterval NekoHoldToType = 0.5;
 	if(source == nil) {
 		/* It named something that is not on the list. Nothing is fetched, and
 		   the question is answered without it rather than not at all. */
-		[self sayInCharacter:NekoAskLocalized(@"I do not have that one to look at.")];
+		[self sayInCharacter:NSLocalizedString(@"I do not have that one to look at.", @"I do not have that one to look at.")];
 		return;
 	}
 
 	phase = NekoPhaseAnswering;
 	[[self panel] holdWithState:NekoStateKaki];
-	[self startDrawingAbout:NekoAskLocalized(@"One moment, I will look.")];
+	[self startDrawingAbout:NSLocalizedString(@"One moment, I will look.", @"One moment, I will look.")];
 
 	[web headlinesFrom:source completion:^(NSArray *headlines, NSError *error) {
 		[self stopThinking];
 		if([headlines count] == 0) {
-			[self sayInCharacter:NekoAskLocalized(@"I could not reach it.")];
+			[self sayInCharacter:NSLocalizedString(@"I could not reach it.", @"I could not reach it.")];
 			return;
 		}
 
@@ -1340,7 +1338,7 @@ static const NSTimeInterval NekoHoldToType = 0.5;
 {
 	phase = NekoPhaseAnswering;
 	[[self panel] holdWithState:NekoStateKaki];
-	[self startDrawingAbout:NekoAskLocalized(@"Hold on, I will draw it.")];
+	[self startDrawingAbout:NSLocalizedString(@"Hold on, I will draw it.", @"Hold on, I will draw it.")];
 
 	[[NekoPainter sharedPainter] draw:prompt completion:^(NSImage *picture, NSError *error) {
 		if(phase != NekoPhaseAnswering)
@@ -1370,15 +1368,15 @@ static const NSTimeInterval NekoHoldToType = 0.5;
 	[bubble askText:[verb objectForKey:@"Sentence"] nearRect:[[self panel] frame]
 	        decided:^(BOOL yes) {
 		if(!yes) {
-			[self sayInCharacter:NekoAskLocalized(@"All right, I will not.")];
+			[self sayInCharacter:NSLocalizedString(@"All right, I will not.", @"All right, I will not.")];
 			return;
 		}
 		NSString *problem = nil;
 		if([NekoPluginVerbs perform:verb saying:&problem])
-			[self sayInCharacter:NekoAskLocalized(@"Done.")];
+			[self sayInCharacter:NSLocalizedString(@"Done.", @"Done.")];
 		else
 			[self sayInCharacter:problem
-				?: NekoAskLocalized(@"That did not work.")];
+				?: NSLocalizedString(@"That did not work.", @"That did not work.")];
 	}];
 }
 
@@ -1400,7 +1398,7 @@ static const NSTimeInterval NekoHoldToType = 0.5;
 	[bubble askText:sentence nearRect:[[self panel] frame]
 	        decided:^(BOOL yes) {
 		if(!yes) {
-			[self sayInCharacter:NekoAskLocalized(@"All right, I will not.")];
+			[self sayInCharacter:NSLocalizedString(@"All right, I will not.", @"All right, I will not.")];
 			return;
 		}
 		[self sayInCharacter:[NekoAppointment make:appointment]];
@@ -1417,11 +1415,11 @@ static const NSTimeInterval NekoHoldToType = 0.5;
 	phase = NekoPhaseAnswering;
 	[[self panel] holdWithState:NekoStateAwake];
 	[bubble askText:[NSString stringWithFormat:
-		NekoAskLocalized(@"Something asked me: “%@”. Shall I answer it?"), question]
+		NSLocalizedString(@"Something asked me: “%@”. Shall I answer it?", @"Something asked me: “%@”. Shall I answer it?"), question]
 	       nearRect:[[self panel] frame]
 	        decided:^(BOOL yes) {
 		if(!yes) {
-			[self sayInCharacter:NekoAskLocalized(@"All right, I will not.")];
+			[self sayInCharacter:NSLocalizedString(@"All right, I will not.", @"All right, I will not.")];
 			return;
 		}
 		[self ask:question];
@@ -1438,7 +1436,7 @@ static const NSTimeInterval NekoHoldToType = 0.5;
 	[bubble askText:[action summary] nearRect:[[self panel] frame]
 	        decided:^(BOOL yes) {
 		if(!yes) {
-			[self sayInCharacter:NekoAskLocalized(@"All right, I will not.")];
+			[self sayInCharacter:NSLocalizedString(@"All right, I will not.", @"All right, I will not.")];
 			return;
 		}
 		/* Files need a folder handed over in a panel first. Asked for here,
@@ -1449,7 +1447,7 @@ static const NSTimeInterval NekoHoldToType = 0.5;
 			NSString *why = nil;
 			if(![access requestAccessTo:key saying:&why]) {
 				[self sayInCharacter:why ?: [NSString stringWithFormat:
-					NekoAskLocalized(@"Without your %@ folder I cannot."),
+					NSLocalizedString(@"Without your %@ folder I cannot.", @"Without your %@ folder I cannot."),
 					[access displayNameFor:key]]];
 				return;
 			}
@@ -1457,10 +1455,10 @@ static const NSTimeInterval NekoHoldToType = 0.5;
 
 		NSError *problem = nil;
 		if([action perform:&problem])
-			[self sayInCharacter:NekoAskLocalized(@"Done.")];
+			[self sayInCharacter:NSLocalizedString(@"Done.", @"Done.")];
 		else
 			[self sayInCharacter:[problem localizedDescription]
-				?: NekoAskLocalized(@"That did not work.")];
+				?: NSLocalizedString(@"That did not work.", @"That did not work.")];
 	}];
 }
 
@@ -1492,7 +1490,7 @@ static const NSTimeInterval NekoHoldToType = 0.5;
 	   to move the machine. A headline is written by a stranger, and a stranger
 	   who wants a cat to open something only has to write it in one. */
 	if(fromTheWeb && ([NekoAction looksLikeAnAction:text] || [self looksLikeADrawing:text])) {
-		[self sayInCharacter:NekoAskLocalized(@"Not from something I read. Ask me again yourself.")];
+		[self sayInCharacter:NSLocalizedString(@"Not from something I read. Ask me again yourself.", @"Not from something I read. Ask me again yourself.")];
 		return;
 	}
 
@@ -1505,7 +1503,7 @@ static const NSTimeInterval NekoHoldToType = 0.5;
 		}
 		/* It asked for something outside the four verbs, or named a program that
 		   is not here: better to say so than to say nothing. */
-		[self sayInCharacter:NekoAskLocalized(@"I cannot do that one.")];
+		[self sayInCharacter:NSLocalizedString(@"I cannot do that one.", @"I cannot do that one.")];
 		return;
 	}
 
@@ -1575,18 +1573,18 @@ static const NSTimeInterval NekoHoldToType = 0.5;
 
 - (void)failed:(NSError *)error
 {
-	NSString *line = NekoAskLocalized(@"I have no answer for that.");
+	NSString *line = NSLocalizedString(@"I have no answer for that.", @"I have no answer for that.");
 	if([[error domain] isEqualToString:NekoAskErrorDomain]) {
 		switch([error code]) {
 			case NekoAskErrorTimedOut:
-				line = NekoAskLocalized(@"Whatever I asked never answered.");
+				line = NSLocalizedString(@"Whatever I asked never answered.", @"Whatever I asked never answered.");
 				break;
 			case NekoAskErrorNotConfigured:
 				line = [self cannedReply];
 				break;
 			case NekoAskErrorNoShortcut:
 				line = [NSString stringWithFormat:
-					NekoAskLocalized(@"I cannot find a Shortcut called “%@”."),
+					NSLocalizedString(@"I cannot find a Shortcut called “%@”.", @"I cannot find a Shortcut called “%@”."),
 					[[error userInfo] objectForKey:@"name"] ?: @"?"];
 				break;
 			default:
@@ -1635,10 +1633,10 @@ static const NSUInteger NekoTempoLongEnough = 160;
 /* Something in character, for when there is nothing to ask. */
 - (NSString *)cannedReply
 {
-	NSArray *lines = [NSArray arrayWithObjects:
-		NekoAskLocalized(@"I am a cat. Ask me again once you have set up an answer."),
-		NekoAskLocalized(@"No idea. I mostly chase the cursor."),
-		NekoAskLocalized(@"Ask the Shortcut. I have not been given one."), nil];
+	NSArray *lines = @[
+		NSLocalizedString(@"I am a cat. Ask me again once you have set up an answer.", @"I am a cat. Ask me again once you have set up an answer."),
+		NSLocalizedString(@"No idea. I mostly chase the cursor.", @"No idea. I mostly chase the cursor."),
+		NSLocalizedString(@"Ask the Shortcut. I have not been given one.", @"Ask the Shortcut. I have not been given one.")];
 	return [lines objectAtIndex:arc4random_uniform((unsigned)[lines count])];
 }
 

@@ -4,8 +4,6 @@
 #import "NekoPlace.h"
 #import "NekoPlayer.h"
 
-#define NekoLocalized(key) NSLocalizedStringFromTable(key, @"Localizable", nil)
-
 @implementation NekoPermissionsTab
 
 - (void)buildInView:(NSView *)view
@@ -107,12 +105,12 @@
 		[title setFont:[NSFont boldSystemFontOfSize:[NSFont systemFontSize]]];
 		[rows addSubview:title];
 
-		NSString *word = state == NekoPermissionGranted ? NekoLocalized(@"allowed")
-			: (state == NekoPermissionDenied ? NekoLocalized(@"refused")
-			: (state == NekoPermissionUnavailable ? NekoLocalized(@"not on this Mac")
-			                                      : NekoLocalized(@"not asked yet")));
+		NSString *word = state == NekoPermissionGranted ? NSLocalizedString(@"allowed", @"allowed")
+			: (state == NekoPermissionDenied ? NSLocalizedString(@"refused", @"refused")
+			: (state == NekoPermissionUnavailable ? NSLocalizedString(@"not on this Mac", @"not on this Mac")
+			                                      : NSLocalizedString(@"not asked yet", @"not asked yet")));
 		if([permission isNeeded] && state != NekoPermissionGranted)
-			word = [word stringByAppendingString:NekoLocalized(@" — needed for what is switched on")];
+			word = [word stringByAppendingString:NSLocalizedString(@" — needed for what is switched on", @" - needed for what is switched on")];
 		NSTextField *status = [self labelWithString:word
 		                                      frame:NSMakeRect(26.0f, top - 34.0f, 420.0f, 15.0f)];
 		[status setAlignment:NSTextAlignmentLeft];
@@ -132,8 +130,8 @@
 				initWithFrame:NSMakeRect(452.0f, top - 28.0f, 92.0f, 28.0f)];
 			[button setBezelStyle:NSBezelStyleRounded];
 			[button setControlSize:NSControlSizeSmall];
-			[button setTitle:[permission canRequest] ? NekoLocalized(@"Ask")
-			                                         : NekoLocalized(@"Settings…")];
+			[button setTitle:[permission canRequest] ? NSLocalizedString(@"Ask", @"Ask")
+			                                         : NSLocalizedString(@"Settings…", @"Settings…")];
 			[button setTarget:self];
 			[button setAction:@selector(permissionPressed:)];
 			[button setTag:(NSInteger)[permissions indexOfObject:permission]];
@@ -146,7 +144,7 @@
 	[rows scrollRectToVisible:NSMakeRect(0.0f, documentHeight - 1.0f, 548.0f, 1.0f)];
 
 	NSTextField *note = [self labelWithString:
-		NekoLocalized(@"macOS applies a change to screen recording only after Neko is restarted. And because this build is signed ad hoc, every rebuild of the app is a different app as far as the system is concerned: permissions granted to the previous one have to be granted again.")
+		NSLocalizedString(@"macOS applies a change to screen recording only after Neko is restarted. And because this build is signed ad hoc, every rebuild of the app is a different app as far as the system is concerned: permissions granted to the previous one have to be granted again.", @"macOS applies a change to screen recording only after Neko is restarted. And because this build is signed ad hoc, every rebuild of the app is a different app as far as the system is concerned: permissions granted to the previous one have to be granted again.")
 	                                    frame:NSMakeRect(20.0f, 10.0f, 556.0f, 44.0f)];
 	[note setAlignment:NSTextAlignmentLeft];
 	[note setFont:[NSFont systemFontOfSize:11.0f]];
@@ -156,7 +154,7 @@
 
 	NSButton *relaunch = [[NSButton alloc] initWithFrame:NSMakeRect(452.0f, 378.0f, 130.0f, 28.0f)];
 	[relaunch setBezelStyle:NSBezelStyleRounded];
-	[relaunch setTitle:NekoLocalized(@"Restart Neko")];
+	[relaunch setTitle:NSLocalizedString(@"Restart Neko", @"Restart Neko")];
 	[relaunch setTarget:self];
 	[relaunch setAction:@selector(relaunchPressed:)];
 	[content addSubview:relaunch];
@@ -164,7 +162,7 @@
 
 	NSButton *refresh = [[NSButton alloc] initWithFrame:NSMakeRect(316.0f, 378.0f, 130.0f, 28.0f)];
 	[refresh setBezelStyle:NSBezelStyleRounded];
-	[refresh setTitle:NekoLocalized(@"Check again")];
+	[refresh setTitle:NSLocalizedString(@"Check again", @"Check again")];
 	[refresh setTarget:self];
 	[refresh setAction:@selector(rebuild)];
 	[content addSubview:refresh];
@@ -194,7 +192,7 @@
 	NSArray *missing = [NekoPermissions missing];
 	if([missing count] == 0) {
 		[summary setStringValue:
-			NekoLocalized(@"Everything switched on has what it needs.")];
+			NSLocalizedString(@"Everything switched on has what it needs.", @"Everything switched on has what it needs.")];
 		[summary setTextColor:[NSColor labelColor]];
 		return;
 	}
@@ -204,7 +202,7 @@
 	while((permission = [e nextObject]) != nil)
 		[names addObject:[permission name]];
 	[summary setStringValue:[NSString stringWithFormat:
-		NekoLocalized(@"Switched on but not allowed: %@."),
+		NSLocalizedString(@"Switched on but not allowed: %@.", @"Switched on but not allowed: %@."),
 		[names componentsJoinedByString:@", "]]];
 	[summary setTextColor:[NSColor systemRedColor]];
 }

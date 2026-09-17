@@ -32,7 +32,7 @@
 		552253E9305BB1CE00A7AA07 /* NekoSums.m in Sources */ = {isa = PBXBuildFile; fileRef = 552253D3305BB1CD00A7AA07 /* NekoSums.m */; };
 		552253EE305BB20400A7AA07 /* NekoPluginText.m in Sources */ = {isa = PBXBuildFile; fileRef = 552253ED305BB20400A7AA07 /* NekoPluginText.m */; };
 		552253EF305BB20400A7AA07 /* NekoPhrase.m in Sources */ = {isa = PBXBuildFile; fileRef = 552253EB305BB20400A7AA07 /* NekoPhrase.m */; };
-		55A8C811305BA903005AF955 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 55A8C80F305BA903005AF955 /* Localizable.strings */; };
+		552253F1305BE94200A7AA07 /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = 552253F0305BE94200A7AA07 /* Localizable.xcstrings */; };
 		8D11072A0486CEB800E47090 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 29B97318FDCFA39411CA2CEA /* MainMenu.xib */; };
 		8D11072B0486CEB800E47090 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 089C165CFE840E0CC02AAC07 /* InfoPlist.strings */; };
 		8D11072D0486CEB800E47090 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 29B97316FDCFA39411CA2CEA /* main.m */; settings = {ATTRIBUTES = (); }; };
@@ -140,9 +140,7 @@
 		552253EB305BB20400A7AA07 /* NekoPhrase.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = NekoPhrase.m; sourceTree = "<group>"; };
 		552253EC305BB20400A7AA07 /* NekoPluginText.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NekoPluginText.h; sourceTree = "<group>"; };
 		552253ED305BB20400A7AA07 /* NekoPluginText.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = NekoPluginText.m; sourceTree = "<group>"; };
-		55A8C810305BA903005AF955 /* es */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; name = es; path = es.lproj/Localizable.strings; sourceTree = "<group>"; };
-		55A8C812305BA94E005AF955 /* fr */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; name = fr; path = fr.lproj/Localizable.strings; sourceTree = "<group>"; };
-		55A8C813305BA951005AF955 /* it */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; name = it; path = it.lproj/Localizable.strings; sourceTree = "<group>"; };
+		552253F0305BE94200A7AA07 /* Localizable.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = Localizable.xcstrings; sourceTree = "<group>"; };
 		8D1107320486CEB800E47090 /* Neko.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Neko.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		A700278B0CA641680057F7E4 /* MyPanel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MyPanel.h; sourceTree = "<group>"; };
 		A700278C0CA641680057F7E4 /* MyPanel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MyPanel.m; sourceTree = "<group>"; usesTabs = 1; };
@@ -427,7 +425,7 @@
 			children = (
 				A7B9FF1C1A575C310074B4D4 /* Neko.icns */,
 				D1C0117A1B00000000000010 /* Characters */,
-				55A8C80F305BA903005AF955 /* Localizable.strings */,
+				552253F0305BE94200A7AA07 /* Localizable.xcstrings */,
 				089C165CFE840E0CC02AAC07 /* InfoPlist.strings */,
 				29B97318FDCFA39411CA2CEA /* MainMenu.xib */,
 				A78E7A3F1A576567008B4180 /* Info.plist */,
@@ -510,8 +508,8 @@
 			files = (
 				8D11072A0486CEB800E47090 /* MainMenu.xib in Resources */,
 				8D11072B0486CEB800E47090 /* InfoPlist.strings in Resources */,
+				552253F1305BE94200A7AA07 /* Localizable.xcstrings in Resources */,
 				D1C0117A1B00000000000011 /* Characters in Resources */,
-				55A8C811305BA903005AF955 /* Localizable.strings in Resources */,
 				A7B9FF1D1A575C310074B4D4 /* Neko.icns in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -604,16 +602,6 @@
 			name = MainMenu.xib;
 			sourceTree = "<group>";
 		};
-		55A8C80F305BA903005AF955 /* Localizable.strings */ = {
-			isa = PBXVariantGroup;
-			children = (
-				55A8C810305BA903005AF955 /* es */,
-				55A8C812305BA94E005AF955 /* fr */,
-				55A8C813305BA951005AF955 /* it */,
-			);
-			name = Localizable.strings;
-			sourceTree = "<group>";
-		};
 /* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
@@ -673,6 +661,7 @@
 				ONLY_ACTIVE_ARCH = YES;
 				PREBINDING = NO;
 				SDKROOT = macosx;
+				SWIFT_EMIT_LOC_STRINGS = YES;
 			};
 			name = Debug;
 		};
@@ -683,6 +672,7 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				PREBINDING = NO;
 				SDKROOT = macosx;
+				SWIFT_EMIT_LOC_STRINGS = YES;
 			};
 			name = Release;
 		};

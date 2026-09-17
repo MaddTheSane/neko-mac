@@ -3,8 +3,6 @@
 
 const NSInteger NekoPluginInterface = 1;
 
-#define NekoPluginLocalized(text) NSLocalizedString(text, nil)
-
 /* A plugin may not smuggle a marker into anything the app shows or hands to a
    model: those three words are how this app's own code says "do something", and
    they belong to the app. */
@@ -86,29 +84,29 @@ static NSString * const NekoPluginMarkers[] = { @"ACTION:", @"IMAGE:", @"LOOK:",
 	NSURL *plist = [folder URLByAppendingPathComponent:@"plugin.plist"];
 	NSDictionary *read = [NSDictionary dictionaryWithContentsOfURL:plist];
 	if(![read isKindOfClass:[NSDictionary class]]) {
-		[self refuse:NekoPluginLocalized(@"There is no readable plugin.plist inside it.")];
+		[self refuse:NSLocalizedString(@"There is no readable plugin.plist inside it.", @"There is no readable plugin.plist inside it.")];
 		return;
 	}
 	manifest = [read retain];
 
 	NSString *identifier = [manifest objectForKey:@"Identifier"];
 	if([identifier length] == 0 || [identifier rangeOfString:@"."].location == NSNotFound) {
-		[self refuse:NekoPluginLocalized(@"Its Identifier is missing or is not of the form com.example.thing.")];
+		[self refuse:NSLocalizedString(@"Its Identifier is missing or is not of the form com.example.thing.", @"Its Identifier is missing or is not of the form com.example.thing.")];
 		return;
 	}
 	if([[manifest objectForKey:@"Name"] length] == 0) {
-		[self refuse:NekoPluginLocalized(@"It has no Name to show.")];
+		[self refuse:NSLocalizedString(@"It has no Name to show.", @"It has no Name to show.")];
 		return;
 	}
 
 	NSInteger declared = [[manifest objectForKey:@"Interface"] integerValue];
 	if(declared <= 0) {
-		[self refuse:NekoPluginLocalized(@"It does not say which plugin interface it was written for.")];
+		[self refuse:NSLocalizedString(@"It does not say which plugin interface it was written for.", @"It does not say which plugin interface it was written for.")];
 		return;
 	}
 	if(declared > NekoPluginInterface) {
 		[self refuse:[NSString stringWithFormat:
-			NekoPluginLocalized(@"It was written for a newer version of Neko’s plugin interface (%ld; this one understands %ld)."),
+			NSLocalizedString(@"It was written for a newer version of Neko’s plugin interface (%ld; this one understands %ld).", @"It was written for a newer version of Neko’s plugin interface (%ld; this one understands %ld)."),
 			(long)declared, (long)NekoPluginInterface]];
 		return;
 	}
@@ -119,12 +117,12 @@ static NSString * const NekoPluginMarkers[] = { @"ACTION:", @"IMAGE:", @"LOOK:",
 	if([minimum length] > 0
 	   && [ours compare:minimum options:NSNumericSearch] == NSOrderedAscending) {
 		[self refuse:[NSString stringWithFormat:
-			NekoPluginLocalized(@"It needs Neko %@ or newer, and this is %@."), minimum, ours]];
+			NSLocalizedString(@"It needs Neko %@ or newer, and this is %@.", @"It needs Neko %@ or newer, and this is %@."), minimum, ours]];
 		return;
 	}
 
 	if([self carriesAMarker:[self summary]]) {
-		[self refuse:NekoPluginLocalized(@"Its summary contains one of Neko’s own markers, which a plugin may not write.")];
+		[self refuse:NSLocalizedString(@"Its summary contains one of Neko’s own markers, which a plugin may not write.", @"Its summary contains one of Neko’s own markers, which a plugin may not write.")];
 		return;
 	}
 
@@ -138,18 +136,16 @@ static NSString * const NekoPluginMarkers[] = { @"ACTION:", @"IMAGE:", @"LOOK:",
 {
 	NSDictionary *extends = [manifest objectForKey:@"Extends"];
 	if(extends != nil && ![extends isKindOfClass:[NSDictionary class]]) {
-		[self refuse:NekoPluginLocalized(@"Its Extends section is not a dictionary.")];
+		[self refuse:NSLocalizedString(@"Its Extends section is not a dictionary.", @"Its Extends section is not a dictionary.")];
 		return;
 	}
 
-	NSArray *known = [NSArray arrayWithObjects:@"Feeds", @"Text", @"Characters",
-		@"Verbs", @"Routes", nil];
-	NSEnumerator *e = [extends keyEnumerator];
-	NSString *key;
-	while((key = [e nextObject]) != nil)
+	NSArray *known = @[@"Feeds", @"Text", @"Characters",
+		@"Verbs", @"Routes"];
+	for(NSString *key in extends)
 		if(![known containsObject:key]) {
 			[self refuse:[NSString stringWithFormat:
-				NekoPluginLocalized(@"It extends “%@”, which this version of Neko does not offer yet."), key]];
+				NSLocalizedString(@"It extends “%@”, which this version of Neko does not offer yet.", @"It extends “%@”, which this version of Neko does not offer yet."), key]];
 			return;
 		}
 
@@ -169,7 +165,7 @@ static NSString * const NekoPluginMarkers[] = { @"ACTION:", @"IMAGE:", @"LOOK:",
 	if(characters == nil)
 		return;
 	if(![characters isKindOfClass:[NSArray class]]) {
-		[self refuse:NekoPluginLocalized(@"Its Characters section is not a list.")];
+		[self refuse:NSLocalizedString(@"Its Characters section is not a list.", @"Its Characters section is not a list.")];
 		return;
 	}
 
@@ -179,13 +175,13 @@ static NSString * const NekoPluginMarkers[] = { @"ACTION:", @"IMAGE:", @"LOOK:",
 	while((name = [e nextObject]) != nil) {
 		if(![name isKindOfClass:[NSString class]]
 		   || ![[name pathExtension] isEqualToString:@"nekochar"]) {
-			[self refuse:NekoPluginLocalized(@"Each of its characters has to be the name of a folder ending in .nekochar.")];
+			[self refuse:NSLocalizedString(@"Each of its characters has to be the name of a folder ending in .nekochar.", @"Each of its characters has to be the name of a folder ending in .nekochar.")];
 			return;
 		}
 		NSString *inside = [[folder path] stringByAppendingPathComponent:name];
 		if(![files fileExistsAtPath:inside]) {
 			[self refuse:[NSString stringWithFormat:
-				NekoPluginLocalized(@"It says it ships the character “%@”, and that folder is not inside it."), name]];
+				NSLocalizedString(@"It says it ships the character “%@”, and that folder is not inside it.", @"It says it ships the character “%@”, and that folder is not inside it."), name]];
 			return;
 		}
 		NSDictionary *manifestOfCharacter = [NSDictionary dictionaryWithContentsOfFile:
@@ -193,13 +189,13 @@ static NSString * const NekoPluginMarkers[] = { @"ACTION:", @"IMAGE:", @"LOOK:",
 		NSString *word = [manifestOfCharacter objectForKey:@"Identifier"];
 		if([word length] == 0) {
 			[self refuse:[NSString stringWithFormat:
-				NekoPluginLocalized(@"The character “%@” has no readable character.plist with an Identifier in it."), name]];
+				NSLocalizedString(@"The character “%@” has no readable character.plist with an Identifier in it.", @"The character “%@” has no readable character.plist with an Identifier in it."), name]];
 			return;
 		}
 		if([word rangeOfCharacterFromSet:
 				[[NSCharacterSet alphanumericCharacterSet] invertedSet]].location != NSNotFound) {
 			[self refuse:[NSString stringWithFormat:
-				NekoPluginLocalized(@"The character identifier “%@” has punctuation or spaces in it; it has to be one plain word."), word]];
+				NSLocalizedString(@"The character identifier “%@” has punctuation or spaces in it; it has to be one plain word.", @"The character identifier “%@” has punctuation or spaces in it; it has to be one plain word."), word]];
 			return;
 		}
 	}
@@ -212,8 +208,8 @@ static NSString * const NekoPluginMarkers[] = { @"ACTION:", @"IMAGE:", @"LOOK:",
    shows in the panel. */
 + (NSArray *)openableSchemes
 {
-	return [NSArray arrayWithObjects:@"https:", @"spotify:", @"music:", @"itms:",
-		@"itmss:", @"mailto:", nil];
+	return @[@"https:", @"spotify:", @"music:", @"itms:",
+		@"itmss:", @"mailto:"];
 }
 
 /* Phrases the plugin wants to hear, and what it wants fetched when it hears one.
@@ -229,7 +225,7 @@ static NSString * const NekoPluginMarkers[] = { @"ACTION:", @"IMAGE:", @"LOOK:",
 	if(routes == nil)
 		return;
 	if(![routes isKindOfClass:[NSArray class]]) {
-		[self refuse:NekoPluginLocalized(@"Its Routes section is not a list.")];
+		[self refuse:NSLocalizedString(@"Its Routes section is not a list.", @"Its Routes section is not a list.")];
 		return;
 	}
 
@@ -238,12 +234,12 @@ static NSString * const NekoPluginMarkers[] = { @"ACTION:", @"IMAGE:", @"LOOK:",
 	NSDictionary *route;
 	while((route = [e nextObject]) != nil) {
 		if(![route isKindOfClass:[NSDictionary class]]) {
-			[self refuse:NekoPluginLocalized(@"One of its routes is not a dictionary.")];
+			[self refuse:NSLocalizedString(@"One of its routes is not a dictionary.", @"One of its routes is not a dictionary.")];
 			return;
 		}
 		NSString *word = [route objectForKey:@"Identifier"];
 		if([word length] == 0 || [taken containsObject:word]) {
-			[self refuse:NekoPluginLocalized(@"Each of its routes needs its own Identifier.")];
+			[self refuse:NSLocalizedString(@"Each of its routes needs its own Identifier.", @"Each of its routes needs its own Identifier.")];
 			return;
 		}
 		[taken addObject:word];
@@ -251,7 +247,7 @@ static NSString * const NekoPluginMarkers[] = { @"ACTION:", @"IMAGE:", @"LOOK:",
 		NSArray *phrases = [route objectForKey:@"Phrases"];
 		if(![phrases isKindOfClass:[NSArray class]] || [phrases count] == 0) {
 			[self refuse:[NSString stringWithFormat:
-				NekoPluginLocalized(@"The route “%@” lists no Phrases to listen for."), word]];
+				NSLocalizedString(@"The route “%@” lists no Phrases to listen for.", @"The route “%@” lists no Phrases to listen for."), word]];
 			return;
 		}
 		NSEnumerator *p = [phrases objectEnumerator];
@@ -259,11 +255,11 @@ static NSString * const NekoPluginMarkers[] = { @"ACTION:", @"IMAGE:", @"LOOK:",
 		while((phrase = [p nextObject]) != nil) {
 			if(![phrase isKindOfClass:[NSString class]] || [phrase length] < 3) {
 				[self refuse:[NSString stringWithFormat:
-					NekoPluginLocalized(@"The route “%@” has a phrase too short to match on; three letters at least."), word]];
+					NSLocalizedString(@"The route “%@” has a phrase too short to match on; three letters at least.", @"The route “%@” has a phrase too short to match on; three letters at least."), word]];
 				return;
 			}
 			if([self carriesAMarker:phrase]) {
-				[self refuse:NekoPluginLocalized(@"One of its routes carries one of Neko’s own markers in a phrase.")];
+				[self refuse:NSLocalizedString(@"One of its routes carries one of Neko’s own markers in a phrase.", @"One of its routes carries one of Neko’s own markers in a phrase.")];
 				return;
 			}
 		}
@@ -274,17 +270,17 @@ static NSString * const NekoPluginMarkers[] = { @"ACTION:", @"IMAGE:", @"LOOK:",
 		NSString *says = [route objectForKey:@"Says"];
 		if([says length] == 0) {
 			[self refuse:[NSString stringWithFormat:
-				NekoPluginLocalized(@"The route “%@” does not say whose words it fetches."), word]];
+				NSLocalizedString(@"The route “%@” does not say whose words it fetches.", @"The route “%@” does not say whose words it fetches."), word]];
 			return;
 		}
 		if([self carriesAMarker:says] || [self carriesAMarker:
 		        ([route objectForKey:@"Summary"] ?: @"")]) {
-			[self refuse:NekoPluginLocalized(@"One of its routes carries one of Neko’s own markers in what it says about itself.")];
+			[self refuse:NSLocalizedString(@"One of its routes carries one of Neko’s own markers in what it says about itself.", @"One of its routes carries one of Neko’s own markers in what it says about itself.")];
 			return;
 		}
 
 		if([route objectForKey:@"Program"] != nil) {
-			[self refuse:NekoPluginLocalized(@"One of its routes wants to run a program of its own, which this version does not allow.")];
+			[self refuse:NSLocalizedString(@"One of its routes wants to run a program of its own, which this version does not allow.", @"One of its routes wants to run a program of its own, which this version does not allow.")];
 			return;
 		}
 
@@ -292,13 +288,13 @@ static NSString * const NekoPluginMarkers[] = { @"ACTION:", @"IMAGE:", @"LOOK:",
 		if([address length] == 0
 		   || ![[address lowercaseString] hasPrefix:@"https://"]) {
 			[self refuse:[NSString stringWithFormat:
-				NekoPluginLocalized(@"The route “%@” needs an https address to fetch."), word]];
+				NSLocalizedString(@"The route “%@” needs an https address to fetch.", @"The route “%@” needs an https address to fetch."), word]];
 			return;
 		}
 	}
 
 	if([routes count] > 0 && ![self wantsNetwork]) {
-		[self refuse:NekoPluginLocalized(@"It adds routes without asking for the network, so nothing could be fetched.")];
+		[self refuse:NSLocalizedString(@"It adds routes without asking for the network, so nothing could be fetched.", @"It adds routes without asking for the network, so nothing could be fetched.")];
 		return;
 	}
 }
@@ -309,7 +305,7 @@ static NSString * const NekoPluginMarkers[] = { @"ACTION:", @"IMAGE:", @"LOOK:",
 	if(verbs == nil)
 		return;
 	if(![verbs isKindOfClass:[NSArray class]]) {
-		[self refuse:NekoPluginLocalized(@"Its Verbs section is not a list.")];
+		[self refuse:NSLocalizedString(@"Its Verbs section is not a list.", @"Its Verbs section is not a list.")];
 		return;
 	}
 
@@ -318,12 +314,12 @@ static NSString * const NekoPluginMarkers[] = { @"ACTION:", @"IMAGE:", @"LOOK:",
 	NSDictionary *verb;
 	while((verb = [e nextObject]) != nil) {
 		if(![verb isKindOfClass:[NSDictionary class]]) {
-			[self refuse:NekoPluginLocalized(@"One of its verbs is not a dictionary.")];
+			[self refuse:NSLocalizedString(@"One of its verbs is not a dictionary.", @"One of its verbs is not a dictionary.")];
 			return;
 		}
 		NSString *word = [verb objectForKey:@"Identifier"];
 		if([word length] == 0 || [taken containsObject:word]) {
-			[self refuse:NekoPluginLocalized(@"Each of its verbs needs its own Identifier.")];
+			[self refuse:NSLocalizedString(@"Each of its verbs needs its own Identifier.", @"Each of its verbs needs its own Identifier.")];
 			return;
 		}
 		[taken addObject:word];
@@ -331,7 +327,7 @@ static NSString * const NekoPluginMarkers[] = { @"ACTION:", @"IMAGE:", @"LOOK:",
 		NSArray *phrases = [verb objectForKey:@"Phrases"];
 		if(![phrases isKindOfClass:[NSArray class]] || [phrases count] == 0) {
 			[self refuse:[NSString stringWithFormat:
-				NekoPluginLocalized(@"The verb “%@” lists no Phrases to listen for."), word]];
+				NSLocalizedString(@"The verb “%@” lists no Phrases to listen for.", @"The verb “%@” lists no Phrases to listen for."), word]];
 			return;
 		}
 		NSEnumerator *p = [phrases objectEnumerator];
@@ -339,11 +335,11 @@ static NSString * const NekoPluginMarkers[] = { @"ACTION:", @"IMAGE:", @"LOOK:",
 		while((phrase = [p nextObject]) != nil) {
 			if(![phrase isKindOfClass:[NSString class]] || [phrase length] < 3) {
 				[self refuse:[NSString stringWithFormat:
-					NekoPluginLocalized(@"The verb “%@” has a phrase too short to match on; three letters at least."), word]];
+					NSLocalizedString(@"The verb “%@” has a phrase too short to match on; three letters at least.", @"The verb “%@” has a phrase too short to match on; three letters at least."), word]];
 				return;
 			}
 			if([self carriesAMarker:phrase]) {
-				[self refuse:NekoPluginLocalized(@"One of its verbs carries one of Neko’s own markers in a phrase.")];
+				[self refuse:NSLocalizedString(@"One of its verbs carries one of Neko’s own markers in a phrase.", @"One of its verbs carries one of Neko’s own markers in a phrase.")];
 				return;
 			}
 		}
@@ -353,11 +349,11 @@ static NSString * const NekoPluginMarkers[] = { @"ACTION:", @"IMAGE:", @"LOOK:",
 		NSString *confirm = [verb objectForKey:@"Confirm"];
 		if([confirm length] == 0) {
 			[self refuse:[NSString stringWithFormat:
-				NekoPluginLocalized(@"The verb “%@” has no Confirm sentence, and nothing here happens without being read back first."), word]];
+				NSLocalizedString(@"The verb “%@” has no Confirm sentence, and nothing here happens without being read back first.", @"The verb “%@” has no Confirm sentence, and nothing here happens without being read back first."), word]];
 			return;
 		}
 		if([self carriesAMarker:confirm]) {
-			[self refuse:NekoPluginLocalized(@"One of its verbs carries one of Neko’s own markers in its Confirm sentence.")];
+			[self refuse:NSLocalizedString(@"One of its verbs carries one of Neko’s own markers in its Confirm sentence.", @"One of its verbs carries one of Neko’s own markers in its Confirm sentence.")];
 			return;
 		}
 
@@ -372,11 +368,11 @@ static NSString * const NekoPluginMarkers[] = { @"ACTION:", @"IMAGE:", @"LOOK:",
 			+ ([player length] > 0 || [command length] > 0 ? 1 : 0);
 		if(doors != 1) {
 			[self refuse:[NSString stringWithFormat:
-				NekoPluginLocalized(@"The verb “%@” needs exactly one of Url, Shortcut, or Player and Command."), word]];
+				NSLocalizedString(@"The verb “%@” needs exactly one of Url, Shortcut, or Player and Command.", @"The verb “%@” needs exactly one of Url, Shortcut, or Player and Command."), word]];
 			return;
 		}
 		if([verb objectForKey:@"Program"] != nil || [verb objectForKey:@"Executable"] != nil) {
-			[self refuse:NekoPluginLocalized(@"One of its verbs wants to run a program of its own, which this version does not allow.")];
+			[self refuse:NSLocalizedString(@"One of its verbs wants to run a program of its own, which this version does not allow.", @"One of its verbs wants to run a program of its own, which this version does not allow.")];
 			return;
 		}
 		/* Refused rather than ignored, which is the rule everywhere in this file.
@@ -384,7 +380,7 @@ static NSString * const NekoPluginMarkers[] = { @"ACTION:", @"IMAGE:", @"LOOK:",
 		   about what it can do or hoping the next version will read it. Both are
 		   better answered now. */
 		if([verb objectForKey:@"Script"] != nil || [verb objectForKey:@"AppleScript"] != nil) {
-			[self refuse:NekoPluginLocalized(@"One of its verbs carries a script of its own. Neko sends its own commands to Music and Spotify and never anybody else’s.")];
+			[self refuse:NSLocalizedString(@"One of its verbs carries a script of its own. Neko sends its own commands to Music and Spotify and never anybody else’s.", @"One of its verbs carries a script of its own. Neko sends its own commands to Music and Spotify and never anybody else’s.")];
 			return;
 		}
 
@@ -397,16 +393,16 @@ static NSString * const NekoPluginMarkers[] = { @"ACTION:", @"IMAGE:", @"LOOK:",
 					allowed = YES;
 			if(!allowed) {
 				[self refuse:[NSString stringWithFormat:
-					NekoPluginLocalized(@"The verb “%@” opens an address Neko will not open; allowed are https, spotify, music, itms and mailto."), word]];
+					NSLocalizedString(@"The verb “%@” opens an address Neko will not open; allowed are https, spotify, music, itms and mailto.", @"The verb “%@” opens an address Neko will not open; allowed are https, spotify, music, itms and mailto."), word]];
 				return;
 			}
 			if(![self wantsToOpenThings]) {
-				[self refuse:NekoPluginLocalized(@"It has verbs that open an address without asking to open things.")];
+				[self refuse:NSLocalizedString(@"It has verbs that open an address without asking to open things.", @"It has verbs that open an address without asking to open things.")];
 				return;
 			}
 		} else if([shortcut length] > 0) {
 			if(![self wantsShortcuts]) {
-				[self refuse:NekoPluginLocalized(@"It has verbs that run one of your Shortcuts without asking to.")];
+				[self refuse:NSLocalizedString(@"It has verbs that run one of your Shortcuts without asking to.", @"It has verbs that run one of your Shortcuts without asking to.")];
 				return;
 			}
 		} else {
@@ -415,21 +411,21 @@ static NSString * const NekoPluginMarkers[] = { @"ACTION:", @"IMAGE:", @"LOOK:",
 			   app, in one file, where it can be read. */
 			if([player length] == 0 || [command length] == 0) {
 				[self refuse:[NSString stringWithFormat:
-					NekoPluginLocalized(@"The verb “%@” needs both a Player and a Command."), word]];
+					NSLocalizedString(@"The verb “%@” needs both a Player and a Command.", @"The verb “%@” needs both a Player and a Command."), word]];
 				return;
 			}
 			if(![NekoPlayer knows:player]) {
 				[self refuse:[NSString stringWithFormat:
-					NekoPluginLocalized(@"The verb “%@” names the player “%@”, and Neko only knows music and spotify."), word, player]];
+					NSLocalizedString(@"The verb “%@” names the player “%@”, and Neko only knows music and spotify.", @"The verb “%@” names the player “%@”, and Neko only knows music and spotify."), word, player]];
 				return;
 			}
 			if(![NekoPlayer knowsCommand:command]) {
 				[self refuse:[NSString stringWithFormat:
-					NekoPluginLocalized(@"The verb “%@” asks for “%@”, which is not one of the commands Neko can send."), word, command]];
+					NSLocalizedString(@"The verb “%@” asks for “%@”, which is not one of the commands Neko can send.", @"The verb “%@” asks for “%@”, which is not one of the commands Neko can send."), word, command]];
 				return;
 			}
 			if(![self wantsToControlPlayers]) {
-				[self refuse:NekoPluginLocalized(@"It has verbs that command Music or Spotify without asking to.")];
+				[self refuse:NSLocalizedString(@"It has verbs that command Music or Spotify without asking to.", @"It has verbs that command Music or Spotify without asking to.")];
 				return;
 			}
 		}
@@ -453,7 +449,7 @@ static NSString * const NekoPluginMarkers[] = { @"ACTION:", @"IMAGE:", @"LOOK:",
 			continue;
 		if([NSDictionary dictionaryWithContentsOfFile:table] == nil) {
 			[self refuse:[NSString stringWithFormat:
-				NekoPluginLocalized(@"Its %@ translations cannot be read; plugin.strings has to be a property list."), entry]];
+				NSLocalizedString(@"Its %@ translations cannot be read; plugin.strings has to be a property list.", @"Its %@ translations cannot be read; plugin.strings has to be a property list."), entry]];
 			return;
 		}
 	}
@@ -471,24 +467,24 @@ static NSString * const NekoPluginMarkers[] = { @"ACTION:", @"IMAGE:", @"LOOK:",
 	if(text == nil)
 		return;
 	if(![text isKindOfClass:[NSDictionary class]]) {
-		[self refuse:NekoPluginLocalized(@"Its Text section is not a dictionary.")];
+		[self refuse:NSLocalizedString(@"Its Text section is not a dictionary.", @"Its Text section is not a dictionary.")];
 		return;
 	}
 
 	NSString *shortcut = [text objectForKey:@"Shortcut"];
 	if([shortcut length] == 0) {
-		[self refuse:NekoPluginLocalized(@"It processes text without naming a Shortcut to do it with.")];
+		[self refuse:NSLocalizedString(@"It processes text without naming a Shortcut to do it with.", @"It processes text without naming a Shortcut to do it with.")];
 		return;
 	}
 	if([text objectForKey:@"Program"] != nil || [text objectForKey:@"Executable"] != nil) {
-		[self refuse:NekoPluginLocalized(@"It wants to process text with a program of its own, which this version does not allow — only one of your own Shortcuts.")];
+		[self refuse:NSLocalizedString(@"It wants to process text with a program of its own, which this version does not allow — only one of your own Shortcuts.", @"It wants to process text with a program of its own, which this version does not allow — only one of your own Shortcuts.")];
 		return;
 	}
 
 	NSString *direction = [[text objectForKey:@"Direction"] lowercaseString];
 	NSArray *allowed = [NSArray arrayWithObjects:@"in", @"out", @"both", nil];
 	if(![allowed containsObject:direction ?: @""]) {
-		[self refuse:NekoPluginLocalized(@"Its Text section has to say Direction: in, out or both.")];
+		[self refuse:NSLocalizedString(@"Its Text section has to say Direction: in, out or both.", @"Its Text section has to say Direction: in, out or both.")];
 		return;
 	}
 }
@@ -498,11 +494,11 @@ static NSString * const NekoPluginMarkers[] = { @"ACTION:", @"IMAGE:", @"LOOK:",
 	if(feeds == nil)
 		return;
 	if(![feeds isKindOfClass:[NSArray class]]) {
-		[self refuse:NekoPluginLocalized(@"Its Feeds section is not a list.")];
+		[self refuse:NSLocalizedString(@"Its Feeds section is not a list.", @"Its Feeds section is not a list.")];
 		return;
 	}
 	if(![self wantsNetwork]) {
-		[self refuse:NekoPluginLocalized(@"It adds feeds without asking for the network, so nothing could be fetched.")];
+		[self refuse:NSLocalizedString(@"It adds feeds without asking for the network, so nothing could be fetched.", @"It adds feeds without asking for the network, so nothing could be fetched.")];
 		return;
 	}
 
@@ -510,13 +506,13 @@ static NSString * const NekoPluginMarkers[] = { @"ACTION:", @"IMAGE:", @"LOOK:",
 	NSDictionary *feed;
 	while((feed = [e nextObject]) != nil) {
 		if(![feed isKindOfClass:[NSDictionary class]]) {
-			[self refuse:NekoPluginLocalized(@"One of its feeds is not a dictionary.")];
+			[self refuse:NSLocalizedString(@"One of its feeds is not a dictionary.", @"One of its feeds is not a dictionary.")];
 			return;
 		}
 		NSString *word = [feed objectForKey:@"Identifier"];
 		NSString *address = [feed objectForKey:@"Address"];
 		if([word length] == 0 || [[feed objectForKey:@"Name"] length] == 0) {
-			[self refuse:NekoPluginLocalized(@"One of its feeds has no Identifier or no Name.")];
+			[self refuse:NSLocalizedString(@"One of its feeds has no Identifier or no Name.", @"One of its feeds has no Identifier or no Name.")];
 			return;
 		}
 		/* The word a question is matched against, and one the app already uses
@@ -524,17 +520,17 @@ static NSString * const NekoPluginMarkers[] = { @"ACTION:", @"IMAGE:", @"LOOK:",
 		if([word rangeOfCharacterFromSet:
 				[[NSCharacterSet alphanumericCharacterSet] invertedSet]].location != NSNotFound) {
 			[self refuse:[NSString stringWithFormat:
-				NekoPluginLocalized(@"The feed word “%@” has punctuation or spaces in it; it has to be one plain word."), word]];
+				NSLocalizedString(@"The feed word “%@” has punctuation or spaces in it; it has to be one plain word.", @"The feed word “%@” has punctuation or spaces in it; it has to be one plain word."), word]];
 			return;
 		}
 		if(![[address lowercaseString] hasPrefix:@"https://"]) {
 			[self refuse:[NSString stringWithFormat:
-				NekoPluginLocalized(@"The feed “%@” is not an https address."), word]];
+				NSLocalizedString(@"The feed “%@” is not an https address.", @"The feed “%@” is not an https address."), word]];
 			return;
 		}
 		if([self carriesAMarker:[feed objectForKey:@"Name"]]
 		   || [self carriesAMarker:([feed objectForKey:@"Detail"] ?: @"")]) {
-			[self refuse:NekoPluginLocalized(@"One of its feeds carries one of Neko’s own markers in its name.")];
+			[self refuse:NSLocalizedString(@"One of its feeds carries one of Neko’s own markers in its name.", @"One of its feeds carries one of Neko’s own markers in its name.")];
 			return;
 		}
 	}
@@ -720,10 +716,10 @@ static NSString * const NekoPluginMarkers[] = { @"ACTION:", @"IMAGE:", @"LOOK:",
 	NSMutableArray *parts = [NSMutableArray array];
 	NSUInteger feeds = [[self feeds] count];
 	if(feeds == 1)
-		[parts addObject:NekoPluginLocalized(@"1 feed")];
+		[parts addObject:NSLocalizedString(@"1 feed", @"1 feed")];
 	else if(feeds > 1)
-		[parts addObject:[NSString stringWithFormat:
-			NekoPluginLocalized(@"%lu feeds"), (unsigned long)feeds]];
+		[parts addObject:[NSString localizedStringWithFormat:
+			NSLocalizedString(@"%lu feeds", @"%lu feeds"), (unsigned long)feeds]];
 
 	/* Named, not counted. Somebody who switches on a plugin that ships characters
 	   is then looking for them in a menu of forty-seven, and "3 characters" does
@@ -741,32 +737,32 @@ static NSString * const NekoPluginMarkers[] = { @"ACTION:", @"IMAGE:", @"LOOK:",
 	}
 	if([characterNames count] > 0 && [characterNames count] <= 6) {
 		[parts addObject:[NSString stringWithFormat:
-			NekoPluginLocalized(@"the characters %@, in the Character menu"),
+			NSLocalizedString(@"the characters %@, in the Character menu", @"the characters %@, in the Character menu"),
 			[characterNames componentsJoinedByString:@", "]]];
 	}
 	else {
 
 	NSUInteger characters = [[self characterPaths] count];
 	if(characters == 1)
-		[parts addObject:NekoPluginLocalized(@"1 character")];
+		[parts addObject:NSLocalizedString(@"1 character", @"1 character")];
 	else if(characters > 1)
-		[parts addObject:[NSString stringWithFormat:
-			NekoPluginLocalized(@"%lu characters"), (unsigned long)characters]];
+		[parts addObject:[NSString localizedStringWithFormat:
+			NSLocalizedString(@"%lu characters", @"%lu characters"), (unsigned long)characters]];
 	}
 
 	NSUInteger verbs = [[self verbs] count];
 	if(verbs == 1)
-		[parts addObject:NekoPluginLocalized(@"1 phrase it listens for")];
+		[parts addObject:NSLocalizedString(@"1 phrase it listens for", @"1 phrase it listens for")];
 	else if(verbs > 1)
-		[parts addObject:[NSString stringWithFormat:
-			NekoPluginLocalized(@"%lu phrases it listens for"), (unsigned long)verbs]];
+		[parts addObject:[NSString localizedStringWithFormat:
+			NSLocalizedString(@"%lu phrases it listens for", @"%lu phrases it listens for"), (unsigned long)verbs]];
 
 	NSUInteger routes = [[self routes] count];
 	if(routes == 1)
-		[parts addObject:NekoPluginLocalized(@"1 question it goes and looks up")];
+		[parts addObject:NSLocalizedString(@"1 question it goes and looks up", @"1 question it goes and looks up")];
 	else if(routes > 1)
-		[parts addObject:[NSString stringWithFormat:
-			NekoPluginLocalized(@"%lu questions it goes and looks up"),
+		[parts addObject:[NSString localizedStringWithFormat:
+			NSLocalizedString(@"%lu questions it goes and looks up", @"%lu questions it goes and looks up"),
 			(unsigned long)routes]];
 
 	/* The one thing about a route that a feed never does. The application's own
@@ -787,25 +783,25 @@ static NSString * const NekoPluginMarkers[] = { @"ACTION:", @"IMAGE:", @"LOOK:",
 			[hosts addObject:host];
 	}
 	if([hosts count] > 0)
-		[parts addObject:[NSString stringWithFormat:
-			NekoPluginLocalized(@"sends part of what you say to %@"),
+		[parts addObject:[NSString localizedStringWithFormat:
+			NSLocalizedString(@"sends part of what you say to %@", @"sends part of what you say to %@"),
 			[[[hosts allObjects] sortedArrayUsingSelector:@selector(compare:)]
 				componentsJoinedByString:@", "]]];
 
 	if([self text] != nil) {
 		NSString *which = [self processesTextGoing:YES]
 			? ([self processesTextGoing:NO]
-				? NekoPluginLocalized(@"what you say and what it answers")
-				: NekoPluginLocalized(@"what you say"))
-			: NekoPluginLocalized(@"what it answers");
+				? NSLocalizedString(@"what you say and what it answers", @"what you say and what it answers")
+				: NSLocalizedString(@"what you say", @"what you say"))
+			: NSLocalizedString(@"what it answers", @"what it answers");
 		[parts addObject:[NSString stringWithFormat:
-			NekoPluginLocalized(@"passes %@ through your Shortcut “%@”"),
+			NSLocalizedString(@"passes %@ through your Shortcut “%@”", @"passes %@ through your Shortcut “%@”"),
 			which, [self textShortcut]]];
 	}
 
 	if([parts count] == 0)
-		return NekoPluginLocalized(@"nothing this version of Neko can use yet");
-	return [parts componentsJoinedByString:NekoPluginLocalized(@", and ")];
+		return NSLocalizedString(@"nothing this version of Neko can use yet", @"nothing this version of Neko can use yet");
+	return [parts componentsJoinedByString:NSLocalizedString(@", and ", @"noun joiner")];
 }
 
 @end

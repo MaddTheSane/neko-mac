@@ -5,8 +5,6 @@
 
 NSString * const NekoGlanceDidChangeNotification = @"NekoGlanceDidChange";
 
-#define NekoGlanceLocalized(key) NSLocalizedStringFromTable(key, @"Localizable", nil)
-
 /* Ten minutes when nobody said. Long enough to work through something, short
    enough that forgetting about it costs an afternoon rather than a month. */
 static const NSTimeInterval NekoGlanceDefault = 600.0;
@@ -20,7 +18,7 @@ static const NSTimeInterval NekoGlanceLongest = 3600.0;
 static BOOL NekoAsksForALook(NSString *question)
 {
 	NSString *text = [question lowercaseString];
-	NSArray *triggers = [NSArray arrayWithObjects:
+	static NSArray *const triggers = @[
 		/* Italian */
 		@"guarda cosa", @"guarda quello che", @"guarda per", @"guardami",
 		@"stammi a guardare", @"dai un'occhiata", @"dai unocchiata",
@@ -30,12 +28,12 @@ static BOOL NekoAsksForALook(NSString *question)
 		/* French */
 		@"regarde ce que", @"regarde pendant", @"regarde-moi",
 		/* Spanish */
-		@"mira lo que", @"mira durante", @"mírame", nil];
-	NSEnumerator *e = [triggers objectEnumerator];
-	NSString *word;
-	while((word = [e nextObject]) != nil)
-		if([text rangeOfString:word].location != NSNotFound)
+		@"mira lo que", @"mira durante", @"mírame"];
+	for(NSString *word in triggers) {
+		if([text rangeOfString:word].location != NSNotFound) {
 			return YES;
+		}
+	}
 	return NO;
 }
 
@@ -73,7 +71,7 @@ static BOOL NekoAsksForALook(NSString *question)
 	   of the consent here — and said differently when there is nothing to read
 	   with, rather than promising a look that cannot happen. */
 	if(![NekoDesktop accessibilityGranted])
-		return NekoGlanceLocalized(@"I would need the Accessibility permission to read anything. It is in System Settings, Privacy & Security, Accessibility.");
+		return NSLocalizedString(@"I would need the Accessibility permission to read anything. It is in System Settings, Privacy & Security, Accessibility.", @"I would need the Accessibility permission to read anything. It is in System Settings, Privacy & Security, Accessibility.");
 
 	until = [[NSDate dateWithTimeIntervalSinceNow:seconds] retain];
 	ticking = [[NSTimer scheduledTimerWithTimeInterval:seconds
@@ -86,7 +84,7 @@ static BOOL NekoAsksForALook(NSString *question)
 		postNotificationName:NekoGlanceDidChangeNotification object:self];
 
 	return [NSString stringWithFormat:
-		NekoGlanceLocalized(@"I will look for %@, and then stop."),
+		NSLocalizedString(@"I will look for %@, and then stop.", @"I will look for %@, and then stop."),
 		[NekoWhen describe:seconds]];
 }
 
@@ -95,7 +93,7 @@ static BOOL NekoAsksForALook(NSString *question)
 	[self stop];
 	/* Said once, unprompted, because a permission that expires quietly is a
 	   permission somebody cannot reason about. */
-	[[NekoAsk sharedAsk] sayUnprompted:NekoGlanceLocalized(@"I have stopped looking.")];
+	[[NekoAsk sharedAsk] sayUnprompted:NSLocalizedString(@"I have stopped looking.", @"I have stopped looking.")];
 }
 
 - (BOOL)isLooking
@@ -119,7 +117,7 @@ static BOOL NekoAsksForALook(NSString *question)
 		? [NekoWhen describe:(double)((int)left + 1)]
 		: [NekoWhen describe:(double)(((int)left / 60) * 60)];
 	return [NSString stringWithFormat:
-		NekoGlanceLocalized(@"Looking — %@ left"), remaining];
+		NSLocalizedString(@"Looking — %@ left", @"Looking — %@ left"), remaining];
 }
 
 - (void)stop

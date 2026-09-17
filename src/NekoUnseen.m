@@ -9,34 +9,31 @@
 
    Whole phrases, not single words: "conto" is in "tienine conto" and "il conto
    del ristorante", and neither is a question about somebody's bank. */
-static NSArray *NekoUnseenClasses(void)
+static NSArray<NSArray<NSString*>*> *NekoUnseenClasses(void)
 {
-	static NSArray *classes = nil;
-	if(classes != nil)
-		return classes;
-
-	classes = [[NSArray alloc] initWithObjects:
+	static NSArray<NSArray<NSString*>*> *const classes =
+	@[
 		/* Their own money. */
-		[NSArray arrayWithObjects:@"accounts",
+		@[@"accounts",
 			@"I cannot see your accounts.",
 			@"quanto ho sul conto", @"quanto c'è sul conto", @"il mio saldo",
 			@"il saldo del conto", @"quanto ho speso", @"quanto mi resta sul conto",
 			@"il mio stipendio", @"la mia bolletta", @"la mia carta di credito",
 			@"quanti soldi ho", @"my bank balance", @"how much money do i have",
 			@"how much have i spent", @"mon solde", @"mi saldo",
-			@"cuánto dinero tengo", nil],
+			@"cuánto dinero tengo",],
 
 		/* The markets, which are not on this Mac either. */
-		[NSArray arrayWithObjects:@"markets",
+		@[@"markets",
 			@"I cannot see the markets.",
 			@"quanto vale in borsa", @"vale in borsa", @"quotazione di",
 			@"quanto vale apple", @"il prezzo delle azioni", @"quanto è salito il titolo",
 			@"quanto vale il bitcoin", @"il cambio euro dollaro",
 			@"stock price", @"share price", @"how much is apple worth",
-			@"cours de l'action", @"precio de las acciones", nil],
+			@"cours de l'action", @"precio de las acciones"],
 
 		/* Mail, messages, calls. */
-		[NSArray arrayWithObjects:@"mail",
+		@[@"mail",
 			@"I cannot see your mail.",
 			@"chi mi ha scritto", @"chi mi ha cercato", @"messaggi non letti",
 			@"mail non lette", @"email non lette", @"quante mail ho",
@@ -44,35 +41,35 @@ static NSArray *NekoUnseenClasses(void)
 			@"chi mi ha chiamato", @"ho ricevuto messaggi",
 			@"who wrote to me", @"unread messages", @"unread mail", @"my inbox",
 			@"missed calls", @"ma boîte", @"mes messages non lus",
-			@"mi correo", @"mensajes sin leer", nil],
+			@"mi correo", @"mensajes sin leer"],
 
 		/* What is inside a file — unless a folder was handed over. */
-		[NSArray arrayWithObjects:@"files",
+		@[@"files",
 			@"I cannot see inside your files.",
 			@"cosa c'è nel file", @"cosa c'è scritto nel file",
 			@"cosa c'è nel documento", @"cosa contiene il file",
 			@"dove ho salvato", @"quanto pesa il file", @"cosa ho scritto nel file",
 			@"what's in the file", @"what is in the file", @"where did i save",
-			@"qu'y a-t-il dans le fichier", @"qué hay en el archivo", nil],
+			@"qu'y a-t-il dans le fichier", @"qué hay en el archivo"],
 
 		/* Whether the work works. */
-		[NSArray arrayWithObjects:@"build",
+		@[@"build",
 			@"I cannot see whether it builds.",
 			@"il mio codice compila", @"il codice compila", @"la build è finita",
 			@"la build è passata", @"il test passa", @"i test passano",
 			@"ci sono errori di compilazione", @"la compilazione è finita",
 			@"does my code compile", @"did the build pass", @"do the tests pass",
-			@"est-ce que ça compile", @"compila mi código", nil],
+			@"est-ce que ça compile", @"compila mi código"],
 
 		/* Other people. */
-		[NSArray arrayWithObjects:@"people",
+		@[@"people",
 			@"I cannot see who is there.",
 			@"chi è al telefono", @"chi ha suonato", @"chi c'è alla porta",
 			@"come si chiama il mio collega", @"come si chiama mia",
 			@"chi è quella persona", @"chi c'è in riunione",
 			@"who is on the phone", @"who is at the door",
 			@"what's my colleague called", @"qui est au téléphone",
-			@"quién está al teléfono", nil],
+			@"quién está al teléfono"],
 
 		/* The weather, which is the world rather than the Mac — and which
 		   NekoWeb takes first whenever it can actually answer: a place named in
@@ -87,7 +84,7 @@ static NSArray *NekoUnseenClasses(void)
 		   it: that question is in this Mac's own diary twice. Each entry below
 		   is now the shortest form NekoWeb also recognises, so the two lists
 		   cannot drift apart again. */
-		[NSArray arrayWithObjects:@"weather",
+		@[@"weather",
 			@"I cannot see the weather.",
 			@"che tempo fa", @"che tempo farà", @"che tempo c",
 			@"piove", @"pioverà", @"che temperatura c'è", @"quanti gradi",
@@ -98,26 +95,27 @@ static NSArray *NekoUnseenClasses(void)
 			@"qué tiempo", @"que tiempo", @"cuántos grados",
 			/* Not the weather: tempo is also time, and these are time. */
 			@"!tempo fa che", @"!quanto tempo fa", @"!da quanto tempo",
-			@"!piove sul bagnato", nil],
+			@"!piove sul bagnato"],
 
 		/* And what is in a calendar this application can write to and not read. */
-		[NSArray arrayWithObjects:@"calendar",
+		@[@"calendar",
 			@"I cannot see your calendar.",
 			@"cosa ho in calendario", @"che impegni ho", @"ho appuntamenti",
 			@"che appuntamenti ho", @"cosa ho domani in calendario",
 			@"quando ho la riunione", @"a che ora ho l'appuntamento",
 			@"what's on my calendar", @"what do i have tomorrow",
-			@"mon agenda", @"mi agenda", nil],
+			@"mon agenda", @"mi agenda"],
 
 		/* And the person's own body and night. */
-		[NSArray arrayWithObjects:@"body",
+		@[@"body",
 			@"I cannot know that about you.",
 			@"cosa ho sognato", @"quanto ho dormito", @"come ho dormito",
 			@"quanti passi ho fatto", @"quanto ho camminato", @"il mio battito",
 			@"quanto peso", @"la mia pressione",
 			@"what did i dream", @"how did i sleep", @"how many steps",
-			@"qu'ai-je rêvé", @"qué soñé", @"cuánto dormí", nil],
-		nil];
+			@"qu'ai-je rêvé", @"qué soñé", @"cuánto dormí"],
+	];
+	
 	return classes;
 }
 
@@ -128,7 +126,7 @@ static NSArray *NekoUnseenClasses(void)
 	NSString *text = [question lowercaseString];
 	NSEnumerator *groups = [NekoUnseenClasses() objectEnumerator];
 	NSArray *group;
-	while((group = [groups nextObject]) != nil) {
+	for(NSArray<NSString*> *group in NekoUnseenClasses()) {
 		NSString *kind = [group objectAtIndex:0];
 
 		/* A folder somebody handed over in a panel is a folder this application
