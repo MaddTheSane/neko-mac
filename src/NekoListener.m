@@ -113,7 +113,7 @@ static const NSTimeInterval NekoListeningLimit = 15.0;
 		@try {
 			[input installTapOnBus:0 bufferSize:1024 format:format
 			                block:^(AVAudioPCMBuffer *buffer, AVAudioTime *when) {
-				[(SFSpeechAudioBufferRecognitionRequest *)request appendAudioPCMBuffer:buffer];
+				[self->request appendAudioPCMBuffer:buffer];
 			}];
 			[audio prepare];
 		}
@@ -230,13 +230,13 @@ static const NSTimeInterval NekoListeningLimit = 15.0;
 	silence = nil;
 
 	if(engine != nil) {
-		[[(AVAudioEngine *)engine inputNode] removeTapOnBus:0];
-		[(AVAudioEngine *)engine stop];
+		[[engine inputNode] removeTapOnBus:0];
+		[engine stop];
 		engine = nil;
 	}
 	if(task != nil) {
 		if(@available(macOS 10.15, *))
-			[(SFSpeechRecognitionTask *)task cancel];
+			[task cancel];
 		task = nil;
 	}
 	request = nil;

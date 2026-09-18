@@ -192,7 +192,7 @@ static const int NekoLlamaBatch = 512;
 	std::string prompt = [self promptFor:question instructions:instructions];
 
 	dispatch_async(queue, ^{
-		const llama_vocab *vocab = llama_model_get_vocab(model);
+		const llama_vocab *vocab = llama_model_get_vocab(self->model);
 
 		/* Tokenise: ask for the length first, then fill. */
 		int32_t needed = -llama_tokenize(vocab, prompt.c_str(), (int32_t)prompt.size(),
@@ -229,7 +229,7 @@ static const int NekoLlamaBatch = 512;
 		   keeps every previous conversation, and after four questions of a few
 		   hundred tokens the two thousand token context is full: llama_decode
 		   fails, and the cat goes quiet until the app is restarted. */
-		llama_memory_clear(llama_get_memory(context), true);
+		llama_memory_clear(llama_get_memory(self->context), true);
 
 		std::string answer;
 		int produced = 0;
@@ -248,11 +248,11 @@ static const int NekoLlamaBatch = 512;
 		/* The prompt goes in a batch at a time. */
 		for(size_t offset = 0; problem == nil && offset < tokens.size();
 		    offset += NekoLlamaBatch) {
-			if(stop.load())
+			if(self->stop.load())
 				break;
 			int32_t piece = (int32_t)MIN((size_t)NekoLlamaBatch, tokens.size() - offset);
 			llama_batch part = llama_batch_get_one(tokens.data() + offset, piece);
-			if(llama_decode(context, part) != 0) {
+			if(llama_decode(self->context, part) != 0) {
 				problem = [NSError errorWithDomain:NekoAskErrorDomain
 				                              code:NekoAskErrorTransport
 				                          userInfo:nil];
@@ -262,10 +262,10 @@ static const int NekoLlamaBatch = 512;
 
 		const int allowed = NekoLlamaBudget > 0 ? NekoLlamaBudget : NekoLlamaMaxTokens;
 		while(problem == nil && produced < allowed) {
-			if(stop.load())
+			if(self->stop.load())
 				break;
 
-			llama_token next = llama_sampler_sample(sampler, context, -1);
+			llama_token next = llama_sampler_sample(sampler, self->context, -1);
 			if(llama_vocab_is_eog(vocab, next))
 				break;
 
@@ -284,7 +284,7 @@ static const int NekoLlamaBatch = 512;
 			/* The token just sampled is fed back in, so the next sampling sees
 			   it. `next` outlives the call, which is all llama_decode needs. */
 			llama_batch batch = llama_batch_get_one(&next, 1);
-			if(llama_decode(context, batch) != 0) {
+			if(llama_decode(self->context, batch) != 0) {
 				problem = [NSError errorWithDomain:NekoAskErrorDomain
 				                              code:NekoAskErrorTransport
 				                          userInfo:nil];
@@ -311,7 +311,7 @@ static const int NekoLlamaBatch = 512;
     completion:(void (^)(NSString *, NSError *))completion
 {
 	dispatch_async(dispatch_get_main_queue(), ^{
-		if(!stop.load())
+		if(!self->stop.load())
 			completion(answer, error);
 		Block_release(completion);
 		if(partial)

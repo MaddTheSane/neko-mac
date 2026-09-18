@@ -206,7 +206,7 @@ static const NSTimeInterval NekoAdvisorTyping = 3.0;
 	[provider askQuestion:context
 	        instructions:instructions
 	          completion:^(NSString *answer, NSError *error) {
-		waiting = NO;
+		self->waiting = NO;
 		/* Small models like to hand back their one sentence in quotation marks,
 		   which reads as a quotation of somebody else inside the bubble. */
 		NSString *line = [self cleanUp:answer];
@@ -217,8 +217,8 @@ static const NSTimeInterval NekoAdvisorTyping = 3.0;
 		   counts as having looked, and so does a refusal — Apple's model
 		   declines the odd question, and retrying it every twenty seconds until
 		   the application changes would be a loop, not a pet. */
-		lastSpoke = [NSDate date];
-		lastSubject = [subject copy];
+		self->lastSpoke = [NSDate date];
+		self->lastSubject = [subject copy];
 
 		/* Judged against what it could actually see, which is the prompt it
 		   was given: the desktop summary and the diary that went with it. */

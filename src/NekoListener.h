@@ -2,6 +2,9 @@
 
 #import <Cocoa/Cocoa.h>
 
+@class SFSpeechRecognizer, SFSpeechAudioBufferRecognitionRequest;
+@class SFSpeechRecognitionTask, AVAudioEngine;
+
 /*! Turns what you say into text, and nothing else.
 
    The microphone opens when listening starts and closes when it stops: there is
@@ -14,10 +17,10 @@
    simply unavailable. */
 @interface NekoListener : NSObject
 {
-	id recognizer;               /* SFSpeechRecognizer */
-	id request;                  /* SFSpeechAudioBufferRecognitionRequest */
-	id task;                     /* SFSpeechRecognitionTask */
-	id engine;                   /* AVAudioEngine */
+	SFSpeechRecognizer *recognizer;
+	SFSpeechAudioBufferRecognitionRequest *request;
+	SFSpeechRecognitionTask *task;
+	AVAudioEngine *engine;
 	void (^report)(NSString *, BOOL, NSError *);
 	NSTimer *silence;
 	NSString *heard;

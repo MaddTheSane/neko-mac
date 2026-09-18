@@ -1470,10 +1470,10 @@ static const CGFloat NekoMaxStopRadius = 200.0;
 		return;
 	}
 	[store downloadModel:model progress:^(double fraction) {
-		[drawProgress setDoubleValue:fraction];
+		[self->drawProgress setDoubleValue:fraction];
 	} completion:^(NSURL *file, NSError *error) {
 		if(error != nil)
-			[drawStatusField setStringValue:[error localizedDescription]];
+			[self->drawStatusField setStringValue:[error localizedDescription]];
 		[self syncDrawControls];
 	}];
 	[self syncDrawControls];
@@ -1488,13 +1488,13 @@ static const CGFloat NekoMaxStopRadius = 200.0;
 	NSDate *started = [NSDate date];
 	[[NekoPainter sharedPainter] draw:@"a small tabby cat sitting on a desk, photograph"
 	                       completion:^(NSImage *picture, NSError *error) {
-		[drawNowButton setEnabled:YES];
+		[self->drawNowButton setEnabled:YES];
 		if(picture == nil) {
-			[drawStatusField setStringValue:[error localizedDescription]
+			[self->drawStatusField setStringValue:[error localizedDescription]
 				?: NSLocalizedString(@"The drawing did not come out.", @"The drawing did not come out.")];
 			return;
 		}
-		[drawStatusField setStringValue:[NSString localizedStringWithFormat:
+		[self->drawStatusField setStringValue:[NSString localizedStringWithFormat:
 			NSLocalizedString(@"Drawn in %.0f seconds.", @"Drawn in %.0f seconds."), -[started timeIntervalSinceNow]]];
 		MyPanel *catPanel = [self panel];
 		[[NekoAsk sharedAsk] showDrawing:picture near:catPanel];
@@ -1694,7 +1694,7 @@ static const CGFloat NekoMaxStopRadius = 200.0;
 	[suggestNowButton setEnabled:NO];
 	[self setSuggestStatus:NSLocalizedString(@"Having a look…", @"Having a look…")];
 	[[NekoAdvisor sharedAdvisor] suggestNow:^(NSString *line, NSError *error) {
-		[suggestNowButton setEnabled:YES];
+		[self->suggestNowButton setEnabled:YES];
 		if([line length] > 0 && ![line isEqualToString:@"-"])
 			[self setSuggestStatus:[NSString stringWithFormat:
 				NSLocalizedString(@"It said: %@", @"It said: %@"), line]];
@@ -1998,13 +1998,13 @@ static const CGFloat NekoMaxStopRadius = 200.0;
 
 	[store downloadModel:model
 	            progress:^(double fraction) {
-		[localProgress setDoubleValue:fraction];
-		[localStatusField setStringValue:[NSString localizedStringWithFormat:
+		[self->localProgress setDoubleValue:fraction];
+		[self->localStatusField setStringValue:[NSString localizedStringWithFormat:
 			NSLocalizedString(@"Downloading %@ — %.0f%%", @"Downloading %@ — %.0f%%"), [model name], fraction * 100.0]];
 	}
 	          completion:^(NSURL *file, NSError *error) {
 		if(error != nil)
-			[localStatusField setStringValue:[NSString stringWithFormat:
+			[self->localStatusField setStringValue:[NSString stringWithFormat:
 				NSLocalizedString(@"That download failed: %@", @"That download failed: %@"), [error localizedDescription]]];
 		[self syncLocalControls];
 		[self syncAskControls];

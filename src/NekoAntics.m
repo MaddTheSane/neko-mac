@@ -215,14 +215,14 @@ static const CGFloat NekoAnticsSideMax = 70.0;
 	          completion:^(NSString *answer, NSError *error) {
 		/* Only if this antic is still the one in progress: a slow answer that
 		   arrives after the cat has wandered off is a line nobody asked for. */
-		if(lastAntic == nil || [lastAntic compare:asked] == NSOrderedDescending)
+		if(self->lastAntic == nil || [self->lastAntic compare:asked] == NSOrderedDescending)
 			return;
 		NSString *line = [self cleanUp:answer];
 		/* A question that came out badly leaves the written-in one in place,
 		   which is why pendingLine was set before asking. */
 		if(![NekoSense isWorthSaying:line])
 			return;
-		pendingLine = [line copy];
+		self->pendingLine = [line copy];
 	}];
 }
 

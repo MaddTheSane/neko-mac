@@ -1116,7 +1116,7 @@ static const NSTimeInterval NekoHoldToType = 0.5;
 	NSString *instructions = [self instructionsForAsking];
 
 	void (^finished)(NSString *, NSError *) = ^(NSString *answer, NSError *error) {
-		if(phase != NekoPhaseThinking && phase != NekoPhaseAnswering)
+		if(self->phase != NekoPhaseThinking && self->phase != NekoPhaseAnswering)
 			return;                            /* cancelled while it thought */
 		[self stopThinking];
 		if([answer length] > 0)
@@ -1144,18 +1144,18 @@ static const NSTimeInterval NekoHoldToType = 0.5;
 	   snapshots far faster than that, and resizing a window on every one of
 	   them looks like a stutter. */
 	if([provider respondsToSelector:@selector(askQuestion:instructions:partial:completion:)]) {
-		lastDrawn = nil;
+		self->lastDrawn = nil;
 		[provider askQuestion:question
 		        instructions:instructions
 		             partial:^(NSString *sofar) {
-			if(phase != NekoPhaseThinking || [sofar length] == 0)
+			if(self->phase != NekoPhaseThinking || [sofar length] == 0)
 				return;
 			if([self looksLikeADrawing:sofar] || [NekoAction looksLikeAnAction:sofar])
 				return;              /* asking for a picture or a deed, not talking */
 			[self stopThinking];       /* words are arriving; stop fidgeting */
-			if(lastDrawn != nil && [lastDrawn timeIntervalSinceNow] > -0.1)
+			if(self->lastDrawn != nil && [self->lastDrawn timeIntervalSinceNow] > -0.1)
 				return;
-			lastDrawn = [NSDate date];
+			self->lastDrawn = [NSDate date];
 			[[self panel] holdWithState:NekoStateStop];
 			[self showBubble:sofar dismissAfter:0.0];
 		}
@@ -1193,14 +1193,14 @@ static const NSTimeInterval NekoHoldToType = 0.5;
 			return;
 		}
 
-		fromTheWeb = YES;
+		self->fromTheWeb = YES;
 		id<NekoAnswerProvider> provider = [self provider];
 		if(![provider isConfigured]) {
 			[self answer:[lines componentsJoinedByString:@"\n"]];
 			return;
 		}
 
-		phase = NekoPhaseThinking;
+		self->phase = NekoPhaseThinking;
 		[self startThinkingAbout:asked ?: says];
 		NSString *instructions = [[self instructionsForAsking]
 			stringByAppendingString:[NekoWeb blockFrom:says lines:lines]];
@@ -1246,7 +1246,7 @@ static const NSTimeInterval NekoHoldToType = 0.5;
 				[self sayInCharacter:NSLocalizedString(@"I could not reach it.", @"I could not reach it.")];
 				return;
 			}
-			fromTheWeb = YES;
+			self->fromTheWeb = YES;
 			[self answer:summary];
 		}];
 		return;
@@ -1274,13 +1274,13 @@ static const NSTimeInterval NekoHoldToType = 0.5;
 		id<NekoAnswerProvider> provider = [self provider];
 		if(asItIs || ![provider isConfigured]) {
 			/* The headlines are the answer, which is what was asked for. */
-			fromTheWeb = YES;
+			self->fromTheWeb = YES;
 			[self answer:[NekoWeb plainList:headlines from:source]];
 			return;
 		}
 
-		fromTheWeb = YES;
-		phase = NekoPhaseThinking;
+		self->fromTheWeb = YES;
+		self->phase = NekoPhaseThinking;
 		[self startThinkingAbout:asked ?: [source name]];
 		NSString *instructions = [[self instructionsForAsking]
 			stringByAppendingString:[NekoWeb blockFrom:[source name] lines:headlines]];
@@ -1324,7 +1324,7 @@ static const NSTimeInterval NekoHoldToType = 0.5;
 	[self startDrawingAbout:NSLocalizedString(@"Hold on, I will draw it.", @"Hold on, I will draw it.")];
 
 	[[NekoPainter sharedPainter] draw:prompt completion:^(NSImage *picture, NSError *error) {
-		if(phase != NekoPhaseAnswering)
+		if(self->phase != NekoPhaseAnswering)
 			return;                   /* dismissed while it drew */
 		[self stopThinking];
 		if(picture == nil) {
@@ -1333,7 +1333,7 @@ static const NSTimeInterval NekoHoldToType = 0.5;
 		}
 		NSTimeInterval showing = 30.0;
 		[[self panel] holdWithState:NekoStateStop];
-		[bubble showText:@"" picture:picture
+		[self->bubble showText:@"" picture:picture
 		        nearRect:[[self panel] frame] dismissAfter:showing];
 		[NSObject cancelPreviousPerformRequestsWithTarget:self
 		                                         selector:@selector(finish) object:nil];

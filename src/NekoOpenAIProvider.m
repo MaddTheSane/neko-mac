@@ -154,7 +154,7 @@ static const NSTimeInterval NekoOpenAITimeout = 8.0;
 	}
 	                                     partial:partial
 	                                  completion:^(NSString *answer, NSError *error) {
-		stream = nil;
+		self->stream = nil;
 		completion(answer, error);
 	}];
 	[stream start];

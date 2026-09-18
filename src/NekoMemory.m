@@ -686,7 +686,7 @@ static BOOL NekoMemoryWorthKeeping(NSString *word)
 
 	[provider askQuestion:body instructions:instructions
 	           completion:^(NSString *answer, NSError *error) {
-		reflecting = NO;
+		self->reflecting = NO;
 		[[NSUserDefaults standardUserDefaults] setObject:[NSDate date]
 		                                         forKey:NekoMemoryReflectedKey];
 		[self pruneOldDays];
@@ -858,7 +858,7 @@ static BOOL NekoMemoryWorthKeeping(NSString *word)
 
 	[provider askQuestion:body instructions:instructions
 	           completion:^(NSString *answer, NSError *error) {
-		distilling = NO;
+		self->distilling = NO;
 		NSString *text = [answer stringByTrimmingCharactersInSet:
 			[NSCharacterSet whitespaceAndNewlineCharacterSet]];
 		/* Nothing usable came back: the lines stay where they are and it is

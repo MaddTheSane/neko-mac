@@ -201,7 +201,7 @@ static const NSUInteger NekoWordsMost = 300;
 		return;
 	}
 	[self askAbout:word among:vocabulary then:^(BOOL learned) {
-		if([waiting count] > 0)
+		if([self->waiting count] > 0)
 			[self askLater];
 	}];
 }
@@ -271,12 +271,12 @@ static const NSUInteger NekoWordsMost = 300;
 	[engine askQuestion:[self promptFor:word among:candidates]
 	       instructions:@"You match words to other words."
 	         completion:^(NSString *answer, NSError *error) {
-		asking = NO;
+		self->asking = NO;
 		NSArray *found = [answer length] > 0
 			? [self wordsOf:answer among:candidates] : [NSArray array];
 		/* Written down either way: a word nothing was found for is a word not
 		   worth asking about again. */
-		[table setObject:found forKey:word];
+		[self->table setObject:found forKey:word];
 		[self write];
 		if(done != nil)
 			done([found count] > 0);

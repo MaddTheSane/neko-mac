@@ -112,7 +112,7 @@ didReceiveResponse:(NSURLResponse *)response
 		return;
 	}
 	dispatch_async(dispatch_get_main_queue(), ^{
-		if(!finished)
+		if(!self->finished)
 			[self consume:data];
 	});
 }
@@ -122,18 +122,18 @@ didReceiveResponse:(NSURLResponse *)response
 didCompleteWithError:(NSError *)error
 {
 	dispatch_async(dispatch_get_main_queue(), ^{
-		if(finished)
+		if(self->finished)
 			return;
-		finished = YES;
+		self->finished = YES;
 
-		void (^done)(NSString *, NSError *) = onDone;
-		onDone = NULL;
+		void (^done)(NSString *, NSError *) = self->onDone;
+		self->onDone = NULL;
 		if(done == NULL)
 			return;
 
-		if(status != 200) {
+		if(self->status != 200) {
 			NSDictionary *said = [NSJSONSerialization JSONObjectWithData:
-				(errorBody ?: [NSData data]) options:0 error:NULL];
+				(self->errorBody ?: [NSData data]) options:0 error:NULL];
 			NSString *detail = [[said objectForKey:@"error"] objectForKey:@"message"];
 			done(nil, [NSError errorWithDomain:NekoAskErrorDomain
 			                              code:NekoAskErrorTransport
@@ -142,11 +142,11 @@ didCompleteWithError:(NSError *)error
 				                              forKey:NSLocalizedDescriptionKey]
 				: nil]);
 		}
-		else if(error != nil && [answer length] == 0)
+		else if(error != nil && [self->answer length] == 0)
 			done(nil, error);
 		else
-			done([answer copy], nil);
-		[session finishTasksAndInvalidate];
+			done([self->answer copy], nil);
+		[self->session finishTasksAndInvalidate];
 	});
 }
 

@@ -138,7 +138,7 @@ static NSString * const NekoWakeSpellings[] = {
 		return;
 	asking = YES;
 	[NekoListener requestAuthorization:^(BOOL granted) {
-		asking = NO;
+		self->asking = NO;
 		if(granted)
 			[self start];
 	}];
@@ -175,9 +175,9 @@ static NSString * const NekoWakeSpellings[] = {
 			   underneath it is swapped, every fifty seconds. */
 			[input installTapOnBus:0 bufferSize:2048 format:format
 			                block:^(AVAudioPCMBuffer *buffer, AVAudioTime *when) {
-				id current = request;
+				SFSpeechAudioBufferRecognitionRequest *current = self->request;
 				if(current != nil)
-					[(SFSpeechAudioBufferRecognitionRequest *)current appendAudioPCMBuffer:buffer];
+					[current appendAudioPCMBuffer:buffer];
 			}];
 			[audio prepare];
 		}
@@ -222,14 +222,14 @@ static NSString * const NekoWakeSpellings[] = {
 				recognitionTaskWithRequest:audioRequest
 						  resultHandler:^(SFSpeechRecognitionResult *result, NSError *error) {
 			 if(result != nil) {
-				 lastResult = [NSDate date];
+				 self->lastResult = [NSDate date];
 				 [self heard:[[result bestTranscription] formattedString]];
 			 }
 			 /* A final result means this task is over and the audio after it goes
 				nowhere. That, not the error case, is what made the cat deaf for
 				stretches: Speech decides a sentence has ended, and without a new
 				task the next "Neko" is heard by nobody. */
-			 if(running && (error != nil || (result != nil && [result isFinal])))
+			 if(self->running && (error != nil || (result != nil && [result isFinal])))
 				 [self performSelectorOnMainThread:@selector(renewNow)
 										withObject:nil waitUntilDone:NO];
 		 }];

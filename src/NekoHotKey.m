@@ -4,6 +4,10 @@
 static NSMutableDictionary *NekoHotKeysByIdentifier = nil;
 static unsigned NekoNextHotKeyIdentifier = 1;
 
+@interface NekoHotKey ()
+- (void)fireRelease;
+@end
+
 static OSStatus NekoHotKeyHandler(EventHandlerCallRef call, EventRef event, void *context)
 {
 	EventHotKeyID pressed;

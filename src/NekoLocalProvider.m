@@ -236,7 +236,7 @@ static const int NekoLocalThinkingTokens = 1000;
 				completionCopy(nil, failure);
 			} else {
 				[self giveRoomToThink];
-				[engine generateFor:[self askedOf:question]
+				[self->engine generateFor:[self askedOf:question]
 				       instructions:instructions
 				            partial:partialCopy
 				         completion:completionCopy];

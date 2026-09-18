@@ -8,6 +8,10 @@ static const CGFloat NekoBubbleTail = 9.0f;
 static const CGFloat NekoBubbleGap = 6.0f;
 static const CGFloat NekoBubbleRadius = 10.0f;
 
+@interface NekoBubble ()
+- (void)dismissByClick;
+@end
+
 /*! Draws the rounded body and the tail. The tail points down when the bubble sits
    above the cat, which is the usual case, and up when it had to go below. */
 @interface NekoBubbleView : NSView
