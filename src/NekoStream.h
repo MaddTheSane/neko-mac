@@ -2,7 +2,7 @@
 
 #import <Cocoa/Cocoa.h>
 
-/* An answer that arrives a few words at a time.
+/*! An answer that arrives a few words at a time.
 
    Both remote engines can send one — ChatGPT and Claude both speak
    server-sent events — and neither of them did, which is backwards: they are the
@@ -44,7 +44,7 @@
 - (void)start;
 - (void)cancel;
 
-/* Bytes as if they had arrived, and what has been understood of them so far. */
+/*! Bytes as if they had arrived, and what has been understood of them so far. */
 - (void)consume:(NSData *)chunk;
 - (NSString *)sofar;
 

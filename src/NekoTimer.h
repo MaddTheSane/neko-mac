@@ -4,7 +4,7 @@
 
 extern NSNotificationName const NekoTimerDidChangeNotification;
 
-/* "Metti un timer di dieci minuti."
+/*! "Metti un timer di dieci minuti."
 
    The one utility on the list in docs/utilities.md where this application is
    genuinely better than the system it runs on: a bubble that follows you across
@@ -34,24 +34,27 @@ extern NSNotificationName const NekoTimerDidChangeNotification;
 	NSTimer *ticking;
 	NSDate *landsAt;
 	NSTimeInterval asked;
-	NSUInteger putOff;             /* how often the moment has been a bad one */
+	NSUInteger putOff;             /*!< how often the moment has been a bad one */
 }
 
 + (NekoTimer *)sharedTimer;
 @property (readonly, class, retain) NekoTimer *sharedTimer;
 
-/* How long the question asks for, or 0 when it is not asking for a timer. A
+/*! How long the question asks for, or 0 when it is not asking for a timer. A
    duration on its own is not enough: "ho dormito otto ore" is not a request. */
 + (NSTimeInterval)wantedFor:(NSString *)question;
 
-/* Starts it, replacing whatever was running, and answers the sentence to say. */
+/*! Starts it, replacing whatever was running, and answers the sentence to say. */
 - (NSString *)startFor:(NSTimeInterval)seconds;
 
 - (BOOL)isRunning;
 - (NSTimeInterval)secondsLeft;
+@property (readonly, getter=isRunning) BOOL running;
+@property (readonly, nonatomic) NSTimeInterval secondsLeft;
 
 /* For the menu: "Timer — 4 minuti" while one runs, nil when none does. */
 - (NSString *)menuTitle;
+@property (readonly, copy) NSString *menuTitle;
 - (void)cancel;
 
 @end

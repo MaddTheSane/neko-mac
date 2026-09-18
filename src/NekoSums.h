@@ -2,7 +2,9 @@
 
 #import <Cocoa/Cocoa.h>
 
-/* "Quanto fa 47 per 23" and "quanti litri sono due galloni".
+NS_ASSUME_NONNULL_BEGIN
+
+/*! "Quanto fa 47 per 23" and "quanti litri sono due galloni".
 
    The same measurement that justifies `NekoClock` — `tests/sums.m`, three models
    on this Mac — says something less obvious about these two, and the two halves
@@ -36,7 +38,9 @@
    guessing. "Quanto fa male" is not a multiplication. */
 @interface NekoSums : NSObject
 
-/* What to say, or nil. */
-+ (NSString *)wantedFor:(NSString *)question;
+/*! What to say, or nil. */
++ (NSString * _Nullable)wantedFor:(NSString *)question;
 
 @end
+
+NS_ASSUME_NONNULL_END

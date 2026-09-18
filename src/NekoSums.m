@@ -219,9 +219,7 @@ static NSString *NekoAsArithmetic(NSString *lowered)
 
 	/* A percentage of something, before anything else: the "di" in "il 18% di
 	   240" is a multiplication and nothing else in this table would say so. */
-	text = NekoReplacingWholeWords(text, [NSDictionary dictionaryWithObjectsAndKeys:
-		@"%", @"per cento", @"%", @"percento", @"%", @"percent",
-		@"%", @"por ciento", @"%", @"pour cent", nil]);
+	text = NekoReplacingWholeWords(text, @{@"per cento": @"%", @"percento": @"%", @"percent": @"%", @"por ciento": @"%", @"pour cent": @"%"});
 	text = NekoRegexReplace(text,
 		@"(\\d+(?:[.,]\\d+)?)\\s*%\\s*(?:di|dei|del|della|dello|of|de|du|des)\\b",
 		@"($1/100)*");

@@ -2,7 +2,7 @@
 
 #import <Cocoa/Cocoa.h>
 
-/* "Quanto vale Apple in borsa adesso?"
+/*! "Quanto vale Apple in borsa adesso?"
 
    Stage 6 of docs/personality-roadmap.md, and it was not planned: stage 3 found
    it while measuring something else. Asked twenty things it has no way to know,
@@ -48,7 +48,7 @@
    defect, and in code it is free. */
 @interface NekoUnseen : NSObject
 
-/* The honest sentence, or nil when the question is not one of these. */
+/*! The honest sentence, or nil when the question is not one of these. */
 + (NSString *)wantedFor:(NSString *)question;
 
 @end
