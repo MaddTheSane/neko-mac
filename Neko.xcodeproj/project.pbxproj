@@ -67,7 +67,7 @@
 		D1C0117A1B00000000000073 /* NekoAppleModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1C0117A1B00000000000072 /* NekoAppleModel.swift */; };
 		D1C0117A1B0000000000007D /* FoundationModels.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D1C0117A1B0000000000007C /* FoundationModels.framework */; };
 		D1C0117A1B00000000000081 /* NekoOpenAIProvider.m in Sources */ = {isa = PBXBuildFile; fileRef = D1C0117A1B00000000000080 /* NekoOpenAIProvider.m */; };
-		D1C0117A1B00000000000083 /* NekoKeychain.m in Sources */ = {isa = PBXBuildFile; fileRef = D1C0117A1B00000000000082 /* NekoKeychain.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		D1C0117A1B00000000000083 /* NekoKeychain.m in Sources */ = {isa = PBXBuildFile; fileRef = D1C0117A1B00000000000082 /* NekoKeychain.m */; };
 		D1C0117A1B00000000000091 /* NekoModelStore.m in Sources */ = {isa = PBXBuildFile; fileRef = D1C0117A1B00000000000090 /* NekoModelStore.m */; };
 		D1C0117A1B00000000000093 /* NekoLocalProvider.m in Sources */ = {isa = PBXBuildFile; fileRef = D1C0117A1B00000000000092 /* NekoLocalProvider.m */; };
 		D1C0117A1B000000000000A3 /* NekoAdvisor.m in Sources */ = {isa = PBXBuildFile; fileRef = D1C0117A1B000000000000A2 /* NekoAdvisor.m */; };

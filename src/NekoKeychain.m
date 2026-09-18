@@ -7,9 +7,9 @@ static NSString * const NekoKeychainService = @"Neko Ask";
 + (NSMutableDictionary *)queryForAccount:(NSString *)account
 {
 	NSMutableDictionary *query = [NSMutableDictionary dictionary];
-	[query setObject:(id)kSecClassGenericPassword forKey:(id)kSecClass];
-	[query setObject:NekoKeychainService forKey:(id)kSecAttrService];
-	[query setObject:account forKey:(id)kSecAttrAccount];
+	[query setObject:(NSString*)kSecClassGenericPassword forKey:(NSString*)kSecClass];
+	[query setObject:NekoKeychainService forKey:(NSString*)kSecAttrService];
+	[query setObject:account forKey:(NSString*)kSecAttrAccount];
 	return query;
 }
 
@@ -21,7 +21,7 @@ static NSString * const NekoKeychainService = @"Neko Ask";
 		return YES;              /* asked to forget it */
 
 	[query setObject:[secret dataUsingEncoding:NSUTF8StringEncoding]
-	          forKey:(id)kSecValueData];
+	          forKey:(NSString*)kSecValueData];
 	return SecItemAdd((CFDictionaryRef)query, NULL) == errSecSuccess;
 }
 
@@ -34,8 +34,8 @@ static NSString * const NekoKeychainService = @"Neko Ask";
 	CFTypeRef result = NULL;
 	if(SecItemCopyMatching((CFDictionaryRef)query, &result) != errSecSuccess)
 		return nil;
-	NSData *data = [(NSData *)result autorelease];
-	return [[[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding] autorelease];
+	NSData *data = (NSData *)CFBridgingRelease(result);
+	return [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
 }
 
 + (BOOL)hasSecretForAccount:(NSString *)account
