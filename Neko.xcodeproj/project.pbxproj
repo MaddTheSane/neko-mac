@@ -34,6 +34,13 @@
 		552253EF305BB20400A7AA07 /* NekoPhrase.m in Sources */ = {isa = PBXBuildFile; fileRef = 552253EB305BB20400A7AA07 /* NekoPhrase.m */; };
 		552253F1305BE94200A7AA07 /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = 552253F0305BE94200A7AA07 /* Localizable.xcstrings */; };
 		552253F2305CA3EF00A7AA07 /* NekoLlamaEngine.mm in Sources */ = {isa = PBXBuildFile; fileRef = D1C0117A1B000000000000A0 /* NekoLlamaEngine.mm */; };
+		55835E72305CB433005E06E2 /* Neko News.nekoplugin in Copy Plug-ins */ = {isa = PBXBuildFile; fileRef = 55835E71305CB3A4005E06E2 /* Neko News.nekoplugin */; };
+		55835EF6305CBAFB005E06E2 /* Apple Music.nekoplugin in Copy Examples */ = {isa = PBXBuildFile; fileRef = 55835E75305CB493005E06E2 /* Apple Music.nekoplugin */; };
+		55835EF7305CBAFE005E06E2 /* Il Post.nekoplugin in Copy Examples */ = {isa = PBXBuildFile; fileRef = 55835E78305CB493005E06E2 /* Il Post.nekoplugin */; };
+		55835EF8305CBB00005E06E2 /* NekoAI characters.nekoplugin in Copy Examples */ = {isa = PBXBuildFile; fileRef = 55835EE7305CB493005E06E2 /* NekoAI characters.nekoplugin */; };
+		55835EF9305CBDFE005E06E2 /* News search.nekoplugin in Copy Examples */ = {isa = PBXBuildFile; fileRef = 55835EEA305CB493005E06E2 /* News search.nekoplugin */; };
+		55835EFA305CBE02005E06E2 /* Spotify.nekoplugin in Copy Examples */ = {isa = PBXBuildFile; fileRef = 55835EED305CB493005E06E2 /* Spotify.nekoplugin */; };
+		55835EFB305CBE05005E06E2 /* Wikipedia.nekoplugin in Copy Examples */ = {isa = PBXBuildFile; fileRef = 55835EF3305CB493005E06E2 /* Wikipedia.nekoplugin */; };
 		8D11072A0486CEB800E47090 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 29B97318FDCFA39411CA2CEA /* MainMenu.xib */; };
 		8D11072B0486CEB800E47090 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 089C165CFE840E0CC02AAC07 /* InfoPlist.strings */; };
 		8D11072D0486CEB800E47090 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 29B97316FDCFA39411CA2CEA /* main.m */; settings = {ATTRIBUTES = (); }; };
@@ -81,6 +88,36 @@
 		D1C0117A1B00000000000E0B0 /* NekoPlace.m in Sources */ = {isa = PBXBuildFile; fileRef = D1C0117A1B00000000000E0M0 /* NekoPlace.m */; };
 		D1C0117A1B00000000000F0B0 /* NekoNoise.m in Sources */ = {isa = PBXBuildFile; fileRef = D1C0117A1B00000000000F0M0 /* NekoNoise.m */; };
 /* End PBXBuildFile section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		55835E6D305CB2F3005E06E2 /* Copy Plug-ins */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = Plugins;
+			dstSubfolderSpec = 7;
+			files = (
+				55835E72305CB433005E06E2 /* Neko News.nekoplugin in Copy Plug-ins */,
+			);
+			name = "Copy Plug-ins";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		55835EF5305CB4C8005E06E2 /* Copy Examples */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = Examples;
+			dstSubfolderSpec = 7;
+			files = (
+				55835EF6305CBAFB005E06E2 /* Apple Music.nekoplugin in Copy Examples */,
+				55835EF7305CBAFE005E06E2 /* Il Post.nekoplugin in Copy Examples */,
+				55835EF8305CBB00005E06E2 /* NekoAI characters.nekoplugin in Copy Examples */,
+				55835EF9305CBDFE005E06E2 /* News search.nekoplugin in Copy Examples */,
+				55835EFA305CBE02005E06E2 /* Spotify.nekoplugin in Copy Examples */,
+				55835EFB305CBE05005E06E2 /* Wikipedia.nekoplugin in Copy Examples */,
+			);
+			name = "Copy Examples";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		089C165DFE840E0CC02AAC07 /* en */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
@@ -142,6 +179,15 @@
 		552253EC305BB20400A7AA07 /* NekoPluginText.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NekoPluginText.h; sourceTree = "<group>"; };
 		552253ED305BB20400A7AA07 /* NekoPluginText.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = NekoPluginText.m; sourceTree = "<group>"; };
 		552253F0305BE94200A7AA07 /* Localizable.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = Localizable.xcstrings; sourceTree = "<group>"; };
+		55835E71305CB3A4005E06E2 /* Neko News.nekoplugin */ = {isa = PBXFileReference; lastKnownFileType = folder; path = "Neko News.nekoplugin"; sourceTree = "<group>"; };
+		55835E75305CB493005E06E2 /* Apple Music.nekoplugin */ = {isa = PBXFileReference; lastKnownFileType = folder; path = "Apple Music.nekoplugin"; sourceTree = "<group>"; };
+		55835E78305CB493005E06E2 /* Il Post.nekoplugin */ = {isa = PBXFileReference; lastKnownFileType = folder; path = "Il Post.nekoplugin"; sourceTree = "<group>"; };
+		55835EE7305CB493005E06E2 /* NekoAI characters.nekoplugin */ = {isa = PBXFileReference; lastKnownFileType = folder; path = "NekoAI characters.nekoplugin"; sourceTree = "<group>"; };
+		55835EEA305CB493005E06E2 /* News search.nekoplugin */ = {isa = PBXFileReference; lastKnownFileType = folder; path = "News search.nekoplugin"; sourceTree = "<group>"; };
+		55835EED305CB493005E06E2 /* Spotify.nekoplugin */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Spotify.nekoplugin; sourceTree = "<group>"; };
+		55835EEE305CB493005E06E2 /* filter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = filter.swift; sourceTree = "<group>"; };
+		55835EEF305CB493005E06E2 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
+		55835EF3305CB493005E06E2 /* Wikipedia.nekoplugin */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Wikipedia.nekoplugin; sourceTree = "<group>"; };
 		8D1107320486CEB800E47090 /* Neko.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Neko.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		A700278B0CA641680057F7E4 /* MyPanel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MyPanel.h; sourceTree = "<group>"; };
 		A700278C0CA641680057F7E4 /* MyPanel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MyPanel.m; sourceTree = "<group>"; usesTabs = 1; };
@@ -381,6 +427,8 @@
 				080E96DDFE201D6D7F000001 /* Classes */,
 				29B97315FDCFA39411CA2CEA /* Other Sources */,
 				29B97317FDCFA39411CA2CEA /* Resources */,
+				55835EF4305CB493005E06E2 /* examples */,
+				55835E6A305CB2CC005E06E2 /* Plugins */,
 				29B97323FDCFA39411CA2CEA /* Frameworks */,
 				19C28FACFE9D520D11CA2CBB /* Products */,
 			);
@@ -429,6 +477,37 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
+		55835E6A305CB2CC005E06E2 /* Plugins */ = {
+			isa = PBXGroup;
+			children = (
+				55835E71305CB3A4005E06E2 /* Neko News.nekoplugin */,
+			);
+			path = Plugins;
+			sourceTree = "<group>";
+		};
+		55835EF0305CB493005E06E2 /* text-filter-swift */ = {
+			isa = PBXGroup;
+			children = (
+				55835EEE305CB493005E06E2 /* filter.swift */,
+				55835EEF305CB493005E06E2 /* README.md */,
+			);
+			path = "text-filter-swift";
+			sourceTree = "<group>";
+		};
+		55835EF4305CB493005E06E2 /* examples */ = {
+			isa = PBXGroup;
+			children = (
+				55835E75305CB493005E06E2 /* Apple Music.nekoplugin */,
+				55835E78305CB493005E06E2 /* Il Post.nekoplugin */,
+				55835EE7305CB493005E06E2 /* NekoAI characters.nekoplugin */,
+				55835EEA305CB493005E06E2 /* News search.nekoplugin */,
+				55835EED305CB493005E06E2 /* Spotify.nekoplugin */,
+				55835EF0305CB493005E06E2 /* text-filter-swift */,
+				55835EF3305CB493005E06E2 /* Wikipedia.nekoplugin */,
+			);
+			path = examples;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -439,6 +518,8 @@
 				8D1107290486CEB800E47090 /* Resources */,
 				8D11072C0486CEB800E47090 /* Sources */,
 				8D11072E0486CEB800E47090 /* Frameworks */,
+				55835E6D305CB2F3005E06E2 /* Copy Plug-ins */,
+				55835EF5305CB4C8005E06E2 /* Copy Examples */,
 			);
 			buildRules = (
 			);
@@ -607,9 +688,11 @@
 				GCC_PREFIX_HEADER = src/Neko_Prefix.pch;
 				HEADER_SEARCH_PATHS = /opt/local/include;
 				INFOPLIST_FILE = Info.plist;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.entertainment";
 				INSTALL_PATH = "$(HOME)/Applications";
 				LIBRARY_SEARCH_PATHS = /opt/local/lib;
 				MACOSX_DEPLOYMENT_TARGET = 12.0;
+				MARKETING_VERSION = 2.18;
 				OTHER_LDFLAGS = "-lllama";
 				PRODUCT_BUNDLE_IDENTIFIER = com.nekomac.neko;
 				PRODUCT_NAME = Neko;
@@ -633,9 +716,11 @@
 				GCC_PREFIX_HEADER = src/Neko_Prefix.pch;
 				HEADER_SEARCH_PATHS = /opt/local/include;
 				INFOPLIST_FILE = Info.plist;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.entertainment";
 				INSTALL_PATH = "$(HOME)/Applications";
 				LIBRARY_SEARCH_PATHS = /opt/local/lib;
 				MACOSX_DEPLOYMENT_TARGET = 12.0;
+				MARKETING_VERSION = 2.18;
 				OTHER_LDFLAGS = "-lllama";
 				PRODUCT_BUNDLE_IDENTIFIER = com.nekomac.neko;
 				PRODUCT_NAME = Neko;
