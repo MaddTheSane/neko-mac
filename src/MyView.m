@@ -25,11 +25,6 @@
 
 @synthesize image;
 
-- (void)setImageTo:(NSImage*)theImage
-{
-	self.image = image;
-}
-
 - (void)drawRect:(NSRect)rect
 {
     if(image) {

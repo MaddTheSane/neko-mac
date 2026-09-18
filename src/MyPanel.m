@@ -6,7 +6,7 @@
 
 @implementation MyPanel
 
-/* The original chain held each idle pose for a fixed number of ticks — four,
+/*! The original chain held each idle pose for a fixed number of ticks — four,
    ten, four, six — which is a metronome however carefully the poses are drawn.
    The same averages now, scaled by a stream that drifts: some minutes the cat
    settles quickly, some it dawdles, and the two are not independent. */
@@ -50,7 +50,7 @@ static unsigned NekoIdleTicksFor(NekoState state)
 	   character swap that frame belongs to an array nobody is holding any more.
 	   tickCount is zero, so frame zero is what the next tick would pick anyway. */
 	if([stateFrames count] > 0)
-		[view setImage:(NSImage *)[stateFrames objectAtIndex:0]];
+		[view setImage:[stateFrames objectAtIndex:0]];
 	[view setNeedsDisplay:YES];
 }
 
@@ -647,7 +647,7 @@ static const CGFloat NekoTurnStep = 30.0f;
 	NSMutableArray *found = [NSMutableArray array];
 	NSRect dock = [self dockSurface];
 	if(!NSIsEmptyRect(dock)) {
-		shelves = @[[NSValue valueWithRect:dock]];
+		shelves = @[@(dock)];
 		return;
 	}
 
