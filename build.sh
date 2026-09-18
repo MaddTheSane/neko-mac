@@ -151,6 +151,11 @@ ARCH=arm64
 SLICE=$SCRATCH/$ARCH
 mkdir -p "$SLICE"
 
+# -parse-as-library: without it a lone Swift file is treated as a script and
+# brings its own main().
+swiftc -module-name "Neko" -target "$ARCH-apple-macos$DEPLOYMENT" -sdk "$SDK" -O -parse-as-library \
+	-c src/NekoAppleModel.swift -o "$SLICE/NekoAppleModel.o" -emit-objc-header-path "src/Neko-Swift.h"
+
 for SOURCE in $SOURCES; do
 	clang -arch "$ARCH" -fno-objc-arc -fblocks -O2 -isysroot "$SDK" \
 		-mmacosx-version-min=$DEPLOYMENT -Wno-deprecated-declarations \
@@ -168,14 +173,10 @@ else
 	LLAMA_LINK=""
 fi
 
-# -parse-as-library: without it a lone Swift file is treated as a script and
-# brings its own main().
-swiftc -target "$ARCH-apple-macos$DEPLOYMENT" -sdk "$SDK" -O -parse-as-library \
-	-c src/NekoAppleModel.swift -o "$SLICE/NekoAppleModel.o"
 # Linked by swiftc, which knows where the Swift runtime lives.
 swiftc -target "$ARCH-apple-macos$DEPLOYMENT" -sdk "$SDK" \
 	"$SLICE"/*.o $LLAMA_LINK $FRAMEWORKS -framework FoundationModels \
-	-o "$APP/Contents/MacOS/Neko"
+	-o "$APP/Contents/MacOS/Neko" -module-name "Neko"
 
 # The drawing helper travels inside the bundle, signed with everything else.
 if [ "$HAVE_DIFFUSION" = yes ]; then

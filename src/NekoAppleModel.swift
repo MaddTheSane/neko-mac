@@ -14,7 +14,6 @@
 import Foundation
 import FoundationModels
 
-@objc(NekoAppleModel)
 public final class NekoAppleModel: NSObject {
 
     private var work: Task<Void, Never>?
