@@ -15,9 +15,7 @@ static const NSUInteger NekoRouteMostCharacters = 1200;
 
 + (BOOL)anythingListens
 {
-	NSEnumerator *e = [[[NekoPlugins sharedPlugins] enabled] objectEnumerator];
-	NekoPlugin *plugin;
-	while((plugin = [e nextObject]) != nil)
+	for(NekoPlugin *plugin in [[NekoPlugins sharedPlugins] enabled])
 		if([[plugin routes] count] > 0)
 			return YES;
 	return NO;
@@ -30,12 +28,8 @@ static const NSUInteger NekoRouteMostCharacters = 1200;
 	NSString *bestPhrase = nil;
 	NSString *bestArgument = nil;
 
-	NSEnumerator *plugins = [[[NekoPlugins sharedPlugins] enabled] objectEnumerator];
-	NekoPlugin *plugin;
-	while((plugin = [plugins nextObject]) != nil) {
-		NSEnumerator *e = [[plugin routes] objectEnumerator];
-		NSDictionary *route;
-		while((route = [e nextObject]) != nil) {
+	for(NekoPlugin *plugin in [[NekoPlugins sharedPlugins] enabled]) {
+		for(NSDictionary *route in [plugin routes]) {
 			NSEnumerator *p = [[route objectForKey:@"Phrases"] objectEnumerator];
 			NSString *phrase;
 			while((phrase = [p nextObject]) != nil) {

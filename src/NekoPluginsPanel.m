@@ -2,6 +2,7 @@
 #import "NekoPlugins.h"
 #import "NekoPlugin.h"
 #import "NekoShortcutProvider.h"
+#import <UniformTypeIdentifiers/UniformTypeIdentifiers.h>
 
 static const CGFloat NekoPanelWidth = 560.0f;
 static const CGFloat NekoPanelHeight = 460.0f;
@@ -169,8 +170,7 @@ static const CGFloat NekoRowHeight = 86.0f;
 - (void)refresh
 {
 	NSEnumerator *old = [[[[rows subviews] copy] autorelease] objectEnumerator];
-	NSView *view;
-	while((view = [old nextObject]) != nil)
+	for(NSView *view in old)
 		[view removeFromSuperview];
 
 	NekoPlugins *registry = [NekoPlugins sharedPlugins];
@@ -319,8 +319,8 @@ static const CGFloat NekoRowHeight = 86.0f;
 - (void)addPressed:(id)sender
 {
 	NSOpenPanel *choose = [NSOpenPanel openPanel];
-	[choose setCanChooseDirectories:YES];
-	[choose setCanChooseFiles:NO];
+	UTType *ourType = [UTType exportedTypeWithIdentifier:@"com.nekomac.neko.plugin"];
+	choose.allowedContentTypes = @[ourType];
 	[choose setAllowsMultipleSelection:NO];
 	[choose setPrompt:NSLocalizedString(@"Add", @"Add")];
 	[choose setMessage:NSLocalizedString(@"Choose a plugin folder — its name ends in .nekoplugin. It will be copied in and left switched off.", @"Choose a plugin folder — its name ends in .nekoplugin. It will be copied in and left switched off.")];
