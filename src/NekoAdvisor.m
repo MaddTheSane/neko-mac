@@ -49,9 +49,6 @@ static const NSTimeInterval NekoAdvisorTyping = 3.0;
 {
 	[[NSNotificationCenter defaultCenter] removeObserver:self];
 	[heartbeat invalidate];
-	[lastSpoke release];
-	[lastSubject release];
-	[super dealloc];
 }
 
 @synthesize thinking = waiting;
@@ -194,7 +191,7 @@ static const NSTimeInterval NekoAdvisorTyping = 3.0;
 		!= NSNotFound;
 	NSString *instructions = NekoSuggestionInstructionsSeeing([character persona],
 	                                                          hasText);
-	NSString *subject = [[[[NekoDesktop sharedDesktop] frontApp] copy] autorelease];
+	NSString *subject = [[[NekoDesktop sharedDesktop] frontApp] copy];
 
 	/* What is going on, plus what the cat remembers. The engine here is always
 	   an on-device one, so the diary is not going anywhere. */
@@ -202,8 +199,8 @@ static const NSTimeInterval NekoAdvisorTyping = 3.0;
 	NSString *context = [memory length] > 0
 		? [NSString stringWithFormat:@"%@\n%@", memory, [self context]]
 		: [self context];
-	void (^callerReport)(NSString *, NSError *) =
-		report != NULL ? Block_copy(report) : nil;
+	__block void (^callerReport)(NSString *, NSError *) =
+		report != NULL ? [report copy] : nil;
 
 	waiting = YES;
 	[provider askQuestion:context
@@ -220,10 +217,8 @@ static const NSTimeInterval NekoAdvisorTyping = 3.0;
 		   counts as having looked, and so does a refusal — Apple's model
 		   declines the odd question, and retrying it every twenty seconds until
 		   the application changes would be a loop, not a pet. */
-		[lastSpoke release];
-		lastSpoke = [[NSDate date] retain];
-		[lastSubject release];
-		lastSubject = [subject retain];
+		lastSpoke = [NSDate date];
+		lastSubject = [subject copy];
 
 		/* Judged against what it could actually see, which is the prompt it
 		   was given: the desktop summary and the diary that went with it. */
@@ -241,7 +236,7 @@ static const NSTimeInterval NekoAdvisorTyping = 3.0;
 			NSLog(@"Neko: a suggestion was thrown away — said already today: %@", line);
 			if(callerReport != nil) {
 				callerReport(nil, error);
-				Block_release(callerReport);
+				callerReport = nil;
 			}
 			return;
 		}
@@ -259,7 +254,7 @@ static const NSTimeInterval NekoAdvisorTyping = 3.0;
 
 		if(callerReport != nil) {
 			callerReport([NekoSense isWorthSaying:line seeing:context] ? line : nil, error);
-			Block_release(callerReport);
+			callerReport = nil;
 		}
 	}];
 }

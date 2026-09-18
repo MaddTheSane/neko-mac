@@ -198,7 +198,7 @@ static NSString *NekoConsentKeyFor(NSString *player)
 		return NO;
 
 	NSDictionary *trouble = nil;
-	NSAppleScript *script = [[[NSAppleScript alloc] initWithSource:source] autorelease];
+	NSAppleScript *script = [[NSAppleScript alloc] initWithSource:source];
 	NSAppleEventDescriptor *answer = [script executeAndReturnError:&trouble];
 
 	if(answer == nil) {
@@ -287,7 +287,7 @@ static NSString *NekoConsentKeyFor(NSString *player)
 	   until it is read and a settings window may not wait for that. */
 	if(![self isInstalled:player])
 		return;
-	NSString *wanted = [[player copy] autorelease];
+	NSString *wanted = [player copy];
 	dispatch_async(dispatch_get_global_queue(QOS_CLASS_USER_INITIATED, 0), ^{
 		NSString *source = [NSString stringWithFormat:
 			@"tell application \"%@\" to return sound volume as text",
@@ -296,7 +296,6 @@ static NSString *NekoConsentKeyFor(NSString *player)
 		NSAppleScript *script = [[NSAppleScript alloc] initWithSource:source];
 		NSAppleEventDescriptor *answer = [script executeAndReturnError:&trouble];
 		NSInteger code = [[trouble objectForKey:NSAppleScriptErrorNumber] integerValue];
-		[script release];
 		dispatch_async(dispatch_get_main_queue(), ^{
 			if(answer != nil)
 				[self remember:NekoPlayerConsentGiven for:wanted];

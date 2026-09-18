@@ -14,16 +14,17 @@ static const NSUInteger NekoSenseMinLength = 6;
 
 + (NSArray *)wordsIn:(NSString *)line
 {
-	NSMutableCharacterSet *breaks = [[[NSCharacterSet
-		whitespaceAndNewlineCharacterSet] mutableCopy] autorelease];
+	NSMutableCharacterSet *breaks = [[NSCharacterSet
+									  whitespaceAndNewlineCharacterSet] mutableCopy];
 	[breaks formUnionWithCharacterSet:[NSCharacterSet punctuationCharacterSet]];
 	NSMutableArray *words = [NSMutableArray array];
 	NSEnumerator *e = [[[line lowercaseString]
 		componentsSeparatedByCharactersInSet:breaks] objectEnumerator];
-	NSString *word;
-	while((word = [e nextObject]) != nil)
-		if([word length] > 0)
+	for(NSString *word in e) {
+		if([word length] > 0) {
 			[words addObject:word];
+		}
+	}
 	return words;
 }
 
@@ -56,7 +57,7 @@ static const NSUInteger NekoSenseMinLength = 6;
 	NSString *wanted = [[[NSBundle mainBundle] preferredLocalizations] firstObject];
 	if([wanted length] == 0)
 		return NO;
-	NLLanguageRecognizer *recognizer = [[[NLLanguageRecognizer alloc] init] autorelease];
+	NLLanguageRecognizer *recognizer = [[NLLanguageRecognizer alloc] init];
 	[recognizer processString:line];
 	NSString *found = [recognizer dominantLanguage];
 	if([found length] == 0)
@@ -152,7 +153,7 @@ static const NSUInteger NekoSenseMinLength = 6;
 	NSDate *now = [NSDate date];
 	NSMutableArray *saying = [NSMutableArray array];
 
-	NSDateFormatter *clock = [[[NSDateFormatter alloc] init] autorelease];
+	NSDateFormatter *clock = [[NSDateFormatter alloc] init];
 	[clock setLocale:locale];
 	[clock setDateFormat:@"HH:mm"];
 	[saying addObject:[clock stringFromDate:now]];
@@ -196,7 +197,7 @@ static NSSet *NekoConcreteWords(NSString *text)
 	   from a table: the table this used first stopped at forty-five, and
 	   "quarantadue minuti nello stesso file" — about a summary that said 42 —
 	   was thrown away for naming nothing. */
-	NSNumberFormatter *spelling = [[[NSNumberFormatter alloc] init] autorelease];
+	NSNumberFormatter *spelling = [[NSNumberFormatter alloc] init];
 	[spelling setLocale:[NSLocale localeWithLocaleIdentifier:
 		[[[NSBundle mainBundle] preferredLocalizations] firstObject] ?: @"en"]];
 	[spelling setNumberStyle:NSNumberFormatterSpellOutStyle];
@@ -280,7 +281,7 @@ static NSSet *NekoConcreteWords(NSString *text)
 	NSSet *mine = NekoConcreteWords(line);
 	if([mine count] == 0)
 		return YES;
-	NSMutableSet *shared = [[mine mutableCopy] autorelease];
+	NSMutableSet *shared = [mine mutableCopy];
 	[shared intersectSet:NekoConcreteWords(seen)];
 	return [shared count] == 0;
 }

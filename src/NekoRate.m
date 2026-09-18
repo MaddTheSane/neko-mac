@@ -46,12 +46,6 @@ static const NSTimeInterval NekoRateAway = 150.0;
 	return shared;
 }
 
-- (void)dealloc
-{
-	[lastAccrual release];
-	[super dealloc];
-}
-
 #pragma mark What the world looks like
 
 - (NSDate *)now
@@ -106,7 +100,6 @@ static const NSTimeInterval NekoRateAway = 150.0;
 		[defaults setInteger:0 forKey:NekoRateIgnoredKey];
 		[defaults setInteger:0 forKey:NekoRateDismissedKey];
 		[defaults setDouble:0.0 forKey:NekoRateActiveKey];
-		[lastAccrual release];
 		lastAccrual = nil;
 	}
 
@@ -118,8 +111,7 @@ static const NSTimeInterval NekoRateAway = 150.0;
 			[defaults setDouble:[defaults doubleForKey:NekoRateActiveKey] + since
 			             forKey:NekoRateActiveKey];
 	}
-	[lastAccrual release];
-	lastAccrual = [now retain];
+	lastAccrual = now;
 }
 
 - (double)target

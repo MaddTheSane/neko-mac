@@ -136,7 +136,6 @@ static const NSTimeInterval NekoHoldToType = 0.5;
 		   controller for anything would have it ask for this object right back. */
 		if(phase != NekoPhaseIdle)
 			[self finish];
-		[hotKey release];
 		hotKey = nil;
 		hotKeyFailed = NO;
 		return;
@@ -203,7 +202,6 @@ static const NSTimeInterval NekoHoldToType = 0.5;
 		stringForKey:NekoAskShortcutNameKey];
 	if(shortcutProvider == nil
 	   || ![[shortcutProvider shortcutName] isEqualToString:name]) {
-		[shortcutProvider release];
 		shortcutProvider = [[NekoShortcutProvider alloc] initWithShortcutName:name];
 	}
 	return shortcutProvider;
@@ -340,7 +338,6 @@ static const NSTimeInterval NekoHoldToType = 0.5;
 	unsigned turning = turnedForRemark ? 0 : [[self panel] turnToward:[NSEvent mouseLocation]];
 	if(turning > 0) {
 		turnedForRemark = YES;   /* once, whatever the pointer does next */
-		[pendingRemark release];
 		pendingRemark = [text copy];
 		[NSObject cancelPreviousPerformRequestsWithTarget:self
 		                                        selector:@selector(sayItNow) object:nil];
@@ -374,8 +371,7 @@ static const NSTimeInterval NekoHoldToType = 0.5;
 /* The other half of -sayUnprompted:, after the cat has turned. */
 - (void)sayItNow
 {
-	NSString *text = [[pendingRemark retain] autorelease];
-	[pendingRemark release];
+	NSString *text = pendingRemark;
 	pendingRemark = nil;
 	if([text length] == 0 || ![self canSpeakUnprompted])
 		return;
@@ -398,7 +394,6 @@ static const NSTimeInterval NekoHoldToType = 0.5;
 {
 	[NSObject cancelPreviousPerformRequestsWithTarget:self
 	                                        selector:@selector(revealAnswer) object:nil];
-	[pendingAnswer release];
 	pendingAnswer = nil;
 	[self stopThinking];
 	[self stopVoice];
@@ -465,7 +460,7 @@ static const NSTimeInterval NekoHoldToType = 0.5;
 {
 	NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
 	if(![defaults boolForKey:NekoAskExplainedKey]) {
-		NSAlert *alert = [[[NSAlert alloc] init] autorelease];
+		NSAlert *alert = [[NSAlert alloc] init];
 		[alert setMessageText:NSLocalizedString(@"Neko is about to ask for the microphone", @"Neko is about to ask for the microphone")];
 		[alert setInformativeText:NSLocalizedString(@"It listens only while you hold the conversation, from the keystroke until you stop talking. Nothing is recorded and nothing is kept.", @"It listens only while you hold the conversation, from the keystroke until you stop talking. Nothing is recorded and nothing is kept.")];
 		[alert addButtonWithTitle:NSLocalizedString(@"Continue", @"Continue")];
@@ -720,12 +715,9 @@ static const NSTimeInterval NekoHoldToType = 0.5;
 		return (NSString *)([flat length] > 300 ? [flat substringToIndex:300] : flat);
 	};
 
-	[lastQuestion release];
 	lastQuestion = [question length] > 0 ? [shorten(question) copy] : nil;
-	[lastAnswer release];
 	lastAnswer = [answer length] > 0 ? [shorten(answer) copy] : nil;
-	[lastTurn release];
-	lastTurn = [[NSDate date] retain];
+	lastTurn = [NSDate date];
 
 	/* Kept as a short list as well, oldest first, so that a third question can
 	   still see the first. Three is the whole of it: the budget below is what
@@ -733,10 +725,9 @@ static const NSTimeInterval NekoHoldToType = 0.5;
 	   the prompt grows. */
 	if(turns == nil)
 		turns = [[NSMutableArray alloc] init];
-	[turns addObject:[NSDictionary dictionaryWithObjectsAndKeys:
-		lastTurn, @"When",
-		lastQuestion ?: @"", @"Asked",
-		lastAnswer ?: @"", @"Answered", nil]];
+	[turns addObject:@{@"When": lastTurn,
+					   @"Asked": lastQuestion ?: @"",
+					   @"Answered": lastAnswer ?: @""}];
 	while([turns count] > NekoThreadTurns)
 		[turns removeObjectAtIndex:0];
 }
@@ -816,7 +807,6 @@ static const NSTimeInterval NekoHoldToType = 0.5;
 
 - (void)startThinkingAbout:(NSString *)question
 {
-	[thinkingQuestion release];
 	thinkingQuestion = [question copy];
 	thinkingTick = 0;
 	[thinking invalidate];
@@ -887,7 +877,6 @@ static const NSTimeInterval NekoHoldToType = 0.5;
 	drawing = NO;
 	[thinking invalidate];
 	thinking = nil;
-	[thinkingQuestion release];
 	thinkingQuestion = nil;
 }
 
@@ -944,7 +933,6 @@ static const NSTimeInterval NekoHoldToType = 0.5;
 	/* What was said is what is remembered. A plugin may reword what the engine is
 	   asked; it may not rewrite somebody's diary. */
 	[[NekoMemory sharedMemory] noteHeard:question];
-	[askingAbout release];
 	askingAbout = [question copy];
 
 	if([NekoPluginText anythingProcesses:YES]) {
@@ -1156,7 +1144,6 @@ static const NSTimeInterval NekoHoldToType = 0.5;
 	   snapshots far faster than that, and resizing a window on every one of
 	   them looks like a stutter. */
 	if([provider respondsToSelector:@selector(askQuestion:instructions:partial:completion:)]) {
-		[lastDrawn release];
 		lastDrawn = nil;
 		[provider askQuestion:question
 		        instructions:instructions
@@ -1168,8 +1155,7 @@ static const NSTimeInterval NekoHoldToType = 0.5;
 			[self stopThinking];       /* words are arriving; stop fidgeting */
 			if(lastDrawn != nil && [lastDrawn timeIntervalSinceNow] > -0.1)
 				return;
-			[lastDrawn release];
-			lastDrawn = [[NSDate date] retain];
+			lastDrawn = [NSDate date];
 			[[self panel] holdWithState:NekoStateStop];
 			[self showBubble:sofar dismissAfter:0.0];
 		}
@@ -1193,7 +1179,7 @@ static const NSTimeInterval NekoHoldToType = 0.5;
    else's. */
 - (void)followRoute:(NSDictionary *)route
 {
-	NSString *asked = [[askingAbout copy] autorelease];
+	NSString *asked = [askingAbout copy];
 	NSString *says = [route objectForKey:@"Says"] ?: @"";
 
 	phase = NekoPhaseAnswering;
@@ -1242,7 +1228,7 @@ static const NSTimeInterval NekoHoldToType = 0.5;
 - (void)lookUp:(NSString *)wanted verbatim:(BOOL)asItIs
 {
 	NekoWeb *web = [NekoWeb sharedWeb];
-	NSString *asked = [[askingAbout copy] autorelease];
+	NSString *asked = [askingAbout copy];
 
 	/* The weather is numbers from an API, not somebody's prose: it is shown as
 	   it comes, with the source named, and no model is asked to retell it. */
@@ -1517,7 +1503,6 @@ static const NSTimeInterval NekoHoldToType = 0.5;
 	NSTimeInterval tempo = [self tempoFor:text];
 	if(tempo > 0.0) {
 		[self startThinkingAbout:(askingAbout ?: @"")];
-		[pendingAnswer release];
 		pendingAnswer = [text copy];
 		[NSObject cancelPreviousPerformRequestsWithTarget:self
 		                                        selector:@selector(revealAnswer)
@@ -1531,8 +1516,7 @@ static const NSTimeInterval NekoHoldToType = 0.5;
 
 - (void)revealAnswer
 {
-	NSString *text = [[pendingAnswer retain] autorelease];
-	[pendingAnswer release];
+	NSString *text = pendingAnswer;
 	pendingAnswer = nil;
 	[self stopThinking];
 	if([text length] > 0)
@@ -1545,7 +1529,7 @@ static const NSTimeInterval NekoHoldToType = 0.5;
 	   the markers have already been settled above, so a plugin cannot turn an
 	   answer into a deed by handing one back. */
 	if([NekoPluginText anythingProcesses:NO]) {
-		NSString *asAnswered = [[text copy] autorelease];
+		NSString *asAnswered = [text copy];
 		[NekoPluginText pass:asAnswered inward:NO
 		          completion:^(NSString *result, NSString *pluginName) {
 			[self sayAfterPlugins:result];

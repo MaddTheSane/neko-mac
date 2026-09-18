@@ -15,7 +15,6 @@ static const NSTimeInterval NekoModelTimeout = 8.0;
 - (void)dealloc
 {
 	[self cancel];
-	[super dealloc];
 }
 
 - (NSString *)name
@@ -107,13 +106,13 @@ static const NSTimeInterval NekoModelTimeout = 8.0;
 	[request setHTTPBody:payload];
 	[request setTimeoutInterval:NekoModelTimeout];
 
-	pending = Block_copy(completion);
-	task = [[[NSURLSession sharedSession] dataTaskWithRequest:request
+	pending = [completion copy];
+	task = [[NSURLSession sharedSession] dataTaskWithRequest:request
 	         completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
 		dispatch_async(dispatch_get_main_queue(), ^{
 			[self handleData:data response:response error:error];
 		});
-	}] retain];
+	}];
 	[task resume];
 }
 
@@ -173,7 +172,6 @@ static const NSTimeInterval NekoModelTimeout = 8.0;
 	}
 	                                     partial:partial
 	                                  completion:^(NSString *answer, NSError *error) {
-		[stream release];
 		stream = nil;
 		completion(answer, error);
 	}];
@@ -184,14 +182,12 @@ static const NSTimeInterval NekoModelTimeout = 8.0;
 {
 	void (^completion)(NSString *, NSError *) = pending;
 	pending = NULL;
-	[task release];
 	task = nil;
 	if(completion == NULL)
 		return;                  /* cancelled while in flight */
 
 	if(error != nil) {
 		completion(nil, error);
-		Block_release(completion);
 		return;
 	}
 
@@ -206,7 +202,6 @@ static const NSTimeInterval NekoModelTimeout = 8.0;
 		                                userInfo:detail != nil
 			? [NSDictionary dictionaryWithObject:detail forKey:NSLocalizedDescriptionKey]
 			: nil]);
-		Block_release(completion);
 		return;
 	}
 
@@ -234,19 +229,15 @@ static const NSTimeInterval NekoModelTimeout = 8.0;
 	} else {
 		completion(answer, nil);
 	}
-	Block_release(completion);
 }
 
 - (void)cancel
 {
 	[stream cancel];
-	[stream release];
 	stream = nil;
 	[task cancel];
-	[task release];
 	task = nil;
 	if(pending != NULL) {
-		Block_release(pending);
 		pending = NULL;
 	}
 }

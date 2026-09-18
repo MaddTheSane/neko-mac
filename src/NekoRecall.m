@@ -1,16 +1,16 @@
 #import "NekoRecall.h"
 #import <NaturalLanguage/NaturalLanguage.h>
 
-/* Below this a line is not about the question, it merely shares a word with it.
+/*! Below this a line is not about the question, it merely shares a word with it.
    Measured in tests/recall.m: the lines that ought to be found score well above
    it, and a hundred questions about nothing at all stay under. */
 static const double NekoRecallFloor = 1.0;
 
-/* A word heavy enough to be what a question is about rather than how it is
+/*! A word heavy enough to be what a question is about rather than how it is
    asked. Nouns, names, numbers and adjectives clear it on their class alone. */
 static const double NekoRecallSubstance = 0.8;
 
-/* The verbs and question words a language carries a question with, in the four
+/*! The verbs and question words a language carries a question with, in the four
    this application speaks. They are why "quanto fa sette per otto?" used to
    recall "che tempo fa a Roma?" — one shared "fare" and nothing else.
 
@@ -23,7 +23,7 @@ static NSSet *NekoCarryingWords(void)
 {
 	static NSSet *words = nil;
 	if(words == nil)
-		words = [[NSSet setWithArray:[NSArray arrayWithObjects:
+		words = [NSSet setWithObjects:
 			/* Italian */
 			@"essere", @"avere", @"fare", @"dire", @"stare", @"dare", @"andare",
 			@"venire", @"potere", @"volere", @"dovere", @"sapere", @"cosa",
@@ -39,7 +39,7 @@ static NSSet *NekoCarryingWords(void)
 			/* Spanish */
 			@"ser", @"estar", @"haber", @"hacer", @"decir", @"ir", @"venir",
 			@"poder", @"querer", @"deber", @"saber", @"qué", @"cuándo", @"cómo",
-			@"cuánto", @"cuál", @"dónde", @"por", @"quién", nil]] retain];
+			@"cuánto", @"cuál", @"dónde", @"por", @"quién", nil];
 	return words;
 }
 
@@ -66,8 +66,7 @@ static double NekoWeightForClass(NLTag tag)
 {
 	if([text length] == 0)
 		return [NSArray array];
-	NLTagger *tagger = [[[NLTagger alloc] initWithTagSchemes:
-		[NSArray arrayWithObject:NLTagSchemeLemma]] autorelease];
+	NLTagger *tagger = [[NLTagger alloc] initWithTagSchemes:@[NLTagSchemeLemma]];
 	[tagger setString:text];
 	NSMutableArray *words = [NSMutableArray array];
 	[tagger enumerateTagsInRange:NSMakeRange(0, [text length])
@@ -89,9 +88,8 @@ static double NekoWeightForClass(NLTag tag)
 {
 	if([question length] == 0)
 		return [NSDictionary dictionary];
-	NLTagger *tagger = [[[NLTagger alloc] initWithTagSchemes:
-		[NSArray arrayWithObjects:NLTagSchemeLemma, NLTagSchemeLexicalClass, nil]]
-		autorelease];
+	NLTagger *tagger = [[NLTagger alloc] initWithTagSchemes:
+						@[NLTagSchemeLemma, NLTagSchemeLexicalClass]];
 	[tagger setString:question];
 	NSMutableDictionary *asked = [NSMutableDictionary dictionary];
 	[tagger enumerateTagsInRange:NSMakeRange(0, [question length])

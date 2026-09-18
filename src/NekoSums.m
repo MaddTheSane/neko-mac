@@ -12,7 +12,7 @@ static NSLocale *NekoSumsLocale(void)
 
 static NSString *NekoNumberWritten(double value)
 {
-	NSNumberFormatter *formatter = [[[NSNumberFormatter alloc] init] autorelease];
+	NSNumberFormatter *formatter = [[NSNumberFormatter alloc] init];
 	[formatter setLocale:NekoSumsLocale()];
 	[formatter setNumberStyle:NSNumberFormatterDecimalStyle];
 	[formatter setMaximumFractionDigits:6];
@@ -74,7 +74,7 @@ static double NekoSumPrimary(NekoSum *scan)
 	                                           length:scan->at - start];
 	/* Read with a fixed locale: the comma has already become a point, and
 	   -doubleValue would read "3.5" as 3 where the language uses a comma. */
-	NSNumberFormatter *plain = [[[NSNumberFormatter alloc] init] autorelease];
+	NSNumberFormatter *plain = [[NSNumberFormatter alloc] init];
 	[plain setLocale:[NSLocale localeWithLocaleIdentifier:@"en_US_POSIX"]];
 	[plain setNumberStyle:NSNumberFormatterDecimalStyle];
 	NSNumber *read = [plain numberFromString:digits];
@@ -213,17 +213,7 @@ static NSString *NekoRegexReplace(NSString *text, NSString *pattern, NSString *w
    and is not a second list to keep in step. */
 static NSString *NekoAsArithmetic(NSString *lowered)
 {
-	static NSDictionary *operators = nil;
-	if(operators == nil)
-		operators = [[NSDictionary dictionaryWithObjectsAndKeys:
-			@"+", @"più", @"+", @"piu", @"+", @"plus", @"+", @"más", @"+", @"mas",
-			@"-", @"meno", @"-", @"minus", @"-", @"moins", @"-", @"menos",
-			@"*", @"per", @"*", @"times", @"*", @"por", @"*", @"fois",
-			@"*", @"moltiplicato", @"*", @"multiplied", @"*", @"x", @"*", @"×",
-			@"/", @"diviso", @"/", @"divided", @"/", @"dividido", @"/", @"divisé",
-			@"/", @"divise", @"/", @"÷",
-			@"^", @"elevato", @"^", @"alla", @"^", @"al quadrato",
-			nil] retain];
+	static NSDictionary<NSString*,NSString*> * const operators = @{@"più": @"+", @"piu": @"+", @"plus": @"+", @"más": @"+", @"mas": @"+", @"meno": @"-", @"minus": @"-", @"moins": @"-", @"menos": @"-", @"per": @"*", @"times": @"*", @"por": @"*", @"fois": @"*", @"moltiplicato": @"*", @"multiplied": @"*", @"x": @"*", @"×": @"*", @"diviso": @"/", @"divided": @"/", @"dividido": @"/", @"divisé": @"/", @"divise": @"/", @"÷": @"/", @"elevato": @"^", @"alla": @"^", @"al quadrato": @"^"};
 
 	NSString *text = lowered;
 
@@ -276,8 +266,8 @@ static BOOL NekoLooksLikeASum(NSString *text)
 {
 	static NSCharacterSet *allowed = nil;
 	if(allowed == nil)
-		allowed = [[NSCharacterSet characterSetWithCharactersInString:
-			@"0123456789.+-*/^() "] retain];
+		allowed = [NSCharacterSet characterSetWithCharactersInString:
+				   @"0123456789.+-*/^() "];
 	if([text length] == 0)
 		return NO;
 	if([[text stringByTrimmingCharactersInSet:allowed] length] > 0)
@@ -296,71 +286,71 @@ static BOOL NekoLooksLikeASum(NSString *text)
 static NSArray *NekoKnownUnits(void)
 {
 	static NSArray *units = nil;
-	if(units != nil)
-		return units;
+	static dispatch_once_t onceToken;
+	dispatch_once(&onceToken, ^{
+		NSMutableArray *all = [[NSMutableArray alloc] init];
+		void (^add)(NSString *, NSString *, NSUnit *) =
+			^(NSString *kind, NSString *words, NSUnit *unit) {
+			NSArray *seperated = [words componentsSeparatedByString:@","];
+			for(NSString *word in seperated)
+				[all addObject:@[word, kind, unit]];
+		};
 
-	NSMutableArray *all = [[NSMutableArray alloc] init];
-	void (^add)(NSString *, NSString *, NSUnit *) =
-		^(NSString *kind, NSString *words, NSUnit *unit) {
-		NSArray *seperated = [words componentsSeparatedByString:@","];
-		for(NSString *word in seperated)
-			[all addObject:@[word, kind, unit]];
-	};
+		add(@"length", @"chilometri,chilometro,kilometri,kilometers,kilometres,km",
+			[NSUnitLength kilometers]);
+		add(@"length", @"centimetri,centimetro,centimeters,cm", [NSUnitLength centimeters]);
+		add(@"length", @"millimetri,millimetro,millimeters,mm", [NSUnitLength millimeters]);
+		add(@"length", @"metri,metro,meters,metres,mètres", [NSUnitLength meters]);
+		add(@"length", @"miglia,miglio,miles,mile,mi", [NSUnitLength miles]);
+		add(@"length", @"piedi,piede,feet,foot,ft", [NSUnitLength feet]);
+		add(@"length", @"pollici,pollice,inches,inch", [NSUnitLength inches]);
+		add(@"length", @"iarde,iarda,yards,yard", [NSUnitLength yards]);
 
-	add(@"length", @"chilometri,chilometro,kilometri,kilometers,kilometres,km",
-		[NSUnitLength kilometers]);
-	add(@"length", @"centimetri,centimetro,centimeters,cm", [NSUnitLength centimeters]);
-	add(@"length", @"millimetri,millimetro,millimeters,mm", [NSUnitLength millimeters]);
-	add(@"length", @"metri,metro,meters,metres,mètres", [NSUnitLength meters]);
-	add(@"length", @"miglia,miglio,miles,mile,mi", [NSUnitLength miles]);
-	add(@"length", @"piedi,piede,feet,foot,ft", [NSUnitLength feet]);
-	add(@"length", @"pollici,pollice,inches,inch", [NSUnitLength inches]);
-	add(@"length", @"iarde,iarda,yards,yard", [NSUnitLength yards]);
+		add(@"mass", @"chilogrammi,chilogrammo,chili,chilo,kilos,kilograms,kg",
+			[NSUnitMass kilograms]);
+		add(@"mass", @"grammi,grammo,grams,gram,g", [NSUnitMass grams]);
+		add(@"mass", @"libbre,libbra,pounds,pound,lbs,lb", [NSUnitMass poundsMass]);
+		add(@"mass", @"once,oncia,ounces,ounce,oz", [NSUnitMass ounces]);
+		add(@"mass", @"tonnellate,tonnellata,tonnes,tons,ton", [NSUnitMass metricTons]);
 
-	add(@"mass", @"chilogrammi,chilogrammo,chili,chilo,kilos,kilograms,kg",
-		[NSUnitMass kilograms]);
-	add(@"mass", @"grammi,grammo,grams,gram,g", [NSUnitMass grams]);
-	add(@"mass", @"libbre,libbra,pounds,pound,lbs,lb", [NSUnitMass poundsMass]);
-	add(@"mass", @"once,oncia,ounces,ounce,oz", [NSUnitMass ounces]);
-	add(@"mass", @"tonnellate,tonnellata,tonnes,tons,ton", [NSUnitMass metricTons]);
+		add(@"temperature", @"fahrenheit,°f", [NSUnitTemperature fahrenheit]);
+		add(@"temperature", @"kelvin", [NSUnitTemperature kelvin]);
+		add(@"temperature", @"celsius,centigradi,gradi,grado,°c",
+			[NSUnitTemperature celsius]);
 
-	add(@"temperature", @"fahrenheit,°f", [NSUnitTemperature fahrenheit]);
-	add(@"temperature", @"kelvin", [NSUnitTemperature kelvin]);
-	add(@"temperature", @"celsius,centigradi,gradi,grado,°c",
-		[NSUnitTemperature celsius]);
+		add(@"volume", @"millilitri,millilitro,millilitres,milliliters,ml",
+			[NSUnitVolume milliliters]);
+		add(@"volume", @"litri,litro,litres,liters,liter,litre", [NSUnitVolume liters]);
+		add(@"volume", @"galloni,gallone,gallons,gallon", [NSUnitVolume gallons]);
+		add(@"volume", @"pinte,pinta,pints,pint", [NSUnitVolume pints]);
+		add(@"volume", @"tazze,cups,cup", [NSUnitVolume cups]);
 
-	add(@"volume", @"millilitri,millilitro,millilitres,milliliters,ml",
-		[NSUnitVolume milliliters]);
-	add(@"volume", @"litri,litro,litres,liters,liter,litre", [NSUnitVolume liters]);
-	add(@"volume", @"galloni,gallone,gallons,gallon", [NSUnitVolume gallons]);
-	add(@"volume", @"pinte,pinta,pints,pint", [NSUnitVolume pints]);
-	add(@"volume", @"tazze,cups,cup", [NSUnitVolume cups]);
+		add(@"duration", @"secondi,secondo,seconds,second,segundos",
+			[NSUnitDuration seconds]);
+		add(@"duration", @"minuti,minuto,minutes,minute,minutos", [NSUnitDuration minutes]);
+		add(@"duration", @"ore,ora,hours,hour,heures,horas", [NSUnitDuration hours]);
 
-	add(@"duration", @"secondi,secondo,seconds,second,segundos",
-		[NSUnitDuration seconds]);
-	add(@"duration", @"minuti,minuto,minutes,minute,minutos", [NSUnitDuration minutes]);
-	add(@"duration", @"ore,ora,hours,hour,heures,horas", [NSUnitDuration hours]);
+		add(@"speed", @"km/h,kmh,chilometri orari", [NSUnitSpeed kilometersPerHour]);
+		add(@"speed", @"mph,miglia orarie", [NSUnitSpeed milesPerHour]);
+		add(@"speed", @"nodi,knots", [NSUnitSpeed knots]);
+		add(@"speed", @"m/s", [NSUnitSpeed metersPerSecond]);
 
-	add(@"speed", @"km/h,kmh,chilometri orari", [NSUnitSpeed kilometersPerHour]);
-	add(@"speed", @"mph,miglia orarie", [NSUnitSpeed milesPerHour]);
-	add(@"speed", @"nodi,knots", [NSUnitSpeed knots]);
-	add(@"speed", @"m/s", [NSUnitSpeed metersPerSecond]);
+		add(@"storage", @"gigabyte,gb", [NSUnitInformationStorage gigabytes]);
+		add(@"storage", @"megabyte,mb", [NSUnitInformationStorage megabytes]);
+		add(@"storage", @"terabyte,tb", [NSUnitInformationStorage terabytes]);
+		add(@"storage", @"kilobyte,chilobyte,kb", [NSUnitInformationStorage kilobytes]);
+		add(@"storage", @"byte", [NSUnitInformationStorage bytes]);
 
-	add(@"storage", @"gigabyte,gb", [NSUnitInformationStorage gigabytes]);
-	add(@"storage", @"megabyte,mb", [NSUnitInformationStorage megabytes]);
-	add(@"storage", @"terabyte,tb", [NSUnitInformationStorage terabytes]);
-	add(@"storage", @"kilobyte,chilobyte,kb", [NSUnitInformationStorage kilobytes]);
-	add(@"storage", @"byte", [NSUnitInformationStorage bytes]);
+		[all sortUsingComparator:^NSComparisonResult(NSArray *a, NSArray *b) {
+			NSUInteger left = [[a objectAtIndex:0] length];
+			NSUInteger right = [[b objectAtIndex:0] length];
+			if(left > right) return NSOrderedAscending;
+			if(left < right) return NSOrderedDescending;
+			return NSOrderedSame;
+		}];
+		units = [all copy];
+	});
 
-	[all sortUsingComparator:^NSComparisonResult(NSArray *a, NSArray *b) {
-		NSUInteger left = [[a objectAtIndex:0] length];
-		NSUInteger right = [[b objectAtIndex:0] length];
-		if(left > right) return NSOrderedAscending;
-		if(left < right) return NSOrderedDescending;
-		return NSOrderedSame;
-	}];
-	units = [all copy];
-	[all release];
 	return units;
 }
 
@@ -438,11 +428,11 @@ static BOOL NekoWholeWordAt(NSString *text, NSRange found)
 	if(fromUnit == intoUnit)
 		return nil;
 
-	NSMeasurement *said = [[[NSMeasurement alloc] initWithDoubleValue:amount
-	                                                            unit:fromUnit] autorelease];
+	NSMeasurement *said = [[NSMeasurement alloc] initWithDoubleValue:amount
+																unit:fromUnit];
 	NSMeasurement *answer = [said measurementByConvertingToUnit:intoUnit];
 
-	NSMeasurementFormatter *formatter = [[[NSMeasurementFormatter alloc] init] autorelease];
+	NSMeasurementFormatter *formatter = [[NSMeasurementFormatter alloc] init];
 	[formatter setLocale:NekoSumsLocale()];
 	[formatter setUnitOptions:NSMeasurementFormatterUnitOptionsProvidedUnit];
 	[formatter setUnitStyle:NSFormattingUnitStyleMedium];

@@ -28,7 +28,7 @@ static NSString *NekoTailAfterAny(NSString *lowered, NSArray<NSString*> *trigger
    phrase; "3 marzo" comes back as the third of March. */
 static NSString *NekoWithoutLeadingWords(NSString *tail)
 {
-	static NSArray *const words =
+	static NSArray<NSString*> *const words =
 	@[
 		/* Italian */
 		@"al", @"alla", @"allo", @"agli", @"alle", @"ai", @"all'", @"a",
@@ -76,19 +76,17 @@ static BOOL NekoNothingLeft(NSString *tail)
 /* How many days a sentence means by "domani". nil when it names no day at all. */
 static NSNumber *NekoDayOffset(NSString *tail)
 {
-	static NSDictionary *offsets = nil;
-	if(offsets == nil)
-		offsets = [[NSDictionary dictionaryWithObjectsAndKeys:
-			@0, @"oggi", @0, @"today", @0, @"aujourd'hui", @0, @"hoy",
-			@1, @"domani", @1, @"tomorrow", @1, @"demain", @1, @"mañana",
-			@2, @"dopodomani", @2, @"dopo domani", @2, @"après-demain",
-			@2, @"apres-demain", @2, @"pasado mañana",
-			@2, @"the day after tomorrow", @2, @"day after tomorrow",
-			@-1, @"ieri", @-1, @"yesterday", @-1, @"hier", @-1, @"ayer",
-			nil] retain];
+	static NSDictionary<NSString*,NSNumber*> * const offsets = @{
+		@"oggi": @0, @"today": @0, @"aujourd'hui": @0, @"hoy": @0,
+		@"domani": @1, @"tomorrow": @1, @"demain": @1, @"mañana": @1,
+		@"dopodomani": @2, @"dopo domani": @2, @"après-demain": @2,
+		@"apres-demain": @2, @"pasado mañana": @2,
+		@"the day after tomorrow": @2, @"day after tomorrow": @2,
+		@"ieri": @-1, @"yesterday": @-1, @"hier": @-1, @"ayer": @-1,
+	};
 
 	if(NekoNothingLeft(tail))
-		return [NSNumber numberWithInt:0];        /* "che giorno è" — today */
+		return @0;        /* "che giorno è" — today */
 
 	/* Longest first: "dopo domani" must beat "domani". */
 	NSArray *keys = [[offsets allKeys] sortedArrayUsingComparator:
@@ -114,7 +112,7 @@ static NSNumber *NekoDayOffset(NSString *tail)
 
 static NSString *NekoDateWritten(NSDate *when)
 {
-	NSDateFormatter *formatter = [[[NSDateFormatter alloc] init] autorelease];
+	NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
 	[formatter setLocale:NekoClockLocale()];
 	[formatter setDateStyle:NSDateFormatterFullStyle];
 	[formatter setTimeStyle:NSDateFormatterNoStyle];
@@ -127,7 +125,7 @@ static NSString *NekoDateWritten(NSDate *when)
    martedì". */
 static NSString *NekoDateWithoutDay(NSDate *when)
 {
-	NSDateFormatter *formatter = [[[NSDateFormatter alloc] init] autorelease];
+	NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
 	[formatter setLocale:NekoClockLocale()];
 	[formatter setDateStyle:NSDateFormatterLongStyle];
 	[formatter setTimeStyle:NSDateFormatterNoStyle];
@@ -136,7 +134,7 @@ static NSString *NekoDateWithoutDay(NSDate *when)
 
 static NSString *NekoTimeWritten(NSDate *when)
 {
-	NSDateFormatter *formatter = [[[NSDateFormatter alloc] init] autorelease];
+	NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
 	[formatter setLocale:NekoClockLocale()];
 	[formatter setDateStyle:NSDateFormatterNoStyle];
 	[formatter setTimeStyle:NSDateFormatterShortStyle];
@@ -149,7 +147,7 @@ static NSString *NekoTimeWritten(NSDate *when)
 
 + (NSString *)timeIfAsked:(NSString *)lowered
 {
-	NSArray *triggers = @[
+	static NSArray * const triggers = @[
 		@"che ore sono", @"che ora è", @"che ora e'", @"che ore fa",
 		@"what time is it", @"what's the time", @"what is the time",
 		@"quelle heure est-il", @"quelle heure il est", @"il est quelle heure",
@@ -165,7 +163,7 @@ static NSString *NekoTimeWritten(NSDate *when)
 
 + (NSString *)dayIfAsked:(NSString *)lowered
 {
-	NSArray *triggers = @[
+	static NSArray<NSString*> * const triggers = @[
 		@"che giorno della settimana è", @"che giorno è", @"che giorno e'",
 		@"che giorno siamo", @"in che giorno siamo", @"che giorno era",
 		@"che data è",
@@ -190,7 +188,7 @@ static NSString *NekoTimeWritten(NSDate *when)
 		NSDate *dated = NekoDateIn(NekoWithoutLeadingWords(tail), YES);
 		if(dated == nil)
 			return nil;              /* "che giorno è meglio per uscire" */
-		NSDateFormatter *weekday = [[[NSDateFormatter alloc] init] autorelease];
+		NSDateFormatter *weekday = [[NSDateFormatter alloc] init];
 		[weekday setLocale:NekoClockLocale()];
 		[weekday setDateFormat:@"EEEE"];
 		/* Two sentences rather than one, because a language with tenses needs

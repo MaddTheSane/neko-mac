@@ -37,8 +37,8 @@ static NSString * const NekoWakeSpellings[] = {
 	if(![NekoListener isAvailable])
 		return NO;
 	if(@available(macOS 10.15, *)) {
-		SFSpeechRecognizer *speech = [[[SFSpeechRecognizer alloc]
-			initWithLocale:[NSLocale currentLocale]] autorelease];
+		SFSpeechRecognizer *speech = [[SFSpeechRecognizer alloc]
+									  initWithLocale:[NSLocale currentLocale]];
 		return speech != nil && [speech isAvailable]
 			&& [speech supportsOnDeviceRecognition];
 	}
@@ -152,7 +152,6 @@ static NSString * const NekoWakeSpellings[] = {
 		SFSpeechRecognizer *speech = [[SFSpeechRecognizer alloc]
 			initWithLocale:[NSLocale currentLocale]];
 		if(speech == nil || ![speech isAvailable] || ![speech supportsOnDeviceRecognition]) {
-			[speech release];
 			return;
 		}
 		recognizer = speech;
@@ -195,8 +194,7 @@ static NSString * const NekoWakeSpellings[] = {
 		}
 
 		running = YES;
-		[lastResult release];
-		lastResult = [[NSDate date] retain];
+		lastResult = [NSDate date];
 		[self beginTask];
 		renewal = [NSTimer scheduledTimerWithTimeInterval:NekoWakeRenewal
 		                                          target:self
@@ -220,34 +218,31 @@ static NSString * const NekoWakeSpellings[] = {
 		[audioRequest setRequiresOnDeviceRecognition:YES];
 		request = audioRequest;
 
-		task = [[(SFSpeechRecognizer *)recognizer
-			recognitionTaskWithRequest:audioRequest
-			             resultHandler:^(SFSpeechRecognitionResult *result, NSError *error) {
-			if(result != nil) {
-				[lastResult release];
-				lastResult = [[NSDate date] retain];
-				[self heard:[[result bestTranscription] formattedString]];
-			}
-			/* A final result means this task is over and the audio after it goes
-			   nowhere. That, not the error case, is what made the cat deaf for
-			   stretches: Speech decides a sentence has ended, and without a new
-			   task the next "Neko" is heard by nobody. */
-			if(running && (error != nil || (result != nil && [result isFinal])))
-				[self performSelectorOnMainThread:@selector(renewNow)
-				                       withObject:nil waitUntilDone:NO];
-		}] retain];
+		task = [recognizer
+				recognitionTaskWithRequest:audioRequest
+						  resultHandler:^(SFSpeechRecognitionResult *result, NSError *error) {
+			 if(result != nil) {
+				 lastResult = [NSDate date];
+				 [self heard:[[result bestTranscription] formattedString]];
+			 }
+			 /* A final result means this task is over and the audio after it goes
+				nowhere. That, not the error case, is what made the cat deaf for
+				stretches: Speech decides a sentence has ended, and without a new
+				task the next "Neko" is heard by nobody. */
+			 if(running && (error != nil || (result != nil && [result isFinal])))
+				 [self performSelectorOnMainThread:@selector(renewNow)
+										withObject:nil waitUntilDone:NO];
+		 }];
 	}
 }
 
 - (void)endTask
 {
 	if(@available(macOS 10.15, *)) {
-		[(SFSpeechAudioBufferRecognitionRequest *)request endAudio];
-		[(SFSpeechRecognitionTask *)task cancel];
+		[request endAudio];
+		[task cancel];
 	}
-	[(id)request release];
 	request = nil;
-	[(id)task release];
 	task = nil;
 }
 
@@ -272,11 +267,8 @@ static NSString * const NekoWakeSpellings[] = {
 		[(SFSpeechAudioBufferRecognitionRequest *)oldRequest endAudio];
 		[(SFSpeechRecognitionTask *)oldTask cancel];
 	}
-	[(id)oldRequest release];
-	[(id)oldTask release];
 
-	[lastResult release];
-	lastResult = [[NSDate date] retain];
+	lastResult = [NSDate date];
 }
 
 /* A task can also stop saying anything at all without ever finishing. Twenty
@@ -299,13 +291,11 @@ static NSString * const NekoWakeSpellings[] = {
 	[resume invalidate];
 	resume = nil;
 	if(@available(macOS 10.15, *)) {
-		[(AVAudioEngine *)engine stop];
-		[[(AVAudioEngine *)engine inputNode] removeTapOnBus:0];
+		[engine stop];
+		[[engine inputNode] removeTapOnBus:0];
 	}
 	[self endTask];
-	[(id)engine release];
 	engine = nil;
-	[(id)recognizer release];
 	recognizer = nil;
 	running = NO;
 }
@@ -318,8 +308,7 @@ static NSString * const NekoWakeSpellings[] = {
 		return;
 	if(lastHeard != nil && -[lastHeard timeIntervalSinceNow] < NekoWakeCooldown)
 		return;
-	[lastHeard release];
-	lastHeard = [[NSDate date] retain];
+	lastHeard = [NSDate date];
 
 	NekoAsk *ask = [NekoAsk sharedAsk];
 	if([ask isBusy] || [ask isSpeaking])
@@ -350,9 +339,6 @@ static NSString * const NekoWakeSpellings[] = {
 - (void)dealloc
 {
 	[self stop];
-	[lastHeard release];
-	[lastResult release];
-	[super dealloc];
 }
 
 @end

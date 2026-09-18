@@ -30,38 +30,35 @@ static NSDictionary *NekoWrittenNumbers(void)
    must be tried before "ora" would match inside it. */
 static NSArray *NekoUnits(void)
 {
-	static NSArray *units = nil;
-	if(units != nil)
-		return units;
-	units = [[NSArray arrayWithObjects:
-		[NSArray arrayWithObjects:@"secondi", @1, nil],
-		[NSArray arrayWithObjects:@"secondo", @1, nil],
-		[NSArray arrayWithObjects:@"seconds", @1, nil],
-		[NSArray arrayWithObjects:@"second", @1, nil],
-		[NSArray arrayWithObjects:@"secondes", @1, nil],
-		[NSArray arrayWithObjects:@"seconde", @1, nil],
-		[NSArray arrayWithObjects:@"segundos", @1, nil],
-		[NSArray arrayWithObjects:@"segundo", @1, nil],
-		[NSArray arrayWithObjects:@"sec", @1, nil],
-
-		[NSArray arrayWithObjects:@"minuti", @60, nil],
-		[NSArray arrayWithObjects:@"minuto", @60, nil],
-		[NSArray arrayWithObjects:@"minutes", @60, nil],
-		[NSArray arrayWithObjects:@"minute", @60, nil],
-		[NSArray arrayWithObjects:@"minutos", @60, nil],
-		[NSArray arrayWithObjects:@"min", @60, nil],
-
-		[NSArray arrayWithObjects:@"heures", @3600, nil],
-		[NSArray arrayWithObjects:@"heure", @3600, nil],
-		[NSArray arrayWithObjects:@"hours", @3600, nil],
-		[NSArray arrayWithObjects:@"hour", @3600, nil],
-		[NSArray arrayWithObjects:@"horas", @3600, nil],
-		[NSArray arrayWithObjects:@"hora", @3600, nil],
-		[NSArray arrayWithObjects:@"ore", @3600, nil],
-		[NSArray arrayWithObjects:@"ora", @3600, nil],
-		[NSArray arrayWithObjects:@"hrs", @3600, nil],
-		[NSArray arrayWithObjects:@"hr", @3600, nil],
-		[NSArray arrayWithObjects:@"h", @3600, nil], nil] retain];
+	static NSArray *const units =
+	@[@[@"secondi", @1],
+	  @[@"secondo", @1],
+	  @[@"seconds", @1],
+	  @[@"second", @1],
+	  @[@"secondes", @1],
+	  @[@"seconde", @1],
+	  @[@"segundos", @1],
+	  @[@"segundo", @1],
+	  @[@"sec", @1],
+	  
+	  @[@"minuti", @60],
+	  @[@"minuto", @60],
+	  @[@"minutes", @60],
+	  @[@"minute", @60],
+	  @[@"minutos", @60],
+	  @[@"min", @60],
+	  
+	  @[@"heures", @3600],
+	  @[@"heure", @3600],
+	  @[@"hours", @3600],
+	  @[@"hour", @3600],
+	  @[@"horas", @3600],
+	  @[@"hora", @3600],
+	  @[@"ore", @3600],
+	  @[@"ora", @3600],
+	  @[@"hrs", @3600],
+	  @[@"hr", @3600],
+	  @[@"h", @3600]];
 	return units;
 }
 
@@ -69,28 +66,25 @@ static NSArray *NekoUnits(void)
    whole. Longest first, again: "un quarto d'ora" contains "un ora". */
 static NSArray *NekoSetPhrases(void)
 {
-	static NSArray *phrases = nil;
-	if(phrases != nil)
-		return phrases;
-	phrases = [[NSArray arrayWithObjects:
-		[NSArray arrayWithObjects:@"un quarto d'ora", @900, nil],
-		[NSArray arrayWithObjects:@"un quarto d’ora", @900, nil],
-		[NSArray arrayWithObjects:@"quarto d'ora", @900, nil],
-		[NSArray arrayWithObjects:@"quarto d’ora", @900, nil],
-		[NSArray arrayWithObjects:@"quarter of an hour", @900, nil],
-		[NSArray arrayWithObjects:@"quarter hour", @900, nil],
-		[NSArray arrayWithObjects:@"quart d'heure", @900, nil],
-		[NSArray arrayWithObjects:@"quart d’heure", @900, nil],
-		[NSArray arrayWithObjects:@"cuarto de hora", @900, nil],
-
-		[NSArray arrayWithObjects:@"mezz'ora", @1800, nil],
-		[NSArray arrayWithObjects:@"mezz’ora", @1800, nil],
-		[NSArray arrayWithObjects:@"mezza ora", @1800, nil],
-		[NSArray arrayWithObjects:@"half an hour", @1800, nil],
-		[NSArray arrayWithObjects:@"half hour", @1800, nil],
-		[NSArray arrayWithObjects:@"demi-heure", @1800, nil],
-		[NSArray arrayWithObjects:@"demi heure", @1800, nil],
-		[NSArray arrayWithObjects:@"media hora", @1800, nil], nil] retain];
+	static NSArray *const phrases =
+	@[@[@"un quarto d'ora", @900],
+	  @[@"un quarto d’ora", @900],
+	  @[@"quarto d'ora", @900],
+	  @[@"quarto d’ora", @900],
+	  @[@"quarter of an hour", @900],
+	  @[@"quarter hour", @900],
+	  @[@"quart d'heure", @900],
+	  @[@"quart d’heure", @900],
+	  @[@"cuarto de hora", @900],
+	  
+	  @[@"mezz'ora", @1800],
+	  @[@"mezz’ora", @1800],
+	  @[@"mezza ora", @1800],
+	  @[@"half an hour", @1800],
+	  @[@"half hour", @1800],
+	  @[@"demi-heure", @1800],
+	  @[@"demi heure", @1800],
+	  @[@"media hora", @1800]];
 	return phrases;
 }
 
@@ -213,8 +207,7 @@ static BOOL NekoSaysAndAHalf(NSString *rest)
 {
 	if(seconds <= 0.0)
 		return @"";
-	NSDateComponentsFormatter *spell = [[[NSDateComponentsFormatter alloc] init]
-		autorelease];
+	NSDateComponentsFormatter *spell = [[NSDateComponentsFormatter alloc] init];
 	[spell setUnitsStyle:NSDateComponentsFormatterUnitsStyleFull];
 	/* Days as well. Nothing this file *parses* is longer than a day — see
 	   -secondsIn:, which refuses anything past twenty-four hours — but NekoSelf
@@ -228,7 +221,7 @@ static BOOL NekoSaysAndAHalf(NSString *rest)
 
 + (NSString *)clockTimeIn:(NSTimeInterval)seconds
 {
-	NSDateFormatter *clock = [[[NSDateFormatter alloc] init] autorelease];
+	NSDateFormatter *clock = [[NSDateFormatter alloc] init];
 	[clock setTimeStyle:NSDateFormatterShortStyle];
 	[clock setDateStyle:NSDateFormatterNoStyle];
 	return [clock stringFromDate:[NSDate dateWithTimeIntervalSinceNow:seconds]];

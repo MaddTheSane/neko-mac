@@ -31,8 +31,6 @@ NSString * const NekoDrawSizeKey    = @"NekoDrawSize";
 - (void)dealloc
 {
 	[self cancel];
-	[scratch release];
-	[super dealloc];
 }
 
 #pragma mark What it needs
@@ -96,7 +94,6 @@ NSString * const NekoDrawSizeKey    = @"NekoDrawSize";
 {
 	if(task != nil && [task isRunning])
 		[task terminate];
-	[task release];
 	task = nil;
 }
 
@@ -124,9 +121,8 @@ NSString * const NekoDrawSizeKey    = @"NekoDrawSize";
 	   mush, and there is no reason anybody would want that. */
 	CGFloat guidance = [chosen drawGuidance] > 0.0 ? [chosen drawGuidance] : 7.0;
 
-	[scratch release];
-	scratch = [[NSTemporaryDirectory() stringByAppendingPathComponent:
-		[NSString stringWithFormat:@"neko-drawing-%u.png", arc4random()]] retain];
+	scratch = [NSTemporaryDirectory() stringByAppendingPathComponent:
+			   [NSString stringWithFormat:@"neko-drawing-%u.png", arc4random()]];
 
 	NSArray *arguments = [NSArray arrayWithObjects:
 		@"-M", @"img_gen",
@@ -149,13 +145,13 @@ NSString * const NekoDrawSizeKey    = @"NekoDrawSize";
 	[task setStandardOutput:[NSPipe pipe]];
 	[task setStandardError:[NSPipe pipe]];
 
-	void (^done)(NSImage *, NSError *) = Block_copy(completion);
-	NSString *file = [[scratch copy] autorelease];
+	void (^done)(NSImage *, NSError *) = [completion copy];
+	NSString *file = [scratch copy];
 
 	[task setTerminationHandler:^(NSTask *finished) {
 		NSImage *picture = nil;
 		if([finished terminationStatus] == 0)
-			picture = [[[NSImage alloc] initWithContentsOfFile:file] autorelease];
+			picture = [[NSImage alloc] initWithContentsOfFile:file];
 		NSError *problem = picture != nil ? nil :
 			[NSError errorWithDomain:NekoAskErrorDomain
 			                    code:NekoAskErrorNoAnswer
@@ -164,20 +160,18 @@ NSString * const NekoDrawSizeKey    = @"NekoDrawSize";
 				                                                 forKey:NSLocalizedDescriptionKey]];
 		dispatch_async(dispatch_get_main_queue(), ^{
 			done(picture, problem);
-			Block_release(done);
 			[[NSFileManager defaultManager] removeItemAtPath:file error:NULL];
 		});
 	}];
 
-	NS_DURING
+	@try {
 		[task launch];
-	NS_HANDLER
+	} @catch (NSException*ex) {
 		[self cancel];
 		completion(nil, [NSError errorWithDomain:NekoAskErrorDomain
-		                                    code:NekoAskErrorTransport
-		                                userInfo:nil]);
-		Block_release(done);
-	NS_ENDHANDLER
+											code:NekoAskErrorTransport
+										userInfo:nil]);
+	}
 }
 
 @end

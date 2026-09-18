@@ -37,11 +37,11 @@ static NSString * const NekoUpdateSaidKey  = @"NekoUpdateAnnounced";
 
 - (id)init
 {
-	if((self = [super init]) != nil) {
+	if(self = [super init]) {
 		NSURLSessionConfiguration *configuration =
 			[NSURLSessionConfiguration defaultSessionConfiguration];
 		[configuration setTimeoutIntervalForRequest:20.0];
-		session = [[NSURLSession sessionWithConfiguration:configuration] retain];
+		session = [NSURLSession sessionWithConfiguration:configuration];
 	}
 	return self;
 }
@@ -191,9 +191,9 @@ static NSString * const NekoUpdateSaidKey  = @"NekoUpdateAnnounced";
 	NSDictionary *found = [NekoUpdate releaseFrom:data];
 
 	if(found == nil) {
-		[version release]; version = nil;
-		[download release]; download = nil;
-		[notes release]; notes = nil;
+		version = nil;
+		download = nil;
+		notes = nil;
 		if(outLoud)
 			[self say:[data length] > 0
 				? [NSString stringWithFormat:
@@ -205,11 +205,8 @@ static NSString * const NekoUpdateSaidKey  = @"NekoUpdateAnnounced";
 		return;
 	}
 
-	[version release];
 	version = [[found objectForKey:@"Version"] copy];
-	[download release];
-	download = [[found objectForKey:@"Download"] retain];
-	[notes release];
+	download = [found objectForKey:@"Download"];
 	notes = [[found objectForKey:@"Notes"] copy];
 	bytes = [[found objectForKey:@"Bytes"] longLongValue];
 
@@ -258,7 +255,7 @@ static NSString * const NekoUpdateSaidKey  = @"NekoUpdateAnnounced";
 	}
 
 	[NSApp activateIgnoringOtherApps:YES];
-	NSAlert *alert = [[[NSAlert alloc] init] autorelease];
+	NSAlert *alert = [[NSAlert alloc] init];
 	[alert setMessageText:[NSString stringWithFormat:
 		NSLocalizedString(@"Neko %@ is out.", @"Neko %@ is out."), version]];
 	/* One literal, on one line. A key split across string literals can never
@@ -305,12 +302,12 @@ static NSString * const NekoUpdateSaidKey  = @"NekoUpdateAnnounced";
 	NSURL *destination = [[self folder] URLByAppendingPathComponent:
 		[NSString stringWithFormat:@"Neko-%@.dmg", version]];
 
-	task = [[session downloadTaskWithURL:download
-	          completionHandler:^(NSURL *temporary, NSURLResponse *response, NSError *error) {
+	task = [session downloadTaskWithURL:download
+					  completionHandler:^(NSURL *temporary, NSURLResponse *response, NSError *error) {
 		dispatch_async(dispatch_get_main_queue(), ^{
 			[self arrivedAt:temporary destination:destination error:error];
 		});
-	}] retain];
+	}];
 	[task resume];
 
 	[self showProgress];
@@ -344,7 +341,6 @@ static NSString * const NekoUpdateSaidKey  = @"NekoUpdateAnnounced";
 - (void)cancel:(id)sender
 {
 	[task cancel];
-	[task release];
 	task = nil;
 	[NSObject cancelPreviousPerformRequestsWithTarget:self
 	                                        selector:@selector(tick) object:nil];
@@ -358,7 +354,6 @@ static NSString * const NekoUpdateSaidKey  = @"NekoUpdateAnnounced";
             error:(NSError *)error
 {
 	BOOL cancelled = task == nil;
-	[task release];
 	task = nil;
 	[NSObject cancelPreviousPerformRequestsWithTarget:self
 	                                        selector:@selector(tick) object:nil];
@@ -388,7 +383,7 @@ static NSString * const NekoUpdateSaidKey  = @"NekoUpdateAnnounced";
 - (void)askAboutOpening:(NSURL *)image
 {
 	[NSApp activateIgnoringOtherApps:YES];
-	NSAlert *alert = [[[NSAlert alloc] init] autorelease];
+	NSAlert *alert = [[NSAlert alloc] init];
 	[alert setMessageText:[NSString stringWithFormat:
 		NSLocalizedString(@"Neko %@ is downloaded.", @"Neko %@ is downloaded."), version]];
 	[alert setInformativeText:NSLocalizedString(@"Shall I open it and quit? Then drag Neko into Applications, replacing the one that is there, and start it again. I close first so that the copy you are replacing is not the copy that is running.", @"Shall I open it and quit? Then drag Neko into Applications, replacing the one that is there, and start it again. I close first so that the copy you are replacing is not the copy that is running.")];
@@ -459,8 +454,8 @@ static NSString * const NekoUpdateSaidKey  = @"NekoUpdateAnnounced";
 		[progressLabel setStringValue:@""];
 		[content addSubview:progressLabel];
 
-		NSButton *stop = [[[NSButton alloc] initWithFrame:
-			NSMakeRect(250.0, 8.0, 92.0, 24.0)] autorelease];
+		NSButton *stop = [[NSButton alloc] initWithFrame:
+						  NSMakeRect(250.0, 8.0, 92.0, 24.0)];
 		[stop setBezelStyle:NSBezelStyleRounded];
 		[stop setTitle:NSLocalizedString(@"Stop", @"Stop")];
 		[stop setTarget:self];

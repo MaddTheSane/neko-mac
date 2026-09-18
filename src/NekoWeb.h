@@ -19,11 +19,11 @@ extern NSString * const NekoWebEnabledKey;
                   detail:(NSString *)aDetail
                  address:(NSString *)anAddress
                prominent:(BOOL)isProminent;
-- (NSString *)identifier;
-- (NSString *)name;
-- (NSString *)detail;
-- (NSURL *)url;
-- (BOOL)isProminent;
+@property (readonly, copy) NSString *identifier;
+@property (readonly, copy) NSString *name;
+@property (readonly, copy) NSString *detail;
+@property (readonly, copy) NSURL *url;
+@property (readonly, getter=isProminent) BOOL prominent;
 @end
 
 /*! Headlines, from a list somebody else cannot add to.

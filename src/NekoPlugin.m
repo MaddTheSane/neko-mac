@@ -13,19 +13,10 @@ static NSString * const NekoPluginMarkers[] = { @"ACTION:", @"IMAGE:", @"LOOK:",
 - (id)initWithFolder:(NSURL *)aFolder
 {
 	if((self = [super init]) != nil) {
-		folder = [aFolder retain];
+		folder = aFolder;
 		[self read];
 	}
 	return self;
-}
-
-- (void)dealloc
-{
-	[folder release];
-	[manifest release];
-	[strings release];
-	[refusal release];
-	[super dealloc];
 }
 
 @synthesize folder;
@@ -87,7 +78,7 @@ static NSString * const NekoPluginMarkers[] = { @"ACTION:", @"IMAGE:", @"LOOK:",
 		[self refuse:NSLocalizedString(@"There is no readable plugin.plist inside it.", @"There is no readable plugin.plist inside it.")];
 		return;
 	}
-	manifest = [read retain];
+	manifest = [read copy];
 
 	NSString *identifier = [manifest objectForKey:@"Identifier"];
 	if([identifier length] == 0 || [identifier rangeOfString:@"."].location == NSNotFound) {
@@ -669,12 +660,12 @@ static NSString * const NekoPluginMarkers[] = { @"ACTION:", @"IMAGE:", @"LOOK:",
 				continue;
 			NSDictionary *read = [NSDictionary dictionaryWithContentsOfFile:path];
 			if(read != nil) {
-				strings = [read retain];
+				strings = [read copy];
 				return strings;
 			}
 		}
 	}
-	strings = [[NSDictionary dictionary] retain];   /* asked, and there is none */
+	strings = [NSDictionary dictionary];   /* asked, and there is none */
 	return strings;
 }
 

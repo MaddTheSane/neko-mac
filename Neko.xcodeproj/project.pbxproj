@@ -45,8 +45,8 @@
 		8D11072B0486CEB800E47090 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 089C165CFE840E0CC02AAC07 /* InfoPlist.strings */; };
 		8D11072D0486CEB800E47090 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 29B97316FDCFA39411CA2CEA /* main.m */; settings = {ATTRIBUTES = (); }; };
 		8D11072F0486CEB800E47090 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */; };
-		A700278D0CA641680057F7E4 /* MyPanel.m in Sources */ = {isa = PBXBuildFile; fileRef = A700278C0CA641680057F7E4 /* MyPanel.m */; settings = {COMPILER_FLAGS = "-fobjc-arc"; }; };
-		A70027B30CA6447E0057F7E4 /* MyView.m in Sources */ = {isa = PBXBuildFile; fileRef = A70027B20CA6447E0057F7E4 /* MyView.m */; settings = {COMPILER_FLAGS = "-fobjc-arc"; }; };
+		A700278D0CA641680057F7E4 /* MyPanel.m in Sources */ = {isa = PBXBuildFile; fileRef = A700278C0CA641680057F7E4 /* MyPanel.m */; };
+		A70027B30CA6447E0057F7E4 /* MyView.m in Sources */ = {isa = PBXBuildFile; fileRef = A70027B20CA6447E0057F7E4 /* MyView.m */; };
 		A7B9FF1D1A575C310074B4D4 /* Neko.icns in Resources */ = {isa = PBXBuildFile; fileRef = A7B9FF1C1A575C310074B4D4 /* Neko.icns */; };
 		D1C0117A1B00000000000003 /* NekoController.m in Sources */ = {isa = PBXBuildFile; fileRef = D1C0117A1B00000000000002 /* NekoController.m */; settings = {COMPILER_FLAGS = "-fobjc-arc"; }; };
 		D1C0117A1B00000000000011 /* Characters in Resources */ = {isa = PBXBuildFile; fileRef = D1C0117A1B00000000000010 /* Characters */; };
@@ -55,7 +55,7 @@
 		D1C0117A1B00000000000042 /* NekoAnswerProvider.m in Sources */ = {isa = PBXBuildFile; fileRef = D1C0117A1B00000000000041 /* NekoAnswerProvider.m */; };
 		D1C0117A1B00000000000045 /* NekoShortcutProvider.m in Sources */ = {isa = PBXBuildFile; fileRef = D1C0117A1B00000000000044 /* NekoShortcutProvider.m */; settings = {COMPILER_FLAGS = "-fobjc-arc"; }; };
 		D1C0117A1B00000000000048 /* NekoModelProvider.m in Sources */ = {isa = PBXBuildFile; fileRef = D1C0117A1B00000000000047 /* NekoModelProvider.m */; };
-		D1C0117A1B0000000000004B /* NekoHotKey.m in Sources */ = {isa = PBXBuildFile; fileRef = D1C0117A1B0000000000004A /* NekoHotKey.m */; };
+		D1C0117A1B0000000000004B /* NekoHotKey.m in Sources */ = {isa = PBXBuildFile; fileRef = D1C0117A1B0000000000004A /* NekoHotKey.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		D1C0117A1B0000000000004E /* NekoListener.m in Sources */ = {isa = PBXBuildFile; fileRef = D1C0117A1B0000000000004D /* NekoListener.m */; };
 		D1C0117A1B00000000000051 /* NekoBubble.m in Sources */ = {isa = PBXBuildFile; fileRef = D1C0117A1B00000000000050 /* NekoBubble.m */; settings = {COMPILER_FLAGS = "-fobjc-arc"; }; };
 		D1C0117A1B00000000000054 /* NekoAsk.m in Sources */ = {isa = PBXBuildFile; fileRef = D1C0117A1B00000000000053 /* NekoAsk.m */; };
@@ -67,7 +67,7 @@
 		D1C0117A1B00000000000073 /* NekoAppleModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1C0117A1B00000000000072 /* NekoAppleModel.swift */; };
 		D1C0117A1B0000000000007D /* FoundationModels.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D1C0117A1B0000000000007C /* FoundationModels.framework */; };
 		D1C0117A1B00000000000081 /* NekoOpenAIProvider.m in Sources */ = {isa = PBXBuildFile; fileRef = D1C0117A1B00000000000080 /* NekoOpenAIProvider.m */; };
-		D1C0117A1B00000000000083 /* NekoKeychain.m in Sources */ = {isa = PBXBuildFile; fileRef = D1C0117A1B00000000000082 /* NekoKeychain.m */; };
+		D1C0117A1B00000000000083 /* NekoKeychain.m in Sources */ = {isa = PBXBuildFile; fileRef = D1C0117A1B00000000000082 /* NekoKeychain.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		D1C0117A1B00000000000091 /* NekoModelStore.m in Sources */ = {isa = PBXBuildFile; fileRef = D1C0117A1B00000000000090 /* NekoModelStore.m */; };
 		D1C0117A1B00000000000093 /* NekoLocalProvider.m in Sources */ = {isa = PBXBuildFile; fileRef = D1C0117A1B00000000000092 /* NekoLocalProvider.m */; };
 		D1C0117A1B000000000000A3 /* NekoAdvisor.m in Sources */ = {isa = PBXBuildFile; fileRef = D1C0117A1B000000000000A2 /* NekoAdvisor.m */; };
@@ -75,11 +75,11 @@
 		D1C0117A1B000000000000B1 /* NekoDesktop.m in Sources */ = {isa = PBXBuildFile; fileRef = D1C0117A1B000000000000B0 /* NekoDesktop.m */; };
 		D1C0117A1B000000000000C1 /* NekoPainter.m in Sources */ = {isa = PBXBuildFile; fileRef = D1C0117A1B000000000000C0 /* NekoPainter.m */; };
 		D1C0117A1B000000000000D1 /* NekoSense.m in Sources */ = {isa = PBXBuildFile; fileRef = D1C0117A1B000000000000D0 /* NekoSense.m */; };
-		D1C0117A1B000000000000D5 /* NekoAction.m in Sources */ = {isa = PBXBuildFile; fileRef = D1C0117A1B000000000000D4 /* NekoAction.m */; settings = {COMPILER_FLAGS = "-fobjc-arc"; }; };
+		D1C0117A1B000000000000D5 /* NekoAction.m in Sources */ = {isa = PBXBuildFile; fileRef = D1C0117A1B000000000000D4 /* NekoAction.m */; };
 		D1C0117A1B000000000000E1 /* NekoFolderAccess.m in Sources */ = {isa = PBXBuildFile; fileRef = D1C0117A1B000000000000E0 /* NekoFolderAccess.m */; settings = {COMPILER_FLAGS = "-fobjc-arc"; }; };
 		D1C0117A1B000000000000F1 /* NekoWakeWord.m in Sources */ = {isa = PBXBuildFile; fileRef = D1C0117A1B000000000000F0 /* NekoWakeWord.m */; };
 		D1C0117A1B00000000000101 /* NekoPermissions.m in Sources */ = {isa = PBXBuildFile; fileRef = D1C0117A1B00000000000100 /* NekoPermissions.m */; };
-		D1C0117A1B00000000000A0B0 /* NekoLine.m in Sources */ = {isa = PBXBuildFile; fileRef = D1C0117A1B00000000000A0M0 /* NekoLine.m */; };
+		D1C0117A1B00000000000A0B0 /* NekoLine.m in Sources */ = {isa = PBXBuildFile; fileRef = D1C0117A1B00000000000A0M0 /* NekoLine.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		D1C0117A1B00000000000A4B0 /* NekoBrains.m in Sources */ = {isa = PBXBuildFile; fileRef = D1C0117A1B00000000000A4M0 /* NekoBrains.m */; };
 		D1C0117A1B00000000000A8B0 /* NekoMemory.m in Sources */ = {isa = PBXBuildFile; fileRef = D1C0117A1B00000000000A8M0 /* NekoMemory.m */; };
 		D1C0117A1B00000000000B0B0 /* NekoRate.m in Sources */ = {isa = PBXBuildFile; fileRef = D1C0117A1B00000000000B0M0 /* NekoRate.m */; };
@@ -676,6 +676,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
 				CODE_SIGN_ENTITLEMENTS = Neko.entitlements;
 				CODE_SIGN_IDENTITY = "-";
 				COMBINE_HIDPI_IMAGES = YES;
@@ -707,6 +708,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
 				CODE_SIGN_ENTITLEMENTS = Neko.entitlements;
 				CODE_SIGN_IDENTITY = "-";
 				COMBINE_HIDPI_IMAGES = YES;

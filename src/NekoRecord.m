@@ -36,7 +36,7 @@ static NSArray *NekoRecordAsking(void)
 /* The day, as somebody would say it rather than as a file is named. */
 static NSString *NekoRecordDay(NSString *stamp)
 {
-	NSDateFormatter *stored = [[[NSDateFormatter alloc] init] autorelease];
+	NSDateFormatter *stored = [[NSDateFormatter alloc] init];
 	[stored setLocale:[NSLocale localeWithLocaleIdentifier:@"en_US_POSIX"]];
 	[stored setDateFormat:@"yyyy-MM-dd"];
 	NSDate *when = [stored dateFromString:stamp];
@@ -54,7 +54,7 @@ static NSString *NekoRecordDay(NSString *stamp)
 	if(back == 1)
 		return NSLocalizedString(@"yesterday", @"yesterday");
 
-	NSDateFormatter *said = [[[NSDateFormatter alloc] init] autorelease];
+	NSDateFormatter *said = [[NSDateFormatter alloc] init];
 	[said setLocale:[NSLocale localeWithLocaleIdentifier:
 		[[[NSBundle mainBundle] preferredLocalizations] firstObject] ?: @"en"]];
 	/* The year only when it is not this one: "il 27 agosto" reads better than
@@ -94,7 +94,7 @@ static NSArray *NekoRecordAskingWhen(void)
    counts them. */
 static NSInteger NekoRecordDaysAgo(NSString *stamp)
 {
-	NSDateFormatter *stored = [[[NSDateFormatter alloc] init] autorelease];
+	NSDateFormatter *stored = [[NSDateFormatter alloc] init];
 	[stored setLocale:[NSLocale localeWithLocaleIdentifier:@"en_US_POSIX"]];
 	[stored setDateFormat:@"yyyy-MM-dd"];
 	NSDate *when = [stored dateFromString:stamp];

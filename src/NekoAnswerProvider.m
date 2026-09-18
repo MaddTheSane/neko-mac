@@ -66,12 +66,12 @@ NSString *NekoFactsNow(void)
 	NSLocale *locale = [NSLocale localeWithLocaleIdentifier:
 		[[[NSBundle mainBundle] preferredLocalizations] firstObject] ?: @"en"];
 
-	NSDateFormatter *clock = [[[NSDateFormatter alloc] init] autorelease];
+	NSDateFormatter *clock = [[NSDateFormatter alloc] init];
 	[clock setLocale:locale];
 	[clock setDateStyle:NSDateFormatterNoStyle];
 	[clock setTimeStyle:NSDateFormatterShortStyle];
 
-	NSDateFormatter *calendar = [[[NSDateFormatter alloc] init] autorelease];
+	NSDateFormatter *calendar = [[NSDateFormatter alloc] init];
 	[calendar setLocale:locale];
 	[calendar setDateStyle:NSDateFormatterFullStyle];
 	[calendar setTimeStyle:NSDateFormatterNoStyle];

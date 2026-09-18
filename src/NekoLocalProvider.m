@@ -10,7 +10,7 @@ NSString * const NekoAskLocalModelKey = @"NekoAskLocalModel";
 	/* Looked up by name so that adding the engine is a matter of compiling one
 	   more class in, with nothing here to change. */
 	Class engineClass = NSClassFromString(@"NekoLlamaEngine");
-	return engineClass != Nil ? [[[engineClass alloc] init] autorelease] : nil;
+	return engineClass != Nil ? [[engineClass alloc] init] : nil;
 }
 
 - (id)init
@@ -23,12 +23,9 @@ NSString * const NekoAskLocalModelKey = @"NekoAskLocalModel";
 
 - (void)dealloc
 {
-	[preferred release];
 	if(loader != NULL)
-		dispatch_release(loader);
+		loader = nil;;
 	[engine cancel];
-	[(id)engine release];
-	[super dealloc];
 }
 
 - (NSString *)name
@@ -43,10 +40,8 @@ NSString * const NekoAskLocalModelKey = @"NekoAskLocalModel";
 	/* Changing model means the loaded one is the wrong one. */
 	if(![preferred isEqualToString:identifier]) {
 		[engine cancel];
-		[(id)engine release];
 		engine = nil;
 	}
-	[preferred release];
 	preferred = [identifier copy];
 }
 
@@ -101,7 +96,7 @@ NSString * const NekoAskLocalModelKey = @"NekoAskLocalModel";
 - (BOOL)prepareEngine:(NSError **)error
 {
 	if(engine == nil)
-		engine = [[NekoLocalProvider makeEngine] retain];
+		engine = [NekoLocalProvider makeEngine];
 	if(engine == nil)
 		return NO;
 	if([engine isLoaded])
@@ -171,11 +166,9 @@ static const int NekoLocalThinkingTokens = 1000;
 {
 	if([text length] == 0)
 		return text;
-	NSMutableString *left = [[text mutableCopy] autorelease];
+	NSMutableString *left = [text mutableCopy];
 
-	NSEnumerator *e = [NekoReasoningTags() objectEnumerator];
-	NSString *tag;
-	while((tag = [e nextObject]) != nil) {
+	for(NSString *tag in NekoReasoningTags()) {
 		NSString *opens = [NSString stringWithFormat:@"<%@>", tag];
 		NSString *closes = [NSString stringWithFormat:@"</%@>", tag];
 		for(;;) {
@@ -218,20 +211,18 @@ static const int NekoLocalThinkingTokens = 1000;
 	   worse than the spinner it would replace. */
 	void (^partialCopy)(NSString *) = nil;
 	if(partial != NULL) {
-		void (^caller)(NSString *) = Block_copy(partial);
-		partialCopy = Block_copy(^(NSString *sofar) {
+		void (^caller)(NSString *) = [partial copy];
+		partialCopy = [^(NSString *sofar) {
 			NSString *shown = [NekoLocalProvider withoutReasoning:sofar];
 			if([shown length] > 0)
 				caller(shown);
-		});
-		Block_release(caller);
+		} copy];
 	}
-	void (^callerDone)(NSString *, NSError *) = Block_copy(completion);
+	void (^callerDone)(NSString *, NSError *) = [completion copy];
 	void (^completionCopy)(NSString *, NSError *) =
-		Block_copy(^(NSString *answer, NSError *error) {
+		[^(NSString *answer, NSError *error) {
 		callerDone([NekoLocalProvider withoutReasoning:answer], error);
-	});
-	Block_release(callerDone);
+	} copy];
 
 	dispatch_async(loader, ^{
 		NSError *problem = nil;
@@ -250,9 +241,6 @@ static const int NekoLocalThinkingTokens = 1000;
 				            partial:partialCopy
 				         completion:completionCopy];
 			}
-			if(partialCopy)
-				Block_release(partialCopy);
-			Block_release(completionCopy);
 		});
 	});
 }

@@ -46,8 +46,6 @@ static const NSTimeInterval NekoListeningLimit = 15.0;
 - (void)dealloc
 {
 	[self cancel];
-	[heard release];
-	[super dealloc];
 }
 
 - (BOOL)isListening
@@ -80,7 +78,6 @@ static const NSTimeInterval NekoListeningLimit = 15.0;
 	if(@available(macOS 10.15, *)) {
 		SFSpeechRecognizer *speech = [[SFSpeechRecognizer alloc] initWithLocale:locale];
 		if(speech == nil || ![speech isAvailable]) {
-			[speech release];
 			return NO;
 		}
 		recognizer = speech;
@@ -95,8 +92,7 @@ static const NSTimeInterval NekoListeningLimit = 15.0;
 			[audioRequest setRequiresOnDeviceRecognition:YES];
 		request = audioRequest;
 
-		report = Block_copy(block);
-		[heard release];
+		report = [block copy];
 		heard = nil;
 
 		AVAudioEngine *audio = [[AVAudioEngine alloc] init];
@@ -135,16 +131,16 @@ static const NSTimeInterval NekoListeningLimit = 15.0;
 			[self cancel];
 			if(failed != NULL) {
 				failed(nil, YES, error);
-				Block_release(failed);
+				failed = nil;
 			}
 			return NO;
 		}
 
-		task = [[speech recognitionTaskWithRequest:audioRequest
+		task = [speech recognitionTaskWithRequest:audioRequest
 		                            resultHandler:^(SFSpeechRecognitionResult *result,
 		                                            NSError *taskError) {
 			[self handleResult:result error:taskError];
-		}] retain];
+		}];
 
 		[self restartSilenceTimer:seconds];
 		return YES;
@@ -160,7 +156,6 @@ static const NSTimeInterval NekoListeningLimit = 15.0;
 	if(@available(macOS 10.15, *)) {
 		SFSpeechRecognitionResult *recognised = result;
 		if(recognised != nil) {
-			[heard release];
 			heard = [[[recognised bestTranscription] formattedString] copy];
 			BOOL final = [recognised isFinal];
 			report(heard, final, nil);
@@ -177,7 +172,7 @@ static const NSTimeInterval NekoListeningLimit = 15.0;
 	if(error != nil) {
 		void (^failed)(NSString *, BOOL, NSError *) = report;
 		report = NULL;
-		NSString *partial = [[heard copy] autorelease];
+		NSString *partial = [heard copy];
 		[self cancel];
 		if(failed != NULL) {
 			/* Something was understood before it broke: that counts. */
@@ -185,7 +180,7 @@ static const NSTimeInterval NekoListeningLimit = 15.0;
 				failed(partial, YES, nil);
 			else
 				failed(nil, YES, error);
-			Block_release(failed);
+			failed = nil;
 		}
 	}
 }
@@ -225,7 +220,7 @@ static const NSTimeInterval NekoListeningLimit = 15.0;
 		failed(nil, YES, [NSError errorWithDomain:NekoAskErrorDomain
 		                                     code:NekoAskErrorNoAnswer
 		                                 userInfo:nil]);
-		Block_release(failed);
+		failed = nil;
 	}
 }
 
@@ -237,21 +232,16 @@ static const NSTimeInterval NekoListeningLimit = 15.0;
 	if(engine != nil) {
 		[[(AVAudioEngine *)engine inputNode] removeTapOnBus:0];
 		[(AVAudioEngine *)engine stop];
-		[engine release];
 		engine = nil;
 	}
 	if(task != nil) {
 		if(@available(macOS 10.15, *))
 			[(SFSpeechRecognitionTask *)task cancel];
-		[task release];
 		task = nil;
 	}
-	[request release];
 	request = nil;
-	[recognizer release];
 	recognizer = nil;
 	if(report != NULL) {
-		Block_release(report);
 		report = NULL;
 	}
 }

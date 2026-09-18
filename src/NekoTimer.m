@@ -80,12 +80,12 @@ static BOOL NekoAsksForATimer(NSString *question)
 
 	asked = seconds;
 	putOff = 0;
-	landsAt = [[NSDate dateWithTimeIntervalSinceNow:seconds] retain];
-	ticking = [[NSTimer scheduledTimerWithTimeInterval:seconds
-	                                            target:self
-	                                          selector:@selector(landed:)
-	                                          userInfo:nil
-	                                           repeats:NO] retain];
+	landsAt = [NSDate dateWithTimeIntervalSinceNow:seconds];
+	ticking = [NSTimer scheduledTimerWithTimeInterval:seconds
+											   target:self
+											 selector:@selector(landed:)
+											 userInfo:nil
+											  repeats:NO];
 	/* Common modes, so that a menu held open does not hold the timer up too. */
 	[[NSRunLoop currentRunLoop] addTimer:ticking forMode:NSRunLoopCommonModes];
 	[[NSNotificationCenter defaultCenter]
@@ -102,12 +102,11 @@ static BOOL NekoAsksForATimer(NSString *question)
 /* Come back in a moment and see whether it is a better one. */
 - (void)scheduleAnotherLook
 {
-	[ticking release];
-	ticking = [[NSTimer scheduledTimerWithTimeInterval:NekoTimerRetry
-	                                           target:self
-	                                         selector:@selector(landed:)
-	                                         userInfo:nil
-	                                          repeats:NO] retain];
+	ticking = [NSTimer scheduledTimerWithTimeInterval:NekoTimerRetry
+											   target:self
+											 selector:@selector(landed:)
+											 userInfo:nil
+											  repeats:NO];
 	[[NSRunLoop currentRunLoop] addTimer:ticking forMode:NSRunLoopCommonModes];
 }
 
@@ -169,9 +168,7 @@ static BOOL NekoAsksForATimer(NSString *question)
 - (void)cancel
 {
 	[ticking invalidate];
-	[ticking release];
 	ticking = nil;
-	[landsAt release];
 	landsAt = nil;
 	[[NSNotificationCenter defaultCenter]
 		postNotificationName:NekoTimerDidChangeNotification object:self];

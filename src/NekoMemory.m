@@ -55,7 +55,7 @@ NSString * const NekoMemoryDirectoryKey = @"NekoMemoryDirectory";
 
 - (NSDateFormatter *)dayFormatter
 {
-	NSDateFormatter *day = [[[NSDateFormatter alloc] init] autorelease];
+	NSDateFormatter *day = [[NSDateFormatter alloc] init];
 	[day setLocale:[NSLocale localeWithLocaleIdentifier:@"en_US_POSIX"]];
 	[day setDateFormat:@"yyyy-MM-dd"];
 	return day;
@@ -124,7 +124,7 @@ static NSString *NekoMemoryLanguageOf(NSString *text)
 	if([text length] < 12)
 		return fallback;         /* too little to tell, and too little to save */
 	if(@available(macOS 10.14, *)) {
-		NLLanguageRecognizer *guess = [[[NLLanguageRecognizer alloc] init] autorelease];
+		NLLanguageRecognizer *guess = [[NLLanguageRecognizer alloc] init];
 		[guess processString:text];
 		NSDictionary *odds = [guess languageHypothesesWithMaximum:1];
 		NSString *language = [[odds keyEnumerator] nextObject];
@@ -206,7 +206,7 @@ static BOOL NekoMemoryWorthKeeping(NSString *word)
 	if([line length] == 0)
 		return;
 
-	NSDateFormatter *clock = [[[NSDateFormatter alloc] init] autorelease];
+	NSDateFormatter *clock = [[NSDateFormatter alloc] init];
 	[clock setLocale:[NSLocale localeWithLocaleIdentifier:@"en_US_POSIX"]];
 	[clock setDateFormat:@"HH:mm"];
 
@@ -349,18 +349,12 @@ static BOOL NekoMemoryWorthKeeping(NSString *word)
 	   && (newest == nil || [newest compare:recallBuiltAt] != NSOrderedDescending))
 		return;
 
-	[recallLines release];
-	[recallDays release];
-	[recallWords release];
-	[recallRarity release];
-	[recallVocabulary release];
 	recallVocabulary = nil;
-	[recallBuiltAt release];
-	recallLines = [[self olderLines] retain];
-	recallDays = [[self olderDays] retain];
-	recallWords = [[NekoRecall wordSetsFor:recallLines] retain];
-	recallRarity = [[NekoRecall rarityAcross:recallLines] retain];
-	recallBuiltAt = [[NSDate date] retain];
+	recallLines = [self olderLines];
+	recallDays = [self olderDays];
+	recallWords = [NekoRecall wordSetsFor:recallLines];
+	recallRarity = [NekoRecall rarityAcross:recallLines];
+	recallBuiltAt = [NSDate date];
 }
 
 - (NSArray *)linesAbout:(NSString *)question limit:(NSUInteger)limit
@@ -929,7 +923,7 @@ static BOOL NekoMemoryWorthKeeping(NSString *word)
 				[theirs addObject:word];
 		if([theirs count] == 0)
 			continue;
-		NSMutableSet *shared = [[mine mutableCopy] autorelease];
+		NSMutableSet *shared = [mine mutableCopy];
 		[shared intersectSet:theirs];
 		double smaller = (double)MIN([mine count], [theirs count]);
 		/* Half rather than most: "ships Fridays" and "DMG shipped Fridays" share
@@ -1097,7 +1091,7 @@ static BOOL NekoMemoryWorthKeeping(NSString *word)
 	/* No stamp: either this is the first time, or this installation predates the
 	   stamp. The oldest day file answers the second case, and today the first. */
 	NSDate *oldest = nil;
-	NSDateFormatter *day = [[[NSDateFormatter alloc] init] autorelease];
+	NSDateFormatter *day = [[NSDateFormatter alloc] init];
 	[day setLocale:[NSLocale localeWithLocaleIdentifier:@"en_US_POSIX"]];
 	[day setDateFormat:@"yyyy-MM-dd"];
 	NSEnumerator *e = [[self dayFiles] objectEnumerator];

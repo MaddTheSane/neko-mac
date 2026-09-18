@@ -206,7 +206,7 @@ static NSArray *NekoNameOpenings(void)
 	}
 	lines = without;
 
-	NSDateFormatter *day = [[[NSDateFormatter alloc] init] autorelease];
+	NSDateFormatter *day = [[NSDateFormatter alloc] init];
 	[day setLocale:[NSLocale localeWithLocaleIdentifier:@"en_US_POSIX"]];
 	[day setDateFormat:@"yyyy-MM-dd"];
 	[lines addObject:[NSString stringWithFormat:@"%@\t%@",

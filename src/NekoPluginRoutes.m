@@ -75,9 +75,9 @@ static NSSet *NekoRouteFieldsWorthReading(void)
 {
 	static NSSet *fields = nil;
 	if(fields == nil)
-		fields = [[NSSet setWithArray:[NSArray arrayWithObjects:
+		fields = [NSSet setWithObjects:
 			@"title", @"name", @"description", @"summary", @"extract",
-			@"abstract", @"text", @"content", @"answer", @"value", nil]] retain];
+			@"abstract", @"text", @"content", @"answer", @"value", nil];
 	return fields;
 }
 
@@ -125,8 +125,8 @@ static void NekoReadJSON(id thing, NSMutableArray *into, NSUInteger depth)
 			return said;
 	}
 
-	NSString *text = [[[NSString alloc] initWithData:body
-	                                        encoding:NSUTF8StringEncoding] autorelease];
+	NSString *text = [[NSString alloc] initWithData:body
+										   encoding:NSUTF8StringEncoding];
 	if([text length] == 0)
 		return [NSArray array];
 	if([text length] > NekoRouteMostCharacters * 8)

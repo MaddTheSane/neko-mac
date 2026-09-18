@@ -73,12 +73,12 @@ static BOOL NekoAsksForALook(NSString *question)
 	if(![NekoDesktop accessibilityGranted])
 		return NSLocalizedString(@"I would need the Accessibility permission to read anything. It is in System Settings, Privacy & Security, Accessibility.", @"I would need the Accessibility permission to read anything. It is in System Settings, Privacy & Security, Accessibility.");
 
-	until = [[NSDate dateWithTimeIntervalSinceNow:seconds] retain];
-	ticking = [[NSTimer scheduledTimerWithTimeInterval:seconds
-	                                           target:self
-	                                         selector:@selector(timeUp:)
-	                                         userInfo:nil
-	                                          repeats:NO] retain];
+	until = [NSDate dateWithTimeIntervalSinceNow:seconds];
+	ticking = [NSTimer scheduledTimerWithTimeInterval:seconds
+											   target:self
+											 selector:@selector(timeUp:)
+											 userInfo:nil
+											  repeats:NO];
 	[[NSRunLoop currentRunLoop] addTimer:ticking forMode:NSRunLoopCommonModes];
 	[[NSNotificationCenter defaultCenter]
 		postNotificationName:NekoGlanceDidChangeNotification object:self];
@@ -123,9 +123,7 @@ static BOOL NekoAsksForALook(NSString *question)
 - (void)stop
 {
 	[ticking invalidate];
-	[ticking release];
 	ticking = nil;
-	[until release];
 	until = nil;
 	[[NSNotificationCenter defaultCenter]
 		postNotificationName:NekoGlanceDidChangeNotification object:self];

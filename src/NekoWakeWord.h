@@ -2,6 +2,9 @@
 
 #import <Cocoa/Cocoa.h>
 
+@class SFSpeechRecognizer, SFSpeechAudioBufferRecognitionRequest;
+@class SFSpeechRecognitionTask, AVAudioEngine;
+
 /* BOOL: keep the microphone open and listen for the cat's name. Off unless
    asked for, and it says what it costs before it is. */
 extern NSString * const NekoWakeWordKey;
@@ -23,10 +26,10 @@ extern NSString * const NekoWakeWordKey;
    altogether — otherwise the cat's own answer, read aloud, wakes it up again. */
 @interface NekoWakeWord : NSObject
 {
-	id recognizer;               /* SFSpeechRecognizer */
-	id request;                  /* SFSpeechAudioBufferRecognitionRequest */
-	id task;                     /* SFSpeechRecognitionTask */
-	id engine;                   /* AVAudioEngine */
+	SFSpeechRecognizer *recognizer;
+	SFSpeechAudioBufferRecognitionRequest *request;
+	SFSpeechRecognitionTask *task;
+	AVAudioEngine *engine;                   
 	NSTimer *renewal;            /* rebuilds the task before Speech drops it */
 	NSTimer *watchdog;           /* and again if it went quiet without saying so */
 	NSTimer *resume;             /* waits for the conversation to finish */

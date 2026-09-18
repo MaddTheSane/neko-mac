@@ -29,12 +29,6 @@ static NSString * const NekoPluginsSeededKey = @"NekoPluginsSeeded";
 	return self;
 }
 
-- (void)dealloc
-{
-	[plugins release];
-	[super dealloc];
-}
-
 - (NSURL *)directory
 {
 	NSArray *support = NSSearchPathForDirectoriesInDomains(
@@ -97,8 +91,8 @@ static NSString * const NekoPluginsSeededKey = @"NekoPluginsSeeded";
 	while((name = [e nextObject]) != nil) {
 		if(![name hasSuffix:@".nekoplugin"])
 			continue;
-		NekoPlugin *plugin = [[[NekoPlugin alloc] initWithFolder:
-			[[self directory] URLByAppendingPathComponent:name]] autorelease];
+		NekoPlugin *plugin = [[NekoPlugin alloc] initWithFolder:
+							  [[self directory] URLByAppendingPathComponent:name]];
 		/* Two plugins claiming the same identifier: the first one wins and the
 		   second says why it is not being used, rather than one of them
 		   silently shadowing the other. */
@@ -170,7 +164,7 @@ static NSString * const NekoPluginsSeededKey = @"NekoPluginsSeeded";
 
 	/* Read before it is copied: a manifest that cannot be used should be refused
 	   where somebody is looking at a panel, not later in a list. */
-	NekoPlugin *reading = [[[NekoPlugin alloc] initWithFolder:chosen] autorelease];
+	NekoPlugin *reading = [[NekoPlugin alloc] initWithFolder:chosen];
 	if(![reading isUsable])
 		return [reading refusal];
 	if([self pluginWithIdentifier:[reading identifier]] != nil)
@@ -237,8 +231,8 @@ static NSString * const NekoPluginsSeededKey = @"NekoPluginsSeeded";
 	while((name = [e nextObject]) != nil) {
 		if(![name hasSuffix:@".nekoplugin"])
 			continue;
-		NekoPlugin *shipped = [[[NekoPlugin alloc] initWithFolder:
-			[inside URLByAppendingPathComponent:name]] autorelease];
+		NekoPlugin *shipped = [[NekoPlugin alloc] initWithFolder:
+							   [inside URLByAppendingPathComponent:name]];
 		if(![shipped isUsable]) {
 			/* The app shipping a plugin it refuses is a bug in the app, and a
 			   silent one would be the worst kind. */

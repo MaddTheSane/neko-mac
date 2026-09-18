@@ -13,32 +13,19 @@
 		pending = [[NSMutableData alloc] init];
 		answer = [[NSMutableString alloc] init];
 		status = 200;
-		textOf = Block_copy(text);
-		onPartial = partial != nil ? Block_copy(partial) : NULL;
-		onDone = Block_copy(completion);
+		textOf = [text copy];
+		onPartial = partial != nil ? [partial copy] : NULL;
+		onDone = [completion copy];
 
 		NSURLSessionConfiguration *how =
 			[NSURLSessionConfiguration ephemeralSessionConfiguration];
 		[how setTimeoutIntervalForRequest:seconds];
-		session = [[NSURLSession sessionWithConfiguration:how
-		                                        delegate:self
-		                                   delegateQueue:nil] retain];
-		task = [[session dataTaskWithRequest:request] retain];
+		session = [NSURLSession sessionWithConfiguration:how
+												delegate:self
+										   delegateQueue:nil];
+		task = [session dataTaskWithRequest:request];
 	}
 	return self;
-}
-
-- (void)dealloc
-{
-	[pending release];
-	[answer release];
-	[errorBody release];
-	[task release];
-	[session release];
-	if(textOf != NULL) Block_release(textOf);
-	if(onPartial != NULL) Block_release(onPartial);
-	if(onDone != NULL) Block_release(onDone);
-	[super dealloc];
 }
 
 - (void)start { [task resume]; }
@@ -50,7 +37,7 @@
 	[session invalidateAndCancel];
 }
 
-- (NSString *)sofar { return [[answer copy] autorelease]; }
+- (NSString *)sofar { return [answer copy]; }
 
 #pragma mark Reading it
 
@@ -74,8 +61,8 @@
 		NSData *lineData = [pending subdataWithRange:NSMakeRange(0, breakAt)];
 		[pending replaceBytesInRange:NSMakeRange(0, breakAt + 1) withBytes:NULL length:0];
 
-		NSString *line = [[[NSString alloc] initWithData:lineData
-		                                        encoding:NSUTF8StringEncoding] autorelease];
+		NSString *line = [[NSString alloc] initWithData:lineData
+											   encoding:NSUTF8StringEncoding];
 		line = [line stringByTrimmingCharactersInSet:
 			[NSCharacterSet whitespaceAndNewlineCharacterSet]];
 		if(![line hasPrefix:@"data:"])
@@ -96,7 +83,7 @@
 			continue;
 		[answer appendString:more];
 		if(onPartial != NULL)
-			onPartial([[answer copy] autorelease]);
+			onPartial([answer copy]);
 	}
 }
 
@@ -158,8 +145,7 @@ didCompleteWithError:(NSError *)error
 		else if(error != nil && [answer length] == 0)
 			done(nil, error);
 		else
-			done([[answer copy] autorelease], nil);
-		Block_release(done);
+			done([answer copy], nil);
 		[session finishTasksAndInvalidate];
 	});
 }

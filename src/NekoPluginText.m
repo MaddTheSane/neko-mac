@@ -75,8 +75,8 @@ static const NSUInteger NekoPluginTextMost = 2000;
 		return;
 	}
 
-	NekoShortcutProvider *runner = [[[NekoShortcutProvider alloc]
-		initWithShortcutName:[plugin textShortcut]] autorelease];
+	NekoShortcutProvider *runner = [[NekoShortcutProvider alloc]
+									initWithShortcutName:[plugin textShortcut]];
 	if(![runner shortcutExists]) {
 		NSLog(@"Neko: %@ names the Shortcut “%@”, which is not there",
 			[plugin identifier], [plugin textShortcut]);
@@ -86,9 +86,8 @@ static const NSUInteger NekoPluginTextMost = 2000;
 
 	/* Retained for the length of the call: the provider owns a timer and a
 	   clipboard it has to put back. */
-	[runner retain];
-	NSString *original = [[text copy] autorelease];
-	NSString *named = [[[plugin name] copy] autorelease];
+	NSString *original = [text copy];
+	NSString *named = [[plugin name] copy];
 	__block BOOL answered = NO;
 
 	/* No instructions: a text plugin is handed the words and nothing about the
@@ -102,7 +101,6 @@ static const NSUInteger NekoPluginTextMost = 2000;
 			[NSCharacterSet whitespaceAndNewlineCharacterSet]];
 		BOOL good = (error == nil) && [self isAcceptable:clean from:plugin];
 		done(good ? clean : original, good ? named : nil);
-		[runner release];
 	}];
 
 	/* The provider has its own deadline, and this is the one that guarantees the
@@ -116,7 +114,6 @@ static const NSUInteger NekoPluginTextMost = 2000;
 		[runner cancel];
 		NSLog(@"Neko: %@ took too long; the text is unchanged", [plugin identifier]);
 		done(original, nil);
-		[runner release];
 	});
 }
 

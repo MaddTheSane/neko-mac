@@ -38,12 +38,6 @@ static const NSUInteger NekoTextLimit = 400;
 - (void)dealloc
 {
 	[[[NSWorkspace sharedWorkspace] notificationCenter] removeObserver:self];
-	[frontApp release];
-	[frontSince release];
-	[switches release];
-	[sampledAt release];
-	[lastHighlight release];
-	[super dealloc];
 }
 
 #pragma mark What is in front
@@ -54,10 +48,8 @@ static const NSUInteger NekoTextLimit = 400;
 		localizedName];
 	if([name length] == 0 || [name isEqualToString:frontApp])
 		return;
-	[frontApp release];
-	frontApp = [name retain];
-	[frontSince release];
-	frontSince = [[NSDate date] retain];
+	frontApp = [name copy];
+	frontSince = [NSDate date];
 	[switches addObject:[NSDictionary dictionaryWithObjectsAndKeys:
 		frontSince, @"when", frontApp, @"app", nil]];
 	while([switches count] > 60)
@@ -73,10 +65,8 @@ static const NSUInteger NekoTextLimit = 400;
 	if([name length] == 0)
 		return frontApp;
 	if(![name isEqualToString:frontApp]) {
-		[frontApp release];
-		frontApp = [name retain];
-		[frontSince release];
-		frontSince = [[NSDate date] retain];
+		frontApp = [name copy];
+		frontSince = [NSDate date];
 	}
 	return frontApp;
 }
@@ -147,8 +137,7 @@ static const NSTimeInterval NekoBreakpointWindow = 12.0;
 
 	previousKeys = keysPerMinute;
 	previousIdle = [self idleSeconds];
-	[sampledAt release];
-	sampledAt = [[NSDate date] retain];
+	sampledAt = [NSDate date];
 }
 
 /* Four things worth calling a breakpoint, from the coarsest down. Each is
@@ -182,10 +171,8 @@ static const NSTimeInterval NekoBreakpointWindow = 12.0;
 		found = NekoBreakpointFine;
 
 	if(![previousApp isEqualToString:app]) {
-		[previousApp release];
 		previousApp = [app copy];
-		[previousAppSince release];
-		previousAppSince = [[NSDate date] retain];
+		previousAppSince = [NSDate date];
 	}
 
 	if(found == NekoBreakpointNone)
@@ -195,8 +182,7 @@ static const NSTimeInterval NekoBreakpointWindow = 12.0;
 	if([self breakpointNow] != NekoBreakpointNone && found < breakpoint)
 		return;
 	breakpoint = found;
-	[breakpointAt release];
-	breakpointAt = [[NSDate date] retain];
+	breakpointAt = [NSDate date];
 }
 
 - (NekoBreakpoint)breakpointNow
@@ -228,14 +214,15 @@ static const NSTimeInterval NekoBreakpointWindow = 12.0;
    none of them want a cat with an opinion. */
 - (BOOL)frontWindowFillsAScreen
 {
-	CFArrayRef windows = CGWindowListCopyWindowInfo(
-		kCGWindowListOptionOnScreenOnly | kCGWindowListExcludeDesktopElements,
-		kCGNullWindowID);
+	NSArray *windows =
+	CFBridgingRelease(CGWindowListCopyWindowInfo(
+												 kCGWindowListOptionOnScreenOnly | kCGWindowListExcludeDesktopElements,
+												 kCGNullWindowID));
 	if(windows == NULL)
 		return NO;
 	NSString *wanted = [self frontApp];
 	BOOL fills = NO;
-	NSEnumerator *e = [(NSArray *)windows objectEnumerator];
+	NSEnumerator *e = [windows objectEnumerator];
 	NSDictionary *window;
 	while((window = [e nextObject]) != nil && !fills) {
 		if(![[window objectForKey:(NSString *)kCGWindowOwnerName] isEqualToString:wanted])
@@ -243,9 +230,7 @@ static const NSTimeInterval NekoBreakpointWindow = 12.0;
 		CGRect bounds = CGRectZero;
 		CGRectMakeWithDictionaryRepresentation(
 			(CFDictionaryRef)[window objectForKey:(NSString *)kCGWindowBounds], &bounds);
-		NSEnumerator *s = [[NSScreen screens] objectEnumerator];
-		NSScreen *screen;
-		while((screen = [s nextObject]) != nil) {
+		for(NSScreen *screen in [NSScreen screens]) {
 			NSRect frame = [screen frame];
 			if(bounds.size.width >= frame.size.width - 1.0
 			   && bounds.size.height >= frame.size.height - 1.0) {
@@ -254,7 +239,6 @@ static const NSTimeInterval NekoBreakpointWindow = 12.0;
 			}
 		}
 	}
-	CFRelease(windows);
 	return fills;
 }
 
@@ -293,13 +277,13 @@ static const NSTimeInterval NekoBreakpointWindow = 12.0;
 
 - (NSString *)whyNobodyIsThere
 {
-	NSDictionary *session = (NSDictionary *)CGSessionCopyCurrentDictionary();
+	NSDictionary *session = (NSDictionary *)CFBridgingRelease(CGSessionCopyCurrentDictionary());
 	BOOL locked = NO, away = NO;
 	if(session != nil) {
 		locked = [[session objectForKey:@"CGSSessionScreenIsLocked"] boolValue];
 		/* Somebody else is logged in and looking at their own desktop. */
 		away = ![[session objectForKey:@"kCGSSessionOnConsoleKey"] boolValue];
-		[session release];
+		session = nil;
 	}
 	if(locked)
 		return NSLocalizedString(@"the screen is locked", nil);
@@ -358,22 +342,19 @@ static const NSTimeInterval NekoBreakpointWindow = 12.0;
 		return nil;
 
 	NSString *wanted = [self frontApp];
-	CFArrayRef windows = CGWindowListCopyWindowInfo(
-		kCGWindowListOptionOnScreenOnly | kCGWindowListExcludeDesktopElements,
-		kCGNullWindowID);
+	NSArray *windows =
+	CFBridgingRelease(CGWindowListCopyWindowInfo(
+										 kCGWindowListOptionOnScreenOnly | kCGWindowListExcludeDesktopElements,
+										 kCGNullWindowID));
 	NSString *title = nil;
-	NSEnumerator *e = [(NSArray *)windows objectEnumerator];
-	NSDictionary *window;
-	while((window = [e nextObject]) != nil) {
+	for(NSDictionary *window in windows) {
 		NSString *owner = [window objectForKey:(NSString *)kCGWindowOwnerName];
 		NSString *name = [window objectForKey:(NSString *)kCGWindowName];
 		if([owner isEqualToString:wanted] && [name length] > 0) {
-			title = [[name copy] autorelease];
+			title = [name copy];
 			break;
 		}
 	}
-	if(windows != NULL)
-		CFRelease(windows);
 	return title;
 }
 
@@ -388,9 +369,7 @@ static const NSTimeInterval NekoBreakpointWindow = 12.0;
 {
 	if(AXIsProcessTrusted())
 		return YES;
-	NSDictionary *options = [NSDictionary dictionaryWithObject:
-		[NSNumber numberWithBool:YES]
-		                                                forKey:(NSString *)kAXTrustedCheckOptionPrompt];
+	NSDictionary *options = @{(__bridge NSString *)kAXTrustedCheckOptionPrompt: @YES};
 	return AXIsProcessTrustedWithOptions((CFDictionaryRef)options);
 }
 
@@ -410,11 +389,11 @@ static NSString *copyStringAttribute(AXUIElementRef element, CFStringRef attribu
 	CFTypeRef value = NULL;
 	if(AXUIElementCopyAttributeValue(element, attribute, &value) != kAXErrorSuccess)
 		return nil;
+	NSObject *nsValue = CFBridgingRelease(value);
 	NSString *result = nil;
 	if(value != NULL) {
 		if(CFGetTypeID(value) == CFStringGetTypeID())
-			result = [[(NSString *)value copy] autorelease];
-		CFRelease(value);
+			result = [nsValue copy];
 	}
 	return [result length] > 0 ? result : nil;
 }
@@ -559,12 +538,10 @@ static NSString *tidy(NSString *text)
 	if(lastHighlight != nil)
 		[fresh removeObject:lastHighlight];
 	if([fresh count] == 0) {
-		[lastHighlight release];
 		lastHighlight = nil;
 		return @"Nothing stands out: an ordinary few minutes.";
 	}
 	NSString *chosen = [fresh objectAtIndex:arc4random_uniform((unsigned)[fresh count])];
-	[lastHighlight release];
 	lastHighlight = [chosen copy];
 	return chosen;
 }
@@ -576,7 +553,7 @@ static NSString *tidy(NSString *text)
 	NSString *app = [self frontApp];
 	NSString *title = [self windowTitleIfAllowed];
 	NSString *text = [self nearbyText];
-	NSDateFormatter *clock = [[[NSDateFormatter alloc] init] autorelease];
+	NSDateFormatter *clock = [[NSDateFormatter alloc] init];
 	[clock setDateFormat:@"HH:mm"];
 
 	NSMutableString *lines = [NSMutableString string];

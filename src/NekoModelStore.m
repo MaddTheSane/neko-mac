@@ -34,7 +34,7 @@ static const long long NekoModelLeaveForTheMac = 4000LL * 1000LL * 1000LL;
 		identifier = [anIdentifier copy];
 		name = [aName copy];
 		detail = [aDetail copy];
-		url = [aURL retain];
+		url = aURL;
 		expectedBytes = bytes;
 	}
 	return self;
@@ -58,18 +58,9 @@ static const long long NekoModelLeaveForTheMac = 4000LL * 1000LL * 1000LL;
 	return self;
 }
 
-- (int)drawSteps       { return drawSteps; }
-- (CGFloat)drawGuidance  { return drawGuidance; }
-- (int)drawSide        { return drawSide; }
-
-- (void)dealloc
-{
-	[identifier release];
-	[name release];
-	[detail release];
-	[url release];
-	[super dealloc];
-}
+@synthesize drawSteps;
+@synthesize drawGuidance;
+@synthesize drawSide;
 
 @synthesize identifier;
 @synthesize name;
@@ -137,7 +128,7 @@ static const long long NekoModelLeaveForTheMac = 4000LL * 1000LL * 1000LL;
 		   but give up if nothing arrives for a minute. */
 		[configuration setTimeoutIntervalForRequest:60.0];
 		[configuration setTimeoutIntervalForResource:0.0];
-		session = [[NSURLSession sessionWithConfiguration:configuration] retain];
+		session = [NSURLSession sessionWithConfiguration:configuration];
 	}
 	return self;
 }
@@ -164,63 +155,63 @@ static const long long NekoModelLeaveForTheMac = 4000LL * 1000LL * 1000LL;
 	   download a model in pieces, and nothing sold as a laptop can hold one.
 	   So the most recent thing that fits is Qwen3.5 4B, which is the last
 	   entry, and the big one is left out rather than listed and unusable. */
-	cached = [[NSArray alloc] initWithObjects:
-		[[[NekoLocalModel alloc]
-			initWithIdentifier:@"qwen2.5-0.5b-instruct-q4"
-			              name:@"Qwen2.5 0.5B Instruct"
-			            detail:NSLocalizedString(@"468 MB — answers in a blink, and gets simple facts wrong", nil)
-			               url:[NSURL URLWithString:@"https://huggingface.co/Qwen/Qwen2.5-0.5B-Instruct-GGUF/resolve/main/qwen2.5-0.5b-instruct-q4_k_m.gguf"]
-			             bytes:491544576LL
-			            thinks:NO] autorelease],
-		[[[NekoLocalModel alloc]
-			initWithIdentifier:@"qwen2.5-1.5b-instruct-q4"
-			              name:@"Qwen2.5 1.5B Instruct"
-			            detail:NSLocalizedString(@"1.0 GB — the smallest one worth believing", nil)
-			               url:[NSURL URLWithString:@"https://huggingface.co/Qwen/Qwen2.5-1.5B-Instruct-GGUF/resolve/main/qwen2.5-1.5b-instruct-q4_k_m.gguf"]
-			             bytes:1117320192LL
-			            thinks:NO] autorelease],
-		[[[NekoLocalModel alloc]
-			initWithIdentifier:@"llama-3.2-3b-instruct-q4"
-			              name:@"Llama 3.2 3B Instruct"
-			            detail:NSLocalizedString(@"1.9 GB — good in several languages, a second or two to answer", nil)
-			               url:[NSURL URLWithString:@"https://huggingface.co/bartowski/Llama-3.2-3B-Instruct-GGUF/resolve/main/Llama-3.2-3B-Instruct-Q4_K_M.gguf"]
-			             bytes:2019377696LL
-			            thinks:NO] autorelease],
-		[[[NekoLocalModel alloc]
-			initWithIdentifier:@"qwen2.5-3b-instruct-q4"
-			              name:@"Qwen2.5 3B Instruct"
-			            detail:NSLocalizedString(@"2.0 GB — right and brief, and a year older than the two below", nil)
-			               url:[NSURL URLWithString:@"https://huggingface.co/Qwen/Qwen2.5-3B-Instruct-GGUF/resolve/main/qwen2.5-3b-instruct-q4_k_m.gguf"]
-			             bytes:2104521312LL
-			            thinks:NO] autorelease],
-		[[[NekoLocalModel alloc]
-			initWithIdentifier:@"qwen3-1.7b-q8"
-			              name:@"Qwen3 1.7B"
-			            detail:NSLocalizedString(@"1.7 GB — newer than the 1.5B and better at holding to an instruction", nil)
-			               url:[NSURL URLWithString:@"https://huggingface.co/Qwen/Qwen3-1.7B-GGUF/resolve/main/Qwen3-1.7B-Q8_0.gguf"]
-			             bytes:1834426016LL
-			            thinks:YES] autorelease],
-		[[[NekoLocalModel alloc]
-			initWithIdentifier:@"gemma-3-4b-it-q4"
-			              name:@"Gemma 3 4B"
-			            detail:NSLocalizedString(@"2.3 GB — the best of these outside English", nil)
-			               url:[NSURL URLWithString:@"https://huggingface.co/ggml-org/gemma-3-4b-it-GGUF/resolve/main/gemma-3-4b-it-Q4_K_M.gguf"]
-			             bytes:2489757856LL
-			            thinks:NO] autorelease],
-		[[[NekoLocalModel alloc]
-			initWithIdentifier:@"qwen3-4b-instruct-q4"
-			              name:@"Qwen3 4B Instruct"
-			            detail:NSLocalizedString(@"2.3 GB — follows a brief better than anything above it", nil)
-			               url:[NSURL URLWithString:@"https://huggingface.co/unsloth/Qwen3-4B-Instruct-2507-GGUF/resolve/main/Qwen3-4B-Instruct-2507-Q4_K_M.gguf"]
-			             bytes:2497281120LL
-			            thinks:NO] autorelease],
-		[[[NekoLocalModel alloc]
-			initWithIdentifier:@"qwen3.5-4b-q4"
-			              name:@"Qwen3.5 4B"
-			            detail:NSLocalizedString(@"2.7 GB — the most recent, and it reasons at such length that it often never reaches the answer", nil)
-			               url:[NSURL URLWithString:@"https://huggingface.co/unsloth/Qwen3.5-4B-GGUF/resolve/main/Qwen3.5-4B-Q4_K_M.gguf"]
-			             bytes:2740937888LL
-			            thinks:YES] autorelease],
+	cached = @[
+			  [[NekoLocalModel alloc]
+				  initWithIdentifier:@"qwen2.5-0.5b-instruct-q4"
+								name:@"Qwen2.5 0.5B Instruct"
+							  detail:NSLocalizedString(@"468 MB — answers in a blink, and gets simple facts wrong", nil)
+								 url:[NSURL URLWithString:@"https://huggingface.co/Qwen/Qwen2.5-0.5B-Instruct-GGUF/resolve/main/qwen2.5-0.5b-instruct-q4_k_m.gguf"]
+							   bytes:491544576LL
+							  thinks:NO],
+			  [[NekoLocalModel alloc]
+				  initWithIdentifier:@"qwen2.5-1.5b-instruct-q4"
+								name:@"Qwen2.5 1.5B Instruct"
+							  detail:NSLocalizedString(@"1.0 GB — the smallest one worth believing", nil)
+								 url:[NSURL URLWithString:@"https://huggingface.co/Qwen/Qwen2.5-1.5B-Instruct-GGUF/resolve/main/qwen2.5-1.5b-instruct-q4_k_m.gguf"]
+							   bytes:1117320192LL
+							  thinks:NO],
+			  [[NekoLocalModel alloc]
+				  initWithIdentifier:@"llama-3.2-3b-instruct-q4"
+								name:@"Llama 3.2 3B Instruct"
+							  detail:NSLocalizedString(@"1.9 GB — good in several languages, a second or two to answer", nil)
+								 url:[NSURL URLWithString:@"https://huggingface.co/bartowski/Llama-3.2-3B-Instruct-GGUF/resolve/main/Llama-3.2-3B-Instruct-Q4_K_M.gguf"]
+							   bytes:2019377696LL
+							  thinks:NO],
+			  [[NekoLocalModel alloc]
+				  initWithIdentifier:@"qwen2.5-3b-instruct-q4"
+								name:@"Qwen2.5 3B Instruct"
+							  detail:NSLocalizedString(@"2.0 GB — right and brief, and a year older than the two below", nil)
+								 url:[NSURL URLWithString:@"https://huggingface.co/Qwen/Qwen2.5-3B-Instruct-GGUF/resolve/main/qwen2.5-3b-instruct-q4_k_m.gguf"]
+							   bytes:2104521312LL
+							  thinks:NO],
+			  [[NekoLocalModel alloc]
+				  initWithIdentifier:@"qwen3-1.7b-q8"
+								name:@"Qwen3 1.7B"
+							  detail:NSLocalizedString(@"1.7 GB — newer than the 1.5B and better at holding to an instruction", nil)
+								 url:[NSURL URLWithString:@"https://huggingface.co/Qwen/Qwen3-1.7B-GGUF/resolve/main/Qwen3-1.7B-Q8_0.gguf"]
+							   bytes:1834426016LL
+							  thinks:YES],
+			  [[NekoLocalModel alloc]
+				  initWithIdentifier:@"gemma-3-4b-it-q4"
+								name:@"Gemma 3 4B"
+							  detail:NSLocalizedString(@"2.3 GB — the best of these outside English", nil)
+								 url:[NSURL URLWithString:@"https://huggingface.co/ggml-org/gemma-3-4b-it-GGUF/resolve/main/gemma-3-4b-it-Q4_K_M.gguf"]
+							   bytes:2489757856LL
+							  thinks:NO],
+			  [[NekoLocalModel alloc]
+				  initWithIdentifier:@"qwen3-4b-instruct-q4"
+								name:@"Qwen3 4B Instruct"
+							  detail:NSLocalizedString(@"2.3 GB — follows a brief better than anything above it", nil)
+								 url:[NSURL URLWithString:@"https://huggingface.co/unsloth/Qwen3-4B-Instruct-2507-GGUF/resolve/main/Qwen3-4B-Instruct-2507-Q4_K_M.gguf"]
+							   bytes:2497281120LL
+							  thinks:NO],
+			  [[NekoLocalModel alloc]
+				  initWithIdentifier:@"qwen3.5-4b-q4"
+								name:@"Qwen3.5 4B"
+							  detail:NSLocalizedString(@"2.7 GB — the most recent, and it reasons at such length that it often never reaches the answer", nil)
+								 url:[NSURL URLWithString:@"https://huggingface.co/unsloth/Qwen3.5-4B-GGUF/resolve/main/Qwen3.5-4B-Q4_K_M.gguf"]
+							   bytes:2740937888LL
+							  thinks:YES],
 		/* A different order of thing from everything above, and the catalogue
 		   has to say so rather than let somebody find out after a ten-gigabyte
 		   download. These are 27B: six to ten times the size of the rest, and
@@ -235,21 +226,20 @@ static const long long NekoModelLeaveForTheMac = 4000LL * 1000LL * 1000LL;
 		   Both are vision-language models upstream. Neko asks them for text and
 		   never ships the projector alongside, so they run as text models, which
 		   is all NekoLocalProvider wants of them. */
-		[[[NekoLocalModel alloc]
-			initWithIdentifier:@"qwen3.8-27b-q2"
-			              name:@"Qwen3.8 27B (smaller)"
-			            detail:NSLocalizedString(@"9.8 GB — a 27B, several times the size of anything above it", nil)
-			               url:[NSURL URLWithString:@"https://huggingface.co/unsloth/Qwen3.8-27B-GGUF/resolve/main/Qwen3.8-27B-UD-Q2_K_XL.gguf"]
-			             bytes:9828981664LL
-			            thinks:YES] autorelease],
-		[[[NekoLocalModel alloc]
-			initWithIdentifier:@"qwen3.8-27b-q4"
-			              name:@"Qwen3.8 27B"
-			            detail:NSLocalizedString(@"16.5 GB — the same 27B, kept whole", nil)
-			               url:[NSURL URLWithString:@"https://huggingface.co/unsloth/Qwen3.8-27B-GGUF/resolve/main/Qwen3.8-27B-UD-Q4_K_M.gguf"]
-			             bytes:16464440224LL
-			            thinks:YES] autorelease],
-		nil];
+			  [[NekoLocalModel alloc]
+				  initWithIdentifier:@"qwen3.8-27b-q2"
+								name:@"Qwen3.8 27B (smaller)"
+							  detail:NSLocalizedString(@"9.8 GB — a 27B, several times the size of anything above it", nil)
+								 url:[NSURL URLWithString:@"https://huggingface.co/unsloth/Qwen3.8-27B-GGUF/resolve/main/Qwen3.8-27B-UD-Q2_K_XL.gguf"]
+							   bytes:9828981664LL
+							  thinks:YES],
+			  [[NekoLocalModel alloc]
+				  initWithIdentifier:@"qwen3.8-27b-q4"
+								name:@"Qwen3.8 27B"
+							  detail:NSLocalizedString(@"16.5 GB — the same 27B, kept whole", nil)
+								 url:[NSURL URLWithString:@"https://huggingface.co/unsloth/Qwen3.8-27B-GGUF/resolve/main/Qwen3.8-27B-UD-Q4_K_M.gguf"]
+							   bytes:16464440224LL
+							  thinks:YES]];
 	return cached;
 }
 
@@ -288,43 +278,43 @@ static const long long NekoModelLeaveForTheMac = 4000LL * 1000LL * 1000LL;
 	   rows mention one. The steps and the guidance are the model's own: asked for
 	   SD 1.5's fourteen at a guidance of seven, a turbo checkpoint returns
 	   mush. */
-	cached = [[NSArray alloc] initWithObjects:
-		[[[NekoLocalModel alloc]
+	cached = @[
+		[[NekoLocalModel alloc]
 			initWithIdentifier:@"sd15-q8"
-			              name:@"Stable Diffusion 1.5"
-			            detail:NSLocalizedString(@"1.6 GB — 512 pixels in about fifteen seconds. The one this app has always drawn with", nil)
-			               url:[NSURL URLWithString:@"https://huggingface.co/second-state/stable-diffusion-v1-5-GGUF/resolve/main/stable-diffusion-v1-5-pruned-emaonly-Q8_0.gguf"]
-			             bytes:1717986918LL
-			             steps:14
-			          guidance:7.0f
-			              side:512] autorelease],
-		[[[NekoLocalModel alloc]
+						  name:@"Stable Diffusion 1.5"
+						detail:NSLocalizedString(@"1.6 GB — 512 pixels in about fifteen seconds. The one this app has always drawn with", nil)
+						   url:[NSURL URLWithString:@"https://huggingface.co/second-state/stable-diffusion-v1-5-GGUF/resolve/main/stable-diffusion-v1-5-pruned-emaonly-Q8_0.gguf"]
+						 bytes:1717986918LL
+						 steps:14
+					  guidance:7.0f
+						  side:512],
+		[[NekoLocalModel alloc]
 			initWithIdentifier:@"sd-turbo-q8"
-			              name:@"SD-Turbo"
-			            detail:NSLocalizedString(@"2.0 GB — draws in four steps instead of fourteen, so a few seconds rather than fifteen. Stability AI Community licence", nil)
-			               url:[NSURL URLWithString:@"https://huggingface.co/Green-Sky/SD-Turbo-GGUF/resolve/main/sd_turbo-f16-q8_0.gguf"]
-			             bytes:2023745376LL
-			             steps:4
-			          guidance:1.0f
-			              side:512] autorelease],
-		[[[NekoLocalModel alloc]
+						  name:@"SD-Turbo"
+						detail:NSLocalizedString(@"2.0 GB — draws in four steps instead of fourteen, so a few seconds rather than fifteen. Stability AI Community licence", nil)
+						   url:[NSURL URLWithString:@"https://huggingface.co/Green-Sky/SD-Turbo-GGUF/resolve/main/sd_turbo-f16-q8_0.gguf"]
+						 bytes:2023745376LL
+						 steps:4
+					  guidance:1.0f
+						  side:512],
+		[[NekoLocalModel alloc]
 			initWithIdentifier:@"sd21-q8"
-			              name:@"Stable Diffusion 2.1"
-			            detail:NSLocalizedString(@"2.0 GB — 768 pixels, and steadier with hands and faces than 1.5", nil)
-			               url:[NSURL URLWithString:@"https://huggingface.co/second-state/stable-diffusion-2-1-GGUF/resolve/main/v2-1_768-nonema-pruned-Q8_0.gguf"]
-			             bytes:2014680768LL
-			             steps:20
-			          guidance:7.0f
-			              side:768] autorelease],
-		[[[NekoLocalModel alloc]
+						  name:@"Stable Diffusion 2.1"
+						detail:NSLocalizedString(@"2.0 GB — 768 pixels, and steadier with hands and faces than 1.5", nil)
+						   url:[NSURL URLWithString:@"https://huggingface.co/second-state/stable-diffusion-2-1-GGUF/resolve/main/v2-1_768-nonema-pruned-Q8_0.gguf"]
+						 bytes:2014680768LL
+						 steps:20
+					  guidance:7.0f
+						  side:768],
+		[[NekoLocalModel alloc]
 			initWithIdentifier:@"sdxl-turbo-q8"
-			              name:@"SDXL-Turbo"
-			            detail:NSLocalizedString(@"4.1 GB — the best-looking of these, in four steps. Non-commercial licence only", nil)
-			               url:[NSURL URLWithString:@"https://huggingface.co/OlegSkutte/sdxl-turbo-GGUF/resolve/main/sd_xl_turbo_1.0.q8_0.gguf"]
-			             bytes:4098988672LL
-			             steps:4
-			          guidance:1.0f
-			              side:512] autorelease], nil];
+						  name:@"SDXL-Turbo"
+						detail:NSLocalizedString(@"4.1 GB — the best-looking of these, in four steps. Non-commercial licence only", nil)
+						   url:[NSURL URLWithString:@"https://huggingface.co/OlegSkutte/sdxl-turbo-GGUF/resolve/main/sd_xl_turbo_1.0.q8_0.gguf"]
+						 bytes:4098988672LL
+						 steps:4
+					  guidance:1.0f
+						  side:512]];
 	return cached;
 }
 
@@ -563,21 +553,21 @@ static const long long NekoModelLeaveForTheMac = 4000LL * 1000LL * 1000LL;
 {
 	[self cancelDownload];
 
-	downloading = [model retain];
+	downloading = model;
 	fraction = 0.0;
-	progressBlock = Block_copy(progress);
-	completionBlock = Block_copy(completion);
+	progressBlock = [progress copy];
+	completionBlock = [completion copy];
 
 	NSURL *destination = [self fileURLForIdentifier:[model identifier]];
 	long long expected = [model expectedBytes];
 
-	task = [[session downloadTaskWithURL:[model url]
-	          completionHandler:^(NSURL *temporary, NSURLResponse *response, NSError *error) {
+	task = [session downloadTaskWithURL:[model url]
+					  completionHandler:^(NSURL *temporary, NSURLResponse *response, NSError *error) {
 		dispatch_async(dispatch_get_main_queue(), ^{
 			[self finishedAt:temporary destination:destination
-			         response:response error:error];
+					response:response error:error];
 		});
-	}] retain];
+	}];
 
 	/* The task reports its own progress; polling it keeps this free of a
 	   delegate whose only job would be to forward two numbers. */
@@ -615,12 +605,9 @@ static const long long NekoModelLeaveForTheMac = 4000LL * 1000LL * 1000LL;
 	void (^completion)(NSURL *, NSError *) = completionBlock;
 	completionBlock = NULL;
 
-	[task release];
 	task = nil;
-	[downloading release];
 	downloading = nil;
 	if(progressBlock != NULL) {
-		Block_release(progressBlock);
 		progressBlock = NULL;
 	}
 
@@ -646,7 +633,6 @@ static const long long NekoModelLeaveForTheMac = 4000LL * 1000LL * 1000LL;
 
 	if(completion != NULL) {
 		completion(problem == nil ? destination : nil, problem);
-		Block_release(completion);
 	}
 }
 
@@ -656,17 +642,13 @@ static const long long NekoModelLeaveForTheMac = 4000LL * 1000LL * 1000LL;
 	                                        selector:@selector(reportProgress:)
 	                                          object:nil];
 	[task cancel];
-	[task release];
 	task = nil;
-	[downloading release];
 	downloading = nil;
 	fraction = 0.0;
 	if(progressBlock != NULL) {
-		Block_release(progressBlock);
 		progressBlock = NULL;
 	}
 	if(completionBlock != NULL) {
-		Block_release(completionBlock);
 		completionBlock = NULL;
 	}
 }

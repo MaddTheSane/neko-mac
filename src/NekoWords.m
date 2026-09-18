@@ -41,10 +41,7 @@ static const NSUInteger NekoWordsMost = 300;
 
 - (void)dealloc
 {
-	[table release];
-	[waiting release];
 	[later invalidate];
-	[super dealloc];
 }
 
 #pragma mark The file
@@ -75,7 +72,7 @@ static const NSUInteger NekoWordsMost = 300;
 			continue;
 		NSMutableArray *means = [NSMutableArray array];
 		NSEnumerator *parts = [[rest componentsSeparatedByString:@","] objectEnumerator];
-		for(NSString *part in parts) {
+		for(__strong NSString *part in parts) {
 			part = [[part stringByTrimmingCharactersInSet:
 				[NSCharacterSet whitespaceCharacterSet]] lowercaseString];
 			if([part length] > 0)
@@ -193,7 +190,7 @@ static const NSUInteger NekoWordsMost = 300;
 		[self askLater];
 		return;
 	}
-	NSString *question = [[[waiting objectAtIndex:0] retain] autorelease];
+	NSString *question = [waiting objectAtIndex:0];
 	[waiting removeObjectAtIndex:0];
 
 	NSArray *vocabulary = [[NekoMemory sharedMemory] vocabularyOfSubstance];
@@ -249,7 +246,7 @@ static const NSUInteger NekoWordsMost = 300;
 		characterSetWithCharactersInString:@",;\n.·-—\t "];
 	NSEnumerator *e = [[[answer lowercaseString]
 		componentsSeparatedByCharactersInSet:breaks] objectEnumerator];
-	for(NSString *part in e) {
+	for(__strong NSString *part in e) {
 		part = [part stringByTrimmingCharactersInSet:
 			[NSCharacterSet punctuationCharacterSet]];
 		if([offered containsObject:part] && ![picked containsObject:part]

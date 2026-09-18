@@ -143,7 +143,7 @@ static BOOL NekoSelfAsks(NSString *text, NSArray *phrases)
 	if(days <= 0)
 		return NSLocalizedString(@"Since today.", @"Since today.");
 
-	NSDateFormatter *said = [[[NSDateFormatter alloc] init] autorelease];
+	NSDateFormatter *said = [[NSDateFormatter alloc] init];
 	[said setLocale:NekoSelfLocale()];
 	[said setDateFormat:days < 330 ? @"d MMMM" : @"d MMMM yyyy"];
 	/* Two calls rather than positional specifiers: a format string that skips an

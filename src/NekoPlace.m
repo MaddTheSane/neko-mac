@@ -16,13 +16,6 @@ NSString * const NekoPlaceDidChangeNotification = @"NekoPlaceDidChange";
 	return shared;
 }
 
-- (void)dealloc
-{
-	[manager release];
-	[report release];
-	[super dealloc];
-}
-
 + (BOOL)isAvailable
 {
 	if(NSClassFromString(@"CLLocationManager") == Nil)
@@ -135,8 +128,7 @@ static NSString * const NekoPlaceStatusKey = @"NekoPlaceStatus";
 - (void)finishWith:(NSString *)town region:(NSString *)region
 {
 	looking = NO;
-	void (^done)(NSString *, NSString *) = [report retain];
-	[report release];
+	void (^done)(NSString *, NSString *) = report;
 	report = nil;
 
 	if([town length] > 0 || [region length] > 0) {
@@ -150,7 +142,6 @@ static NSString * const NekoPlaceStatusKey = @"NekoPlaceStatus";
 
 	if(done != NULL) {
 		done([self town], [self region]);
-		[done release];
 	}
 	[[NSNotificationCenter defaultCenter]
 		postNotificationName:NekoPlaceDidChangeNotification object:self];
@@ -176,7 +167,6 @@ static NSString * const NekoPlaceStatusKey = @"NekoPlaceStatus";
 		return;
 	}
 
-	[report release];
 	report = [done copy];
 	looking = YES;
 
@@ -267,7 +257,7 @@ static NSString * const NekoPlaceStatusKey = @"NekoPlaceStatus";
 
 	/* Apple's own lookup, on the system, and the coordinates go no further than
 	   this method. */
-	CLGeocoder *geocoder = [[[CLGeocoder alloc] init] autorelease];
+	CLGeocoder *geocoder = [[CLGeocoder alloc] init];
 	[geocoder reverseGeocodeLocation:where
 	              completionHandler:^(NSArray *marks, NSError *error) {
 		CLPlacemark *mark = [marks firstObject];

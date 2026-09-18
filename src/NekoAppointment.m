@@ -123,10 +123,10 @@ static NSArray *NekoCalendarOpenings(void)
 	if([plain length] == 0)
 		plain = NSLocalizedString(@"Appointment", @"Appointment");
 
-	NSDateFormatter *readable = [[[NSDateFormatter alloc] init] autorelease];
+	NSDateFormatter *readable = [[NSDateFormatter alloc] init];
 	[readable setDateStyle:NSDateFormatterFullStyle];
 	[readable setTimeStyle:NSDateFormatterShortStyle];
-	NSDateFormatter *clock = [[[NSDateFormatter alloc] init] autorelease];
+	NSDateFormatter *clock = [[NSDateFormatter alloc] init];
 	[clock setDateStyle:NSDateFormatterNoStyle];
 	[clock setTimeStyle:NSDateFormatterShortStyle];
 
@@ -147,7 +147,7 @@ static NSArray *NekoCalendarOpenings(void)
 
 + (NSString *)stamp:(NSDate *)when
 {
-	NSDateFormatter *utc = [[[NSDateFormatter alloc] init] autorelease];
+	NSDateFormatter *utc = [[NSDateFormatter alloc] init];
 	[utc setLocale:[NSLocale localeWithLocaleIdentifier:@"en_US_POSIX"]];
 	[utc setTimeZone:[NSTimeZone timeZoneWithAbbreviation:@"UTC"]];
 	[utc setDateFormat:@"yyyyMMdd'T'HHmmss'Z'"];

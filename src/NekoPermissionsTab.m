@@ -16,7 +16,7 @@
    draw a label is a tab that has not really moved. */
 - (NSTextField *)labelWithString:(NSString *)string frame:(NSRect)frame
 {
-	NSTextField *label = [[[NSTextField alloc] initWithFrame:frame] autorelease];
+	NSTextField *label = [[NSTextField alloc] initWithFrame:frame];
 	[label setStringValue:string];
 	[label setBezeled:NO];
 	[label setDrawsBackground:NO];
@@ -48,9 +48,8 @@
 	                                            name:NekoPlayerConsentDidChangeNotification
 	                                          object:nil];
 
-	NSEnumerator *old = [[[[content subviews] copy] autorelease] objectEnumerator];
-	NSView *view;
-	while((view = [old nextObject]) != nil)
+	NSEnumerator *old = [[[content subviews] copy] objectEnumerator];
+	for(NSView *view in old)
 		[view removeFromSuperview];
 
 	/* Two lines' worth: this line names whichever permissions are missing, and
@@ -73,11 +72,10 @@
 	[scroll setHasVerticalScroller:YES];
 	[scroll setDrawsBackground:NO];
 	[scroll setBorderType:NSNoBorder];
-	NSView *rows = [[[NSView alloc]
-		initWithFrame:NSMakeRect(0.0, 0.0, 548.0, documentHeight)] autorelease];
+	NSView *rows = [[NSView alloc]
+					initWithFrame:NSMakeRect(0.0, 0.0, 548.0, documentHeight)];
 	[scroll setDocumentView:rows];
 	[content addSubview:scroll];
-	[scroll release];
 
 	NSUInteger index = 0;
 	NSEnumerator *e = [permissions objectEnumerator];
@@ -137,7 +135,6 @@
 			[button setTag:(NSInteger)[permissions indexOfObject:permission]];
 			[button setIdentifier:[permission identifier]];
 			[rows addSubview:button];
-			[button release];
 		}
 	}
 	/* The top of the list, not the bottom of it. */
@@ -158,7 +155,6 @@
 	[relaunch setTarget:self];
 	[relaunch setAction:@selector(relaunchPressed:)];
 	[content addSubview:relaunch];
-	[relaunch release];
 
 	NSButton *refresh = [[NSButton alloc] initWithFrame:NSMakeRect(316.0f, 378.0f, 130.0f, 28.0f)];
 	[refresh setBezelStyle:NSBezelStyleRounded];
@@ -166,7 +162,6 @@
 	[refresh setTarget:self];
 	[refresh setAction:@selector(rebuild)];
 	[content addSubview:refresh];
-	[refresh release];
 
 	[self refreshSummary];
 }
@@ -176,14 +171,14 @@
 - (void)relaunchPressed:(id)sender
 {
 	NSURL *me = [[NSBundle mainBundle] bundleURL];
-	NSTask *task = [[[NSTask alloc] init] autorelease];
+	NSTask *task = [[NSTask alloc] init];
 	[task setLaunchPath:@"/usr/bin/open"];
 	[task setArguments:[NSArray arrayWithObjects:@"-n", [me path], nil]];
-	NS_DURING
+	@try {
 		[task launch];
-	NS_HANDLER
+	} @catch (NSException*ex) {
 		return;
-	NS_ENDHANDLER
+	}
 	[NSApp terminate:nil];
 }
 

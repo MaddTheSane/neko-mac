@@ -260,7 +260,7 @@ NSString * const NekoVoiceGreetedKey  = @"NekoVoiceGreeted";
 	if([first count] < 3 || [second count] < 3)
 		return NO;
 
-	NSMutableSet *shared = [[second mutableCopy] autorelease];
+	NSMutableSet *shared = [second mutableCopy];
 	[shared intersectSet:first];
 	double smaller = (double)MIN([first count], [second count]);
 	return (double)[shared count] / smaller >= 0.7;
@@ -305,7 +305,7 @@ NSString * const NekoVoiceGreetedKey  = @"NekoVoiceGreeted";
 	if([sentences count] == 0)
 		return line;
 
-	NSMutableArray *kept = [[sentences mutableCopy] autorelease];
+	NSMutableArray *kept = [sentences mutableCopy];
 
 	/* The compliment in front, while there is one and something behind it. */
 	while([kept count] > 1 && [self sentenceIsACompliment:[kept objectAtIndex:0]])
@@ -316,7 +316,7 @@ NSString * const NekoVoiceGreetedKey  = @"NekoVoiceGreeted";
 		NSSet *last = [self meaningfulWordsIn:[kept lastObject]];
 		NSSet *before = [self meaningfulWordsIn:[kept objectAtIndex:[kept count] - 2]];
 		if([last count] >= 3 && [before count] >= 3) {
-			NSMutableSet *shared = [[last mutableCopy] autorelease];
+			NSMutableSet *shared = [last mutableCopy];
 			[shared intersectSet:before];
 			double smaller = (double)MIN([last count], [before count]);
 			if((double)[shared count] / smaller >= 0.7)

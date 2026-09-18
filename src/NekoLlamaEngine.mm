@@ -89,8 +89,7 @@ static const int NekoLlamaBatch = 512;
 {
 	[[NSNotificationCenter defaultCenter] removeObserver:self];
 	[self teardown];
-	dispatch_release(queue);
-	[super dealloc];
+	queue = nil;
 }
 
 #pragma mark Loading
@@ -188,8 +187,8 @@ static const int NekoLlamaBatch = 512;
 	   rejected in Objective-C++, where nil is nullptr. */
 	void (^partialCopy)(NSString *) = nil;
 	if(partial)
-		partialCopy = Block_copy(partial);
-	void (^completionCopy)(NSString *, NSError *) = Block_copy(completion);
+		partialCopy = [partial copy];
+	void (^completionCopy)(NSString *, NSError *) = [completion copy];
 	std::string prompt = [self promptFor:question instructions:instructions];
 
 	dispatch_async(queue, ^{

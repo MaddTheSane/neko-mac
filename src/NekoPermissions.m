@@ -21,12 +21,6 @@
 	return self;
 }
 
-- (void)dealloc
-{
-	[identifier release];
-	[super dealloc];
-}
-
 @synthesize identifier;
 
 - (NSString *)name
@@ -253,7 +247,7 @@
 		/* A row in a settings window that refuses in silence is the same complaint
 		   twice over, so it says what happened where it happened. */
 		if([why length] > 0) {
-			NSAlert *said = [[[NSAlert alloc] init] autorelease];
+			NSAlert *said = [[NSAlert alloc] init];
 			[said setMessageText:NSLocalizedString(@"That folder was not the one I asked for.", @"That folder was not the one I asked for.")];
 			[said setInformativeText:why];
 			NSWindow *host = [[NSApp keyWindow] attachedSheet] == nil
@@ -308,7 +302,7 @@
 								@"accessibility", @"location", @"players",
 								@"folders", @"screen"];
 	for (NSString *key in e) {
-		[all addObject:[[[NekoPermission alloc] initWithIdentifier:key] autorelease]];
+		[all addObject:[[NekoPermission alloc] initWithIdentifier:key]];
 	}
 	return all;
 }

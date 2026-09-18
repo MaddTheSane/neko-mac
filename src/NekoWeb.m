@@ -30,20 +30,11 @@ static const NSTimeInterval NekoWebPatience = 8.0;
 	return self;
 }
 
-- (void)dealloc
-{
-	[identifier release];
-	[name release];
-	[detail release];
-	[address release];
-	[super dealloc];
-}
-
-- (NSString *)identifier { return identifier; }
-- (NSString *)name       { return name; }
-- (NSString *)detail     { return detail; }
+@synthesize identifier;
+@synthesize name;
+@synthesize detail;
 - (NSURL *)url           { return [NSURL URLWithString:address]; }
-- (BOOL)isProminent      { return prominent; }
+@synthesize prominent;
 
 @end
 
@@ -99,12 +90,12 @@ static const NSTimeInterval NekoWebPatience = 8.0;
 		if([word length] == 0 || [taken containsObject:word])
 			continue;            /* the first plugin to claim a word keeps it */
 		[taken addObject:word];
-		[sources addObject:[[[NekoWebSource alloc]
-			initWithIdentifier:word
-			              name:[feed objectForKey:@"Name"]
-			            detail:[feed objectForKey:@"Detail"] ?: @""
-			           address:[feed objectForKey:@"Address"]
-			         prominent:[[feed objectForKey:@"Prominent"] boolValue]] autorelease]];
+		[sources addObject:[[NekoWebSource alloc]
+							initWithIdentifier:word
+							  name:[feed objectForKey:@"Name"]
+							detail:[feed objectForKey:@"Detail"] ?: @""
+						   address:[feed objectForKey:@"Address"]
+						 prominent:[[feed objectForKey:@"Prominent"] boolValue]]];
 	}
 	return sources;
 }
@@ -153,12 +144,12 @@ static const NSTimeInterval NekoWebPatience = 8.0;
 	if(slug == nil)
 		return nil;
 
-	return [[[NekoWebSource alloc] initWithIdentifier:@"locali"
-		name:[NSString stringWithFormat:@"ANSA %@", region]
-		detail:NSLocalizedString(@"where this Mac is", nil)
-		address:[NSString stringWithFormat:
-			@"https://www.ansa.it/%@/notizie/%@_rss.xml", slug, slug]
-		prominent:NO] autorelease];
+	return [[NekoWebSource alloc] initWithIdentifier:@"locali"
+												name:[NSString stringWithFormat:@"ANSA %@", region]
+				  detail:NSLocalizedString(@"where this Mac is", nil)
+				  address:[NSString stringWithFormat:
+					  @"https://www.ansa.it/%@/notizie/%@_rss.xml", slug, slug]
+				  prominent:NO];
 }
 
 + (NekoWebSource *)sourceNamed:(NSString *)identifier
@@ -492,7 +483,7 @@ static const NSTimeInterval NekoWebPatience = 8.0;
 		[configuration setHTTPShouldSetCookies:NO];
 		[configuration setHTTPCookieStorage:nil];
 		[configuration setURLCache:nil];
-		session = [[NSURLSession sessionWithConfiguration:configuration] retain];
+		session = [NSURLSession sessionWithConfiguration:configuration];
 	}
 	return session;
 }
@@ -525,8 +516,8 @@ static const NSTimeInterval NekoWebPatience = 8.0;
 - (NSArray *)headlinesInFeed:(NSData *)body
 {
 	NSError *problem = nil;
-	NSXMLDocument *document = [[[NSXMLDocument alloc]
-		initWithData:body options:NSXMLDocumentTidyXML error:&problem] autorelease];
+	NSXMLDocument *document = [[NSXMLDocument alloc]
+							   initWithData:body options:NSXMLDocumentTidyXML error:&problem];
 	if(document == nil)
 		return [NSArray array];
 

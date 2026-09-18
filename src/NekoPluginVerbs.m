@@ -163,8 +163,8 @@
 
 	/* Their own Shortcut, handed the rest of the sentence. Nothing is read back
 	   from it: a verb does something, it does not answer. */
-	NekoShortcutProvider *runner = [[[NekoShortcutProvider alloc]
-		initWithShortcutName:shortcut] autorelease];
+	NekoShortcutProvider *runner = [[NekoShortcutProvider alloc]
+									initWithShortcutName:shortcut];
 	if(![runner shortcutExists]) {
 		/* The one failure somebody can do something about, so it is said by name
 		   rather than as "that did not work". */

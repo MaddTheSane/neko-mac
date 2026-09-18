@@ -20,12 +20,12 @@ static const CGFloat NekoRowHeight = 86.0f;
 
 - (id)init
 {
-	NSPanel *panel = [[[NSPanel alloc]
-		initWithContentRect:NSMakeRect(0.0f, 0.0f, NekoPanelWidth, NekoPanelHeight)
-		          styleMask:(NSWindowStyleMaskTitled | NSWindowStyleMaskClosable
-		                     | NSWindowStyleMaskResizable)
-		            backing:NSBackingStoreBuffered
-		              defer:NO] autorelease];
+	NSPanel *panel = [[NSPanel alloc]
+					  initWithContentRect:NSMakeRect(0.0f, 0.0f, NekoPanelWidth, NekoPanelHeight)
+					   styleMask:(NSWindowStyleMaskTitled | NSWindowStyleMaskClosable
+								  | NSWindowStyleMaskResizable)
+						 backing:NSBackingStoreBuffered
+						   defer:NO];
 	[panel setTitle:NSLocalizedString(@"Neko Plugins", @"Neko Plugins")];
 	[panel setReleasedWhenClosed:NO];
 	[panel setHidesOnDeactivate:NO];
@@ -47,7 +47,6 @@ static const CGFloat NekoRowHeight = 86.0f;
 - (void)dealloc
 {
 	[[NSNotificationCenter defaultCenter] removeObserver:self];
-	[super dealloc];
 }
 
 #pragma mark The window
@@ -65,14 +64,13 @@ static const CGFloat NekoRowHeight = 86.0f;
 	[scroll setDrawsBackground:NO];
 	[scroll setBorderType:NSNoBorder];
 	[scroll setAutoresizingMask:NSViewWidthSizable | NSViewHeightSizable];
-	rows = [[[NSView alloc] initWithFrame:NSMakeRect(0.0f, 0.0f,
-		NekoPanelWidth - 52.0f, 10.0f)] autorelease];
+	rows = [[NSView alloc] initWithFrame:NSMakeRect(0.0f, 0.0f,
+													NekoPanelWidth - 52.0f, 10.0f)];
 	[scroll setDocumentView:rows];
 	[content addSubview:scroll];
-	[scroll release];
 
-	NSButton *add = [[[NSButton alloc] initWithFrame:
-		NSMakeRect(16.0f, 56.0f, 140.0f, 30.0f)] autorelease];
+	NSButton *add = [[NSButton alloc] initWithFrame:
+					 NSMakeRect(16.0f, 56.0f, 140.0f, 30.0f)];
 	[add setBezelStyle:NSBezelStyleRounded];
 	[add setTitle:NSLocalizedString(@"Add…", @"Add…")];
 	[add setTarget:self];
@@ -80,8 +78,8 @@ static const CGFloat NekoRowHeight = 86.0f;
 	[add setAutoresizingMask:NSViewMaxXMargin | NSViewMaxYMargin];
 	[content addSubview:add];
 
-	NSButton *folder = [[[NSButton alloc] initWithFrame:
-		NSMakeRect(164.0f, 56.0f, 180.0f, 30.0f)] autorelease];
+	NSButton *folder = [[NSButton alloc] initWithFrame:
+						NSMakeRect(164.0f, 56.0f, 180.0f, 30.0f)];
 	[folder setBezelStyle:NSBezelStyleRounded];
 	[folder setTitle:NSLocalizedString(@"Show the folder", @"Show the folder")];
 	[folder setTarget:self];
@@ -92,8 +90,8 @@ static const CGFloat NekoRowHeight = 86.0f;
 	/* Only if any shipped. A button that reveals an empty folder is worse than no
 	   button. */
 	if([[[NekoPlugins sharedPlugins] examples] count] > 0) {
-		NSButton *examples = [[[NSButton alloc] initWithFrame:
-			NSMakeRect(352.0f, 56.0f, 170.0f, 30.0f)] autorelease];
+		NSButton *examples = [[NSButton alloc] initWithFrame:
+							  NSMakeRect(352.0f, 56.0f, 170.0f, 30.0f)];
 		[examples setBezelStyle:NSBezelStyleRounded];
 		[examples setTitle:NSLocalizedString(@"Examples…", @"Examples…")];
 		[examples setTarget:self];
@@ -107,8 +105,8 @@ static const CGFloat NekoRowHeight = 86.0f;
 	/* Forty-eight, not forty. At forty the last line of it was two points short
 	   of fitting, which tests/layout.m had been printing and nobody had been
 	   failing on. */
-	NSTextField *footer = [[[NSTextField alloc] initWithFrame:
-		NSMakeRect(16.0f, 6.0f, NekoPanelWidth - 32.0f, 48.0f)] autorelease];
+	NSTextField *footer = [[NSTextField alloc] initWithFrame:
+						   NSMakeRect(16.0f, 6.0f, NekoPanelWidth - 32.0f, 48.0f)];
 	[footer setStringValue:NSLocalizedString(@"Plugins live in Neko’s own folder in Application Support. Nothing here runs inside Neko, and nothing here can see your diary, your screen, your files or where you are — or make the cat speak on its own.", @"Plugins live in Neko’s own folder in Application Support. Nothing here runs inside Neko, and nothing here can see your diary, your screen, your files or where you are — or make the cat speak on its own.")];
 	[footer setBezeled:NO];
 	[footer setDrawsBackground:NO];
@@ -135,7 +133,7 @@ static const CGFloat NekoRowHeight = 86.0f;
 
 - (NSTextField *)labelAt:(NSRect)frame text:(NSString *)text small:(BOOL)small
 {
-	NSTextField *label = [[[NSTextField alloc] initWithFrame:frame] autorelease];
+	NSTextField *label = [[NSTextField alloc] initWithFrame:frame];
 	[label setStringValue:text ?: @""];
 	[label setBezeled:NO];
 	[label setDrawsBackground:NO];
@@ -169,7 +167,7 @@ static const CGFloat NekoRowHeight = 86.0f;
 
 - (void)refresh
 {
-	NSEnumerator *old = [[[[rows subviews] copy] autorelease] objectEnumerator];
+	NSEnumerator *old = [[[rows subviews] copy] objectEnumerator];
 	for(NSView *view in old)
 		[view removeFromSuperview];
 
@@ -233,8 +231,8 @@ static const CGFloat NekoRowHeight = 86.0f;
 			[detail setTextColor:[NSColor systemRedColor]];
 		[rows addSubview:detail];
 
-		NSButton *switchOn = [[[NSButton alloc] initWithFrame:
-			NSMakeRect(width - 134.0f, top - 26.0f, 60.0f, 20.0f)] autorelease];
+		NSButton *switchOn = [[NSButton alloc] initWithFrame:
+							  NSMakeRect(width - 134.0f, top - 26.0f, 60.0f, 20.0f)];
 		[switchOn setButtonType:NSButtonTypeSwitch];
 		[switchOn setTitle:NSLocalizedString(@"On", @"On")];
 		[switchOn setState:[registry isEnabled:plugin]
@@ -252,8 +250,8 @@ static const CGFloat NekoRowHeight = 86.0f;
 		NSMutableArray *missing = [NSMutableArray array];
 		if([plugin isUsable] && [registry isEnabled:plugin]) {
 			for(NSString *name in [plugin shortcutsItNeeds]) {
-				NekoShortcutProvider *runner = [[[NekoShortcutProvider alloc]
-					initWithShortcutName:name] autorelease];
+				NekoShortcutProvider *runner = [[NekoShortcutProvider alloc]
+												initWithShortcutName:name];
 				if(![runner shortcutExists])
 					[missing addObject:name];
 			}
@@ -279,8 +277,8 @@ static const CGFloat NekoRowHeight = 86.0f;
 			                            small:YES];
 			[rows addSubview:note];
 		} else {
-			NSButton *remove = [[[NSButton alloc] initWithFrame:
-				NSMakeRect(width - 134.0f, top - 56.0f, 126.0f, 24.0f)] autorelease];
+			NSButton *remove = [[NSButton alloc] initWithFrame:
+								NSMakeRect(width - 134.0f, top - 56.0f, 126.0f, 24.0f)];
 			[remove setBezelStyle:NSBezelStyleRounded];
 			[remove setControlSize:NSControlSizeSmall];
 			[remove setFont:[NSFont systemFontOfSize:
@@ -342,7 +340,7 @@ static const CGFloat NekoRowHeight = 86.0f;
 		if(problem == nil)
 			return;
 
-		NSAlert *alert = [[[NSAlert alloc] init] autorelease];
+		NSAlert *alert = [[NSAlert alloc] init];
 		[alert setMessageText:NSLocalizedString(@"That one was not added", @"That one was not added")];
 		[alert setInformativeText:problem];
 		[alert addButtonWithTitle:NSLocalizedString(@"All right", @"All right")];
@@ -356,7 +354,7 @@ static const CGFloat NekoRowHeight = 86.0f;
 	if(plugin == nil)
 		return;
 
-	NSAlert *alert = [[[NSAlert alloc] init] autorelease];
+	NSAlert *alert = [[NSAlert alloc] init];
 	[alert setMessageText:[NSString stringWithFormat:
 		NSLocalizedString(@"Remove “%@”?", @"Remove “%@”?"), [plugin name]]];
 	[alert setInformativeText:[NSString stringWithFormat:
@@ -366,14 +364,13 @@ static const CGFloat NekoRowHeight = 86.0f;
 	[alert addButtonWithTitle:NSLocalizedString(@"Cancel", @"Cancel")];
 
 	/* A sheet, for the same reason as the one above. */
-	NekoPlugin *kept = [plugin retain];
+	NekoPlugin *kept = plugin;
 	[alert beginSheetModalForWindow:[self window]
 	            completionHandler:^(NSModalResponse answer) {
 		if(answer == NSAlertFirstButtonReturn) {
 			[[NekoPlugins sharedPlugins] remove:kept];
 			[self refresh];
 		}
-		[kept release];
 	}];
 }
 
