@@ -162,9 +162,9 @@ static NSString *NekoBookmarkKeyFor(NSString *key)
 	if(bookmark == nil) {
 		if(problem != NULL)
 			*problem = [NSString stringWithFormat:
-				NSLocalizedString(@"macOS did not hand your %@ folder over: %@", nil),
+				NSLocalizedString(@"macOS did not hand your %@ folder over: %@", @"macOS did not hand your %@ folder over: %@"),
 				[self displayNameForKey:key],
-				[failure localizedDescription] ?: NSLocalizedString(@"no reason given", nil)];
+				[failure localizedDescription] ?: NSLocalizedString(@"no reason given", @"no reason given")];
 		return NO;
 	}
 	[[NSUserDefaults standardUserDefaults] setObject:bookmark

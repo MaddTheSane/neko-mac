@@ -41,6 +41,19 @@ static BOOL NekoSelfAsks(NSString *text, NSArray *phrases)
 	return NO;
 }
 
+// These are defined in +[NekoSelf whereItIs].parts
+#if 0
+NSLocalizedString(@"bottom left", @"bottom left");
+NSLocalizedString(@"at the bottom", @"at the bottom");
+NSLocalizedString(@"bottom right", @"bottom right");
+NSLocalizedString(@"on the left", @"on the left");
+NSLocalizedString(@"in the middle", @"in the middle");
+NSLocalizedString(@"on the right", @"on the right");
+NSLocalizedString(@"top left", @"top left");
+NSLocalizedString(@"at the top", @"at the top");
+NSLocalizedString(@"top right", @"top right");
+#endif
+
 @implementation NekoSelf
 
 #pragma mark Where it is
@@ -79,7 +92,8 @@ static BOOL NekoSelfAsks(NSString *text, NSArray *phrases)
 		{ @"on the left",  @"in the middle", @"on the right" },
 		{ @"top left",     @"at the top",    @"top right" },
 	};
-	NSString *where = NSLocalizedString(parts[up][across], nil);
+	// This isn't LocalizedString(parts[up][across], nil) to quiet genstrings warnings.
+	NSString *where = [[NSBundle mainBundle] localizedStringForKey:parts[up][across] value:nil table:nil];
 
 	/* The region phrase carries its own preposition and the frame carries none:
 	   "I am %@ of your screen" reads well for "bottom left" and badly for

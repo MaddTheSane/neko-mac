@@ -2943,7 +2943,7 @@
       }
     },
     "at the bottom" : {
-      "extractionState" : "manual",
+      "comment" : "at the bottom",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -2972,7 +2972,7 @@
       }
     },
     "at the top" : {
-      "extractionState" : "manual",
+      "comment" : "at the top",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -3088,7 +3088,7 @@
       }
     },
     "bottom left" : {
-      "extractionState" : "manual",
+      "comment" : "bottom left",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -3117,7 +3117,7 @@
       }
     },
     "bottom right" : {
-      "extractionState" : "manual",
+      "comment" : "bottom right",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -5226,7 +5226,7 @@
       }
     },
     "I cannot know that about you." : {
-      "extractionState" : "manual",
+      "comment" : "I cannot know that about you.",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -5255,7 +5255,7 @@
       }
     },
     "I cannot see inside your files." : {
-      "extractionState" : "manual",
+      "comment" : "I cannot see inside your files.",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -5284,7 +5284,7 @@
       }
     },
     "I cannot see the markets." : {
-      "extractionState" : "manual",
+      "comment" : "I cannot see the markets.",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -5313,7 +5313,7 @@
       }
     },
     "I cannot see the weather." : {
-      "extractionState" : "manual",
+      "comment" : "I cannot see the weather.",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -5342,7 +5342,7 @@
       }
     },
     "I cannot see whether it builds." : {
-      "extractionState" : "manual",
+      "comment" : "I cannot see whether it builds.",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -5371,7 +5371,7 @@
       }
     },
     "I cannot see who is there." : {
-      "extractionState" : "manual",
+      "comment" : "I cannot see who is there.",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -5400,7 +5400,7 @@
       }
     },
     "I cannot see your accounts." : {
-      "extractionState" : "manual",
+      "comment" : "I cannot see your accounts.",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -5429,7 +5429,7 @@
       }
     },
     "I cannot see your calendar." : {
-      "extractionState" : "manual",
+      "comment" : "I cannot see your calendar.",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -5458,7 +5458,7 @@
       }
     },
     "I cannot see your mail." : {
-      "extractionState" : "manual",
+      "comment" : "I cannot see your mail.",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -5922,7 +5922,7 @@
       }
     },
     "in the middle" : {
-      "extractionState" : "manual",
+      "comment" : "in the middle",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -6211,7 +6211,7 @@
       }
     },
     "It extends “%@”, which this version of Neko does not offer yet." : {
-      "comment" : "It extends “%@”, which this version of Neko does not offer yet.",
+      "comment" : "It extends \"%@\", which this version of Neko does not offer yet.",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -6646,18 +6646,18 @@
       }
     },
     "It knows it is in %@%@ — the name of the town and of the region, and nothing finer. No coordinates are kept, and it asks macOS again no oftener than once a day." : {
-      "comment" : "It knows it is in %@%@ — the name of the town and of the region, and nothing finer. No coordinates are kept, and it asks macOS again no oftener than once a day.",
+      "comment" : "It knows it is in %@%@ --- the name of the town and of the region, and nothing finer. No coordinates are kept, and it asks macOS again no oftener than once a day.",
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "It knows it is in %@%@ — the name of the town and of the region, and nothing finer. No coordinates are kept, and it asks macOS again no oftener than once a day."
+            "value" : "It knows it is in %1$@%2$@ — the name of the town and of the region, and nothing finer. No coordinates are kept, and it asks macOS again no oftener than once a day."
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Sabe que está en %@%@ —el nombre del municipio y de la región, y nada más preciso—. No se guardan coordenadas, y se lo vuelve a preguntar a macOS como máximo una vez al día."
+            "value" : "Sabe que está en %1$@%2$@ —el nombre del municipio y de la región, y nada más preciso—. No se guardan coordenadas, y se lo vuelve a preguntar a macOS como máximo una vez al día."
           }
         },
         "fr" : {
@@ -6669,7 +6669,7 @@
         "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Sa di essere a %@%@ — il nome del comune e della regione, e niente di più fine. Non vengono tenute coordinate, e lo richiede a macOS non più di una volta al giorno."
+            "value" : "Sa di essere a %1$@%2$@ — il nome del comune e della regione, e niente di più fine. Non vengono tenute coordinate, e lo richiede a macOS non più di una volta al giorno."
           }
         }
       }
@@ -6709,25 +6709,25 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "It needs Neko %@ or newer, and this is %@."
+            "value" : "It needs Neko %1$@ or newer, and this is %2$@."
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Necesita Neko %@ o posterior, y este es el %@."
+            "value" : "Necesita Neko %1$@ o posterior, y este es el %2$@."
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Il lui faut Neko %@ ou plus récent, et voici le %@."
+            "value" : "Il lui faut Neko %1$@ ou plus récent, et voici le %2$@."
           }
         },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ha bisogno di Neko %@ o più recente, e questo è il %@."
+            "value" : "Ha bisogno di Neko %1$@ o più recente, e questo è il %2$@."
           }
         }
       }
@@ -6878,7 +6878,7 @@
       }
     },
     "It says it ships the character “%@”, and that folder is not inside it." : {
-      "comment" : "It says it ships the character “%@”, and that folder is not inside it.",
+      "comment" : "It says it ships the character \"%@\", and that folder is not inside it.",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -7371,7 +7371,7 @@
       }
     },
     "Its summary contains one of Neko’s own markers, which a plugin may not write." : {
-      "comment" : "Its summary contains one of Neko’s own markers, which a plugin may not write.",
+      "comment" : "Its summary contains one of Neko's own markers, which a plugin may not write.",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -8009,29 +8009,30 @@
       }
     },
     "macOS did not hand your %@ folder over: %@" : {
+      "comment" : "macOS did not hand your %@ folder over: %@",
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "macOS did not hand your %@ folder over: %@"
+            "value" : "macOS did not hand your %1$@ folder over: %2$@"
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "macOS no me entregó tu carpeta %@: %@"
+            "value" : "macOS no me entregó tu carpeta %$1@: %$2@"
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "macOS ne m’a pas remis votre dossier %@ : %@"
+            "value" : "macOS ne m’a pas remis votre dossier %1$@ : %2$@"
           }
         },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "macOS non mi ha consegnato la cartella %@: %@"
+            "value" : "macOS non mi ha consegnato la cartella %1$@: %2$@"
           }
         }
       }
@@ -8873,6 +8874,7 @@
       }
     },
     "no reason given" : {
+      "comment" : "no reason given",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -9509,7 +9511,7 @@
       }
     },
     "on the left" : {
-      "extractionState" : "manual",
+      "comment" : "on the left",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -9538,7 +9540,7 @@
       }
     },
     "on the right" : {
-      "extractionState" : "manual",
+      "comment" : "on the right",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -11939,7 +11941,7 @@
       }
     },
     "So that “what is the weather” and “what is happening here” need no city named. It keeps the name of the town and of the region, never the coordinates, and asks macOS for a position no oftener than once a day." : {
-      "comment" : "So that “what is the weather” and “what is happening here” need no city named. It keeps the name of the town and of the region, never the coordinates, and asks macOS for a position no oftener than once a day.",
+      "comment" : "So that \"what is the weather\" and \"what is happening here\" need no city named. It keeps the name of the town and of the region, never the coordinates, and asks macOS for a position no oftener than once a day.",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -13008,7 +13010,7 @@
       }
     },
     "The character “%@” has no readable character.plist with an Identifier in it." : {
-      "comment" : "The character “%@” has no readable character.plist with an Identifier in it.",
+      "comment" : "The character \"%@\" has no readable character.plist with an Identifier in it.",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -13037,7 +13039,7 @@
       }
     },
     "The character identifier “%@” has punctuation or spaces in it; it has to be one plain word." : {
-      "comment" : "The character identifier “%@” has punctuation or spaces in it; it has to be one plain word.",
+      "comment" : "The character identifier \"%@\" has punctuation or spaces in it; it has to be one plain word.",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -14854,7 +14856,7 @@
       }
     },
     "top left" : {
-      "extractionState" : "manual",
+      "comment" : "top left",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -14883,7 +14885,7 @@
       }
     },
     "top right" : {
-      "extractionState" : "manual",
+      "comment" : "top right",
       "localizations" : {
         "en" : {
           "stringUnit" : {

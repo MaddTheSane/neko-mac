@@ -113,7 +113,7 @@ static NSString * const NekoPluginMarkers[] = { @"ACTION:", @"IMAGE:", @"LOOK:",
 	}
 
 	if([self carriesAMarker:[self summary]]) {
-		[self refuse:NSLocalizedString(@"Its summary contains one of Neko’s own markers, which a plugin may not write.", @"Its summary contains one of Neko’s own markers, which a plugin may not write.")];
+		[self refuse:NSLocalizedString(@"Its summary contains one of Neko’s own markers, which a plugin may not write.", @"Its summary contains one of Neko's own markers, which a plugin may not write.")];
 		return;
 	}
 
@@ -136,7 +136,7 @@ static NSString * const NekoPluginMarkers[] = { @"ACTION:", @"IMAGE:", @"LOOK:",
 	for(NSString *key in extends)
 		if(![known containsObject:key]) {
 			[self refuse:[NSString stringWithFormat:
-				NSLocalizedString(@"It extends “%@”, which this version of Neko does not offer yet.", @"It extends “%@”, which this version of Neko does not offer yet."), key]];
+				NSLocalizedString(@"It extends “%@”, which this version of Neko does not offer yet.", @"It extends \"%@\", which this version of Neko does not offer yet."), key]];
 			return;
 		}
 
@@ -172,7 +172,7 @@ static NSString * const NekoPluginMarkers[] = { @"ACTION:", @"IMAGE:", @"LOOK:",
 		NSString *inside = [[folder path] stringByAppendingPathComponent:name];
 		if(![files fileExistsAtPath:inside]) {
 			[self refuse:[NSString stringWithFormat:
-				NSLocalizedString(@"It says it ships the character “%@”, and that folder is not inside it.", @"It says it ships the character “%@”, and that folder is not inside it."), name]];
+				NSLocalizedString(@"It says it ships the character “%@”, and that folder is not inside it.", @"It says it ships the character \"%@\", and that folder is not inside it."), name]];
 			return;
 		}
 		NSDictionary *manifestOfCharacter = [NSDictionary dictionaryWithContentsOfFile:
@@ -180,13 +180,13 @@ static NSString * const NekoPluginMarkers[] = { @"ACTION:", @"IMAGE:", @"LOOK:",
 		NSString *word = [manifestOfCharacter objectForKey:@"Identifier"];
 		if([word length] == 0) {
 			[self refuse:[NSString stringWithFormat:
-				NSLocalizedString(@"The character “%@” has no readable character.plist with an Identifier in it.", @"The character “%@” has no readable character.plist with an Identifier in it."), name]];
+				NSLocalizedString(@"The character “%@” has no readable character.plist with an Identifier in it.", @"The character \"%@\" has no readable character.plist with an Identifier in it."), name]];
 			return;
 		}
 		if([word rangeOfCharacterFromSet:
 				[[NSCharacterSet alphanumericCharacterSet] invertedSet]].location != NSNotFound) {
 			[self refuse:[NSString stringWithFormat:
-				NSLocalizedString(@"The character identifier “%@” has punctuation or spaces in it; it has to be one plain word.", @"The character identifier “%@” has punctuation or spaces in it; it has to be one plain word."), word]];
+				NSLocalizedString(@"The character identifier “%@” has punctuation or spaces in it; it has to be one plain word.", @"The character identifier \"%@\" has punctuation or spaces in it; it has to be one plain word."), word]];
 			return;
 		}
 	}

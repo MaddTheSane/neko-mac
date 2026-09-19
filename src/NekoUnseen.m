@@ -3,6 +3,19 @@
 
 #define NekoUnseenLocalized(key) NSLocalizedStringFromTable(key, @"Localizable", nil)
 
+// These all are defined in NekoUnseenClasses.
+#if 0
+NSLocalizedString(@"I cannot see your accounts.", @"I cannot see your accounts.");
+NSLocalizedString(@"I cannot see the markets.", @"I cannot see the markets.");
+NSLocalizedString(@"I cannot see your mail.", @"I cannot see your mail.");
+NSLocalizedString(@"I cannot see inside your files.", @"I cannot see inside your files.");
+NSLocalizedString(@"I cannot see whether it builds.", @"I cannot see whether it builds.");
+NSLocalizedString(@"I cannot see who is there.", @"I cannot see who is there.");
+NSLocalizedString(@"I cannot see the weather.", @"I cannot see the weather.");
+NSLocalizedString(@"I cannot see your calendar.", @"I cannot see your calendar.");
+NSLocalizedString(@"I cannot know that about you.", @"I cannot know that about you.");
+#endif
+
 /*! Each class of question, the phrases that ask it, and the one sentence that
    answers it. The phrases came from the questions stage 3 measured rather than
    from imagination, which is why there are seven groups and not twenty.

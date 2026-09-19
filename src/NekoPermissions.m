@@ -63,10 +63,10 @@
 		   that does nothing, so when there is an answer the row shows it. */
 		if([town length] > 0)
 			return [NSString stringWithFormat:
-				NSLocalizedString(@"It knows it is in %@%@ — the name of the town and of the region, and nothing finer. No coordinates are kept, and it asks macOS again no oftener than once a day.", @"It knows it is in %@%@ — the name of the town and of the region, and nothing finer. No coordinates are kept, and it asks macOS again no oftener than once a day."),
+				NSLocalizedString(@"It knows it is in %@%@ — the name of the town and of the region, and nothing finer. No coordinates are kept, and it asks macOS again no oftener than once a day.", @"It knows it is in %@%@ --- the name of the town and of the region, and nothing finer. No coordinates are kept, and it asks macOS again no oftener than once a day."),
 				town, [region length] > 0
 					? [NSString stringWithFormat:@", %@", region] : @""];
-		return NSLocalizedString(@"So that “what is the weather” and “what is happening here” need no city named. It keeps the name of the town and of the region, never the coordinates, and asks macOS for a position no oftener than once a day.", @"So that “what is the weather” and “what is happening here” need no city named. It keeps the name of the town and of the region, never the coordinates, and asks macOS for a position no oftener than once a day.");
+		return NSLocalizedString(@"So that “what is the weather” and “what is happening here” need no city named. It keeps the name of the town and of the region, never the coordinates, and asks macOS for a position no oftener than once a day.", @"So that \"what is the weather\" and \"what is happening here\" need no city named. It keeps the name of the town and of the region, never the coordinates, and asks macOS for a position no oftener than once a day.");
 	}
 	return @"";
 }
