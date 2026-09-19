@@ -37,6 +37,7 @@
 #import "NekoOpenAIProvider.h"
 #import "NekoModelProvider.h"
 #import "MyPanel.h"
+#import "Neko-Swift.h"
 #import <ServiceManagement/ServiceManagement.h>
 
 NSString * const NekoCharacterKey  = @"NekoCharacter";
@@ -604,7 +605,7 @@ static const CGFloat NekoMaxStopRadius = 200.0;
 
 - (void)takeBehaviourFrom:(id)sender
 {
-	static NSArray *const names = @[@"follow", @"windows", @"roam", @"flee"];
+	static NSArray<NSString*> *const names = @[@"follow", @"windows", @"roam", @"flee"];
 	NSUInteger index = (NSUInteger)[sender indexOfSelectedItem];
 	[[NSUserDefaults standardUserDefaults]
 		setObject:[names objectAtIndex:MIN(index, [names count] - 1)]

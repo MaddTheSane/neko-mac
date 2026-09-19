@@ -34,7 +34,7 @@
 		552253EF305BB20400A7AA07 /* NekoPhrase.m in Sources */ = {isa = PBXBuildFile; fileRef = 552253EB305BB20400A7AA07 /* NekoPhrase.m */; };
 		552253F1305BE94200A7AA07 /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = 552253F0305BE94200A7AA07 /* Localizable.xcstrings */; };
 		552253F2305CA3EF00A7AA07 /* NekoLlamaEngine.mm in Sources */ = {isa = PBXBuildFile; fileRef = D1C0117A1B000000000000A0 /* NekoLlamaEngine.mm */; };
-		552770DF305E8DBF00E338D2 /* NekoAntics2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 552770DE305E8DB500E338D2 /* NekoAntics2.swift */; };
+		552770DF305E8DBF00E338D2 /* NekoAntics.swift in Sources */ = {isa = PBXBuildFile; fileRef = 552770DE305E8DB500E338D2 /* NekoAntics.swift */; };
 		55835E72305CB433005E06E2 /* Neko News.nekoplugin in Copy Plug-ins */ = {isa = PBXBuildFile; fileRef = 55835E71305CB3A4005E06E2 /* Neko News.nekoplugin */; };
 		55835EF6305CBAFB005E06E2 /* Apple Music.nekoplugin in Copy Examples */ = {isa = PBXBuildFile; fileRef = 55835E75305CB493005E06E2 /* Apple Music.nekoplugin */; };
 		55835EF7305CBAFE005E06E2 /* Il Post.nekoplugin in Copy Examples */ = {isa = PBXBuildFile; fileRef = 55835E78305CB493005E06E2 /* Il Post.nekoplugin */; };
@@ -72,7 +72,6 @@
 		D1C0117A1B00000000000091 /* NekoModelStore.m in Sources */ = {isa = PBXBuildFile; fileRef = D1C0117A1B00000000000090 /* NekoModelStore.m */; };
 		D1C0117A1B00000000000093 /* NekoLocalProvider.m in Sources */ = {isa = PBXBuildFile; fileRef = D1C0117A1B00000000000092 /* NekoLocalProvider.m */; };
 		D1C0117A1B000000000000A3 /* NekoAdvisor.m in Sources */ = {isa = PBXBuildFile; fileRef = D1C0117A1B000000000000A2 /* NekoAdvisor.m */; };
-		D1C0117A1B000000000000A7 /* NekoAntics.m in Sources */ = {isa = PBXBuildFile; fileRef = D1C0117A1B000000000000A6 /* NekoAntics.m */; settings = {COMPILER_FLAGS = "-fobjc-arc"; }; };
 		D1C0117A1B000000000000B1 /* NekoDesktop.m in Sources */ = {isa = PBXBuildFile; fileRef = D1C0117A1B000000000000B0 /* NekoDesktop.m */; };
 		D1C0117A1B000000000000C1 /* NekoPainter.m in Sources */ = {isa = PBXBuildFile; fileRef = D1C0117A1B000000000000C0 /* NekoPainter.m */; };
 		D1C0117A1B000000000000D1 /* NekoSense.m in Sources */ = {isa = PBXBuildFile; fileRef = D1C0117A1B000000000000D0 /* NekoSense.m */; };
@@ -181,7 +180,7 @@
 		552253ED305BB20400A7AA07 /* NekoPluginText.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = NekoPluginText.m; sourceTree = "<group>"; };
 		552253F0305BE94200A7AA07 /* Localizable.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = Localizable.xcstrings; sourceTree = "<group>"; };
 		552770DD305E8CE900E338D2 /* Neko-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Neko-Bridging-Header.h"; sourceTree = "<group>"; };
-		552770DE305E8DB500E338D2 /* NekoAntics2.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NekoAntics2.swift; sourceTree = "<group>"; };
+		552770DE305E8DB500E338D2 /* NekoAntics.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NekoAntics.swift; sourceTree = "<group>"; };
 		55835E71305CB3A4005E06E2 /* Neko News.nekoplugin */ = {isa = PBXFileReference; lastKnownFileType = folder; path = "Neko News.nekoplugin"; sourceTree = "<group>"; };
 		55835E75305CB493005E06E2 /* Apple Music.nekoplugin */ = {isa = PBXFileReference; lastKnownFileType = folder; path = "Apple Music.nekoplugin"; sourceTree = "<group>"; };
 		55835E78305CB493005E06E2 /* Il Post.nekoplugin */ = {isa = PBXFileReference; lastKnownFileType = folder; path = "Il Post.nekoplugin"; sourceTree = "<group>"; };
@@ -238,7 +237,6 @@
 		D1C0117A1B000000000000A0 /* NekoLlamaEngine.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = NekoLlamaEngine.mm; sourceTree = "<group>"; };
 		D1C0117A1B000000000000A2 /* NekoAdvisor.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NekoAdvisor.m; sourceTree = "<group>"; };
 		D1C0117A1B000000000000A4 /* NekoAdvisor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NekoAdvisor.h; sourceTree = "<group>"; };
-		D1C0117A1B000000000000A6 /* NekoAntics.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NekoAntics.m; sourceTree = "<group>"; };
 		D1C0117A1B000000000000A8 /* NekoAntics.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NekoAntics.h; sourceTree = "<group>"; };
 		D1C0117A1B000000000000B0 /* NekoDesktop.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NekoDesktop.m; sourceTree = "<group>"; };
 		D1C0117A1B000000000000B2 /* NekoDesktop.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NekoDesktop.h; sourceTree = "<group>"; };
@@ -306,8 +304,7 @@
 				D1C0117A1B00000000000040 /* NekoAnswerProvider.h */,
 				D1C0117A1B00000000000041 /* NekoAnswerProvider.m */,
 				D1C0117A1B000000000000A8 /* NekoAntics.h */,
-				D1C0117A1B000000000000A6 /* NekoAntics.m */,
-				552770DE305E8DB500E338D2 /* NekoAntics2.swift */,
+				552770DE305E8DB500E338D2 /* NekoAntics.swift */,
 				D1C0117A1B00000000000072 /* NekoAppleModel.swift */,
 				D1C0117A1B0000000000007A /* NekoAppleProvider.h */,
 				D1C0117A1B00000000000070 /* NekoAppleProvider.m */,
@@ -625,7 +622,7 @@
 				D1C0117A1B0000000000004E /* NekoListener.m in Sources */,
 				D1C0117A1B00000000000051 /* NekoBubble.m in Sources */,
 				D1C0117A1B00000000000054 /* NekoAsk.m in Sources */,
-				552770DF305E8DBF00E338D2 /* NekoAntics2.swift in Sources */,
+				552770DF305E8DBF00E338D2 /* NekoAntics.swift in Sources */,
 				D1C0117A1B00000000000071 /* NekoAppleProvider.m in Sources */,
 				D1C0117A1B00000000000073 /* NekoAppleModel.swift in Sources */,
 				D1C0117A1B00000000000081 /* NekoOpenAIProvider.m in Sources */,
@@ -633,7 +630,6 @@
 				D1C0117A1B00000000000091 /* NekoModelStore.m in Sources */,
 				D1C0117A1B00000000000093 /* NekoLocalProvider.m in Sources */,
 				D1C0117A1B000000000000A3 /* NekoAdvisor.m in Sources */,
-				D1C0117A1B000000000000A7 /* NekoAntics.m in Sources */,
 				552253B0305BB0C400A7AA07 /* NekoTimer.m in Sources */,
 				552253AA305BB09400A7AA07 /* NekoUpdate.m in Sources */,
 				D1C0117A1B000000000000B1 /* NekoDesktop.m in Sources */,

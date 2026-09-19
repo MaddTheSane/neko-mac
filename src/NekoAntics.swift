@@ -46,7 +46,7 @@ private let NekoAnticsSideMax: CGFloat = 70.0
 /// cat is still walking over, with written-in lines as the fallback for when
 /// there is no engine or it does not answer in time.
 @objc
-public final class NekoAntics2 : NSObject {
+public final class NekoAntics : NSObject {
 	private var heartbeat: Timer?
 	/// watches for the cat reaching the pointer
 	private var arrival: Timer?
@@ -58,7 +58,7 @@ public final class NekoAntics2 : NSObject {
 	private var pendingLine: String?
 
 	@objc(sharedAntics)
-	public static let shared = NekoAntics2()
+	public static let shared = NekoAntics()
 
 	private override init() {
 		cooldown = NekoAnticsMinWait

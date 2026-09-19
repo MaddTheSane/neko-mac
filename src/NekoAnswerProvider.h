@@ -36,7 +36,7 @@ NS_ASSUME_NONNULL_BEGIN
    in half a second read as quick even when the whole answer takes two. */
 - (void)askQuestion:(NSString *)question
        instructions:(NSString *)instructions
-            partial:(void (^)(NSString *sofar))partial
+            partial:(void (^_Nullable)(NSString *sofar))partial
          completion:(void (^)(NSString *_Nullable answer, NSError *_Nullable error))completion;
 
 @end

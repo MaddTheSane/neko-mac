@@ -1,7 +1,7 @@
 #import "NekoLocalProvider.h"
 #import "NekoModelStore.h"
 
-NSString * const NekoAskLocalModelKey = @"NekoAskLocalModel";
+static NSString * const NekoAskLocalModelKey = @"NekoAskLocalModel";
 
 @implementation NekoLocalProvider
 
@@ -35,7 +35,7 @@ NSString * const NekoAskLocalModelKey = @"NekoAskLocalModel";
 
 - (void)setPreferredModel:(NSString *)identifier
 {
-	if(preferred == identifier)
+	if(preferred == identifier || [preferred isEqualToString:identifier])
 		return;
 	/* Changing model means the loaded one is the wrong one. */
 	if(![preferred isEqualToString:identifier]) {
@@ -117,9 +117,9 @@ NSString * const NekoAskLocalModelKey = @"NekoAskLocalModel";
 }
 
 /* The tags a reasoning model wraps its notes in. */
-static NSArray *NekoReasoningTags(void)
+static NSArray<NSString*> *NekoReasoningTags(void)
 {
-	static NSArray * const tags = @[@"think", @"thinking", @"thought", @"reasoning"];
+	static NSArray<NSString*> *const tags = @[@"think", @"thinking", @"thought", @"reasoning"];
 	
 	return tags;
 }

@@ -34,7 +34,7 @@ extern NSNotificationName const NekoSettingsDidChangeNotification;
 	NSMenuItem *stayItem;
 	NSMenuItem *timerItem;
 	NSMenuItem *glanceItem;
-	__weak NekoPermissionsTab *permissions; /* NekoPermissionsTab, which owns that tab */
+	NekoPermissionsTab *permissions; /* NekoPermissionsTab, which owns that tab */
 	NSMenuItem *askItem;
 	NSTabView *prefsTabs;
 	NSMenu *characterMenu;
