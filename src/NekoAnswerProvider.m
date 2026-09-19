@@ -8,7 +8,7 @@
 NSString * const NekoAskErrorDomain = @"NekoAsk";
 NSString * const NekoImageMarker = @"IMAGE:";
 
-/* Charge and whether it is plugged in, or nil on a Mac with no battery. */
+/*! Charge and whether it is plugged in, or nil on a Mac with no battery. */
 static NSString *NekoBatteryNow(void)
 {
 	CFTypeRef blob = IOPSCopyPowerSourcesInfo();
@@ -39,7 +39,7 @@ static NSString *NekoBatteryNow(void)
 	return answer;
 }
 
-/* The language Neko answers in: the one it is running in, named outright.
+/*! The language Neko answers in: the one it is running in, named outright.
    "The same language as the question" is too weak an instruction for a small
    model, which slips into English halfway through an Italian conversation. */
 static NSString *NekoAnswerLanguage(void)
@@ -52,7 +52,7 @@ static NSString *NekoAnswerLanguage(void)
 	return [name length] > 0 ? name : @"English";
 }
 
-/* What the cat can actually know, as opposed to what a model can guess.
+/*! What the cat can actually know, as opposed to what a model can guess.
 
    Asked the time, a model invents one: it has no clock, and the hour it was
    trained on is not this one. So the handful of facts that a question is likely
@@ -95,12 +95,12 @@ NSString *NekoFactsNow(void)
 	return facts;
 }
 
-/* Two things at once, and the order matters: a small model given a character
+/*! Two things at once, and the order matters: a small model given a character
    will happily invent a charming explanation and drop the facts, so the truth is
    stated as the first duty and the character is confined to the wording.
 
    Nothing here mentions the bubble or the sprite: describing the display made
-   one model narrate it back, answering inside a <small sprite 32px: …> tag. */
+   one model narrate it back, answering inside a `<small sprite 32px: …>` tag. */
 NSString *NekoAnswerInstructionsFor(NSString *persona)
 {
 	return NekoAnswerInstructionsWith(persona, NO, NO, nil);
@@ -111,11 +111,12 @@ NSString *NekoAnswerInstructionsDrawing(NSString *persona, BOOL mayDraw)
 	return NekoAnswerInstructionsWith(persona, mayDraw, NO, nil);
 }
 
-/* With drawing switched on, one more thing the answer may be: a request for a
+/*! With drawing switched on, one more thing the answer may be: a request for a
    picture. The marker is answered instead of the sentence, and the app turns it
    into a drawing — which means the model decides what "show me the Colosseum"
-   means in any language, and the app only has to recognise five characters. */
-/* The words that mean somebody is asking about the clock, the calendar, the
+   means in any language, and the app only has to recognise five characters.
+ 
+   The words that mean somebody is asking about the clock, the calendar, the
    battery or how long the Mac has been up — in the four languages this speaks,
    and deliberately short: a false yes costs a slightly longer prompt, a false no
    costs an answer. */
@@ -127,7 +128,7 @@ BOOL NekoQuestionWantsFacts(NSString *question)
 	if([question length] == 0)
 		return YES;              /* nothing to go on: hand over everything */
 	NSString *lowered = [question lowercaseString];
-	static NSArray *const words = @[
+	static NSArray<NSString*> *const words = @[
 		@"ora", @"ore", @"orario", @"giorno", @"data", @"oggi", @"domani", @"ieri",
 		@"batteria", @"acceso", @"accesa", @"quanto manca", @"che mese", @"anno",
 		@"time", @"clock", @"date", @"day", @"today", @"tomorrow", @"battery",
@@ -256,7 +257,7 @@ static NSString *NekoAnswerInstructionsBuild(NSString *persona, BOOL mayDraw, BO
 			         @"ACTION line." : @""]];
 }
 
-/* Unasked advice is harder to get right than an answer: it arrives uninvited, it
+/*! Unasked advice is harder to get right than an answer: it arrives uninvited, it
    is based on almost nothing, and it is read in half a second. Three rounds of
    measurement shaped what is here.
 
@@ -314,7 +315,7 @@ NSString *NekoSuggestionInstructionsSeeing(NSString *persona, BOOL hasText)
 		language];
 }
 
-/* The three example lines, so a reply that is one of them can be thrown away. */
+/*! The three example lines, so a reply that is one of them can be thrown away. */
 NSArray *NekoInstructionExamples(void)
 {
 	return @[
@@ -326,7 +327,7 @@ NSArray *NekoInstructionExamples(void)
 		NSLocalizedString(@"Long sentence. Does it end well?", nil)];
 }
 
-/* A question, not a remark, and it has to survive being read while the cat is
+/*! A question, not a remark, and it has to survive being read while the cat is
    standing next to the pointer having just walked there. The examples are
    localized for the same reason the suggestion ones are: three short sentences
    in the right language pin the register better than any adjective. */

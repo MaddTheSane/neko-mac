@@ -1,11 +1,11 @@
 #import "NekoNoise.h"
 
-/* Eight taps: the correlation reaches about 2^8 values back, which for pauses of
+/*! Eight taps: the correlation reaches about 2^8 values back, which for pauses of
    a second or two is a couple of minutes of memory. More than that and the cat
    would have moods measured in hours. */
 static const unsigned NekoNoiseTaps = 8;
 
-/* Adding eight uniform draws together narrows the result towards the middle —
+/*! Adding eight uniform draws together narrows the result towards the middle —
    the central limit doing what it does — and a cat whose pauses are all nearly
    average is not what any of this is for. The values are stretched back out
    around the centre; the factor was measured rather than guessed (see
@@ -36,7 +36,7 @@ static const double NekoNoiseStretch = 2.4;
 	return self;
 }
 
-/* Its own generator, so that the same seed gives the same afternoon twice.
+/*! Its own generator, so that the same seed gives the same afternoon twice.
    Numerical Recipes' constants; nothing here needs cryptography. */
 - (double)uniform
 {

@@ -88,7 +88,7 @@ static const NSUInteger NekoTextLimit = 400;
 	return count;
 }
 
-/* How many different programs, not how many times the front one changed:
+/*! How many different programs, not how many times the front one changed:
    bouncing between an editor and a browser all afternoon is two programs and a
    normal way to work, and counting it as twenty switches made the cat ask why
    somebody kept changing programs every time it opened its mouth. */
@@ -108,7 +108,7 @@ static const NSUInteger NekoTextLimit = 400;
 
 #pragma mark How busy you are
 
-/* Counters, not events: no tap on the input stream, nothing that could see a
+/*! Counters, not events: no tap on the input stream, nothing that could see a
    keystroke. Typing fast is a number going up. */
 - (uint32_t)counterFor:(CGEventType)type
 {
@@ -116,7 +116,7 @@ static const NSUInteger NekoTextLimit = 400;
 		kCGEventSourceStateCombinedSessionState, type);
 }
 
-/* A breakpoint lasts about as long as it takes to notice one. */
+/*! A breakpoint lasts about as long as it takes to notice one. */
 static const NSTimeInterval NekoBreakpointWindow = 12.0;
 
 - (void)sample
@@ -140,7 +140,7 @@ static const NSTimeInterval NekoBreakpointWindow = 12.0;
 	sampledAt = [NSDate date];
 }
 
-/* Four things worth calling a breakpoint, from the coarsest down. Each is
+/*! Four things worth calling a breakpoint, from the coarsest down. Each is
    something a person would recognise as a seam in their own afternoon. */
 - (void)noticeBreakpoint
 {
@@ -201,16 +201,16 @@ static const NSTimeInterval NekoBreakpointWindow = 12.0;
 - (NSString *)describeBreakpoint
 {
 	switch([self breakpointNow]) {
-		case NekoBreakpointCoarse: return NSLocalizedString(@"a clear break in what you were doing", nil);
-		case NekoBreakpointMedium: return NSLocalizedString(@"a pause between two things", nil);
-		case NekoBreakpointFine:   return NSLocalizedString(@"a small gap", nil);
-		default:                   return NSLocalizedString(@"nothing: you are in the middle of something", nil);
+		case NekoBreakpointCoarse: return NSLocalizedString(@"a clear break in what you were doing", @"NekoBreakpointCoarse");
+		case NekoBreakpointMedium: return NSLocalizedString(@"a pause between two things", @"NekoBreakpointMedium");
+		case NekoBreakpointFine:   return NSLocalizedString(@"a small gap", @"NekoBreakpointFine");
+		default:                   return NSLocalizedString(@"nothing: you are in the middle of something", @"NekoBreakpointNone/fallthru");
 	}
 }
 
 #pragma mark Times to say nothing at all
 
-/* A window that covers a whole screen is a presentation, a film or a game, and
+/*! A window that covers a whole screen is a presentation, a film or a game, and
    none of them want a cat with an opinion. */
 - (BOOL)frontWindowFillsAScreen
 {
@@ -242,7 +242,7 @@ static const NSTimeInterval NekoBreakpointWindow = 12.0;
 	return fills;
 }
 
-/* One flag, from the audio device rather than from any application: is the
+/*! One flag, from the audio device rather than from any application: is the
    default input running somewhere. It says nothing about who opened it or what
    is being said, and reading it asks for nothing. */
 - (BOOL)microphoneInUse
@@ -302,13 +302,13 @@ static const NSTimeInterval NekoBreakpointWindow = 12.0;
 - (NSString *)whyBusyElsewhere
 {
 	if(IsSecureEventInputEnabled())
-		return NSLocalizedString(@"you are typing a password", nil);
+		return NSLocalizedString(@"you are typing a password", @"you are typing a password");
 	if([self frontWindowFillsAScreen])
-		return NSLocalizedString(@"something is filling the screen", nil);
+		return NSLocalizedString(@"something is filling the screen", @"something is filling the screen");
 	/* The plainest sign of all, and the one this could see all along without
 	   asking anybody for anything. */
 	if([self microphoneInUse])
-		return NSLocalizedString(@"the microphone is open, so you are probably talking", nil);
+		return NSLocalizedString(@"the microphone is open, so you are probably talking", @"the microphone is open, so you are probably talking");
 	NSString *nobody = [self whyNobodyIsThere];
 	if(nobody != nil)
 		return nobody;
@@ -325,8 +325,8 @@ static const NSTimeInterval NekoBreakpointWindow = 12.0;
 	return ![[self highlight] hasPrefix:@"Nothing stands out"];
 }
 
-- (uint32_t)keysPerMinute { return keysPerMinute; }
-- (uint32_t)movesPerMinute { return movesPerMinute; }
+@synthesize keysPerMinute;
+@synthesize movesPerMinute;
 
 - (NSTimeInterval)idleSeconds
 {
@@ -392,13 +392,14 @@ static NSString *copyStringAttribute(AXUIElementRef element, CFStringRef attribu
 	NSObject *nsValue = CFBridgingRelease(value);
 	NSString *result = nil;
 	if(value != NULL) {
-		if(CFGetTypeID(value) == CFStringGetTypeID())
+		if(CFGetTypeID(value) == CFStringGetTypeID()) {
 			result = [nsValue copy];
+		}
 	}
 	return [result length] > 0 ? result : nil;
 }
 
-/* One line, trimmed, with the middle kept: the beginning of a document says
+/*! One line, trimmed, with the middle kept: the beginning of a document says
    less about what someone is doing right now than the end of it does. */
 static NSString *tidy(NSString *text)
 {
@@ -419,7 +420,7 @@ static NSString *tidy(NSString *text)
 		[flat substringFromIndex:[flat length] - NekoTextLimit]];
 }
 
-/* Refused outright: a password field, or anything at all while the system has
+/*! Refused outright: a password field, or anything at all while the system has
    secure keyboard entry on — which is what a password field in a browser turns
    on. Neither is a place for a cat to be nosy. */
 - (BOOL)elementIsPrivate:(AXUIElementRef)element
@@ -485,7 +486,7 @@ static NSString *tidy(NSString *text)
    sentence about whichever program is in front — "Safari ti tiene compagnia
    mentre il tempo scorre lento" — because nothing in the list told them what
    was unusual. Naming the salient fact is what turns that into a remark. */
-/* One remark's worth of what is unusual right now.
+/*! One remark's worth of what is unusual right now.
 
    Every candidate that applies is collected and one is chosen, rather than the
    first winning every time: the switch counter used to be first and its

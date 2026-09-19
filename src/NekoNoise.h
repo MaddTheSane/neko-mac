@@ -27,11 +27,10 @@
 }
 
 /*! One shared stream: the cat has one sense of time, not one per feature. */
-+ (NekoNoise *)sharedNoise;
 @property (class, readonly, retain) NekoNoise *sharedNoise;
 
 /*! A stream that can be replayed. Seed 0 asks for an unpredictable one. */
-- (id)initWithSeed:(unsigned long)aSeed;
+- (instancetype)initWithSeed:(unsigned long)aSeed;
 
 /*! The next value, 0 to 1, correlated with the last one. */
 - (double)next;

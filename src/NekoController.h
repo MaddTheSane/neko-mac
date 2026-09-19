@@ -4,7 +4,7 @@
 #import "NekoCharacter.h"
 #import "NekoAsk.h"
 
-@class MyPanel;
+@class MyPanel, NekoPermissionsTab;
 
 /* NSUserDefaults keys */
 extern NSString * const NekoCharacterKey;  /* identifier of the sprite set */
@@ -25,7 +25,7 @@ extern NSNotificationName const NekoSettingsDidChangeNotification;
 
 @interface NekoController : NSObject <NSMenuDelegate>
 {
-	__weak MyPanel *panel;              /* not retained, owned by the nib */
+	__weak MyPanel *panel;         /* not retained, owned by the nib */
 	NSStatusItem *statusItem;
 	BOOL naggedAboutPermissions;   /* once a launch, and no more than once */
 	NSMenuItem *newVersionItem;    /* only there when there is one */
@@ -34,7 +34,7 @@ extern NSNotificationName const NekoSettingsDidChangeNotification;
 	NSMenuItem *stayItem;
 	NSMenuItem *timerItem;
 	NSMenuItem *glanceItem;
-	id permissions;              /* NekoPermissionsTab, which owns that tab */
+	__weak NekoPermissionsTab *permissions; /* NekoPermissionsTab, which owns that tab */
 	NSMenuItem *askItem;
 	NSTabView *prefsTabs;
 	NSMenu *characterMenu;
@@ -86,39 +86,39 @@ extern NSNotificationName const NekoSettingsDidChangeNotification;
 	NSButton *suggestNowButton;
 }
 
-+ (NekoController *)sharedController;
 @property (class, readonly, retain) NekoController *sharedController;
 
 @property (nonatomic, weak) MyPanel *panel;
 
-- (NekoCharacter *)character;
-- (CGFloat)speed;
-- (CGFloat)stopRadius;
-- (CGFloat)scale;
-- (BOOL)idleSleep;
-- (BOOL)wandersWhenIdle;
-- (BOOL)livesOnWindowEdges;
+@property (readonly, strong) NekoCharacter *character;
+@property (nonatomic, readonly) CGFloat speed;
+@property (nonatomic, readonly) CGFloat stopRadius;
+@property (nonatomic, readonly) CGFloat scale;
+@property (readonly) BOOL idleSleep;
+@property (readonly) BOOL wandersWhenIdle;
+@property (readonly) BOOL livesOnWindowEdges;
 
-/* The third behaviour: the cat goes where it likes and the pointer means
+/*! The third behaviour: the cat goes where it likes and the pointer means
    nothing to it. Suggestions live here and nowhere else. */
-- (BOOL)roamsOnItsOwn;
+@property (readonly) BOOL roamsOnItsOwn;
 
-/* The pointer as something to get away from rather than something to sit
+/*! The pointer as something to get away from rather than something to sit
    beside. */
-- (BOOL)fleesThePointer;
+@property (readonly) BOOL fleesThePointer;
 
-/* Orthogonal to all four: whatever it was doing, it does it here. Toggled from
+/*! Orthogonal to all four: whatever it was doing, it does it here. Toggled from
    the menu, remembered across launches along with the spot. */
-- (BOOL)staysWhereItIs;
+@property (readonly) BOOL staysWhereItIs;
 - (void)toggleStay:(id)sender;
 
-/* YES only while roaming and switched on: the flag alone is not enough. */
-- (BOOL)suggestsUnasked;
+/*! `YES` only while roaming and switched on: the flag alone is not enough. */
+@property (readonly) BOOL suggestsUnasked;
 
-/* Minutes between one suggestion and the next. */
-- (NSTimeInterval)suggestionInterval;
+/*! Minutes between one suggestion and the next. */
+@property (nonatomic, readonly) NSTimeInterval suggestionInterval;
 
 - (BOOL)isPaused;
+@property (readonly, getter=isPaused) BOOL paused;
 
 /* Whether the system has been told to open Neko at login. Always NO before
    macOS 13, which has no SMAppService. */

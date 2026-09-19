@@ -70,17 +70,17 @@ typedef NS_ENUM(int, NekoBreakpoint) {
 
 /*! How many different programs, which is the honest measure of jumping about. */
 - (NSUInteger)programsInTheLastQuarterHour;
-- (NSTimeInterval)idleSeconds;
-- (uint32_t)keysPerMinute;
-- (uint32_t)movesPerMinute;
+@property (nonatomic, readonly) NSTimeInterval idleSeconds;
+@property (readonly) uint32_t keysPerMinute;
+@property (readonly) uint32_t movesPerMinute;
 
 /*! Only when screen recording was already granted for some other reason; never
    asked for. */
 - (NSString *)windowTitleIfAllowed;
 
 /*! The switch and the permission together. */
-- (BOOL)readsText;
-+ (BOOL)accessibilityGranted;
+@property (readonly) BOOL readsText;
+@property (class, readonly) BOOL accessibilityGranted;
 
 /*! Asks the system for the permission, which shows the standard alert and opens
    the pane. Returns whether it was already granted. */
@@ -103,7 +103,7 @@ typedef NS_ENUM(int, NekoBreakpoint) {
    uses what can honestly be seen — a full-screen window, secure keyboard entry
    (which is what a password field turns on), somebody talking, and nobody being
    there at all. */
-- (BOOL)isBusyElsewhere;
+@property (readonly) BOOL isBusyElsewhere;
 - (NSString *)whyBusyElsewhere;
 
 /*! Is the microphone open in some application. Not *what* is being said and not

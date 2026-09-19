@@ -81,7 +81,7 @@ static const NSTimeInterval NekoAnticsAway = 150.0;
 
 #pragma mark What the machine will admit to
 
-/* Everything the antics run on comes from NekoDesktop, which the suggestions
+/*! Everything the antics run on comes from NekoDesktop, which the suggestions
    read too. */
 - (NSTimeInterval)idleSeconds
 {

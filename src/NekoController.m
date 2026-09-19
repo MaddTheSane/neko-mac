@@ -505,7 +505,7 @@ static const CGFloat NekoMaxStopRadius = 200.0;
 	return [[NSUserDefaults standardUserDefaults] boolForKey:NekoStayKey];
 }
 
-/* Deliberately an AND rather than the flag alone: a cat that follows the cursor
+/*! Deliberately an AND rather than the flag alone: a cat that follows the cursor
    and comments on your work at the same time is two features fighting for the
    bubble, and the suggestion was always meant to come from the one wandering
    around looking at what you are up to. */

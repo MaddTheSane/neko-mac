@@ -69,7 +69,7 @@
    nothing needs to happen. Unlike an errand this ignores whether the cat is
    busy speaking: whoever calls it is the reason it is about to speak. */
 - (unsigned)turnToward:(NSPoint)point;
-- (BOOL)isOnErrand;
+@property (readonly, getter=isOnErrand) BOOL onErrand;
 
 /*! Put down at a remembered spot, kept on a screen that still exists. */
 - (void)placeAt:(NSPoint)origin;

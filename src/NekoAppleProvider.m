@@ -8,7 +8,7 @@
 	return [NekoAppleModel isAvailable];
 }
 
-- (id)model
+- (NekoAppleModel*)model
 {
 	if(model == nil) {
 		model = [[NekoAppleModel alloc] init];
