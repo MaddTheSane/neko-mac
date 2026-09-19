@@ -4,7 +4,7 @@
 
 /*! One animation state of the cat. The order is the order of the states in a
    character manifest and is not persisted anywhere. */
-typedef enum {
+typedef NS_ENUM(int, NekoState) {
 	NekoStateStop = 0,
 	NekoStateJare,
 	NekoStateKaki,
@@ -24,7 +24,7 @@ typedef enum {
 	NekoStateLTogi,
 	NekoStateRTogi,
 	NekoStateCount
-} NekoState;
+};
 
 /// A set of sprites loaded from a Foo.nekochar folder inside Resources/Characters.
 /// The folder holds a character.plist manifest plus one image per frame:

@@ -9,6 +9,10 @@
 #import "NekoCharacter.h"
 #import "NekoNoise.h"
 
+@interface NekoAntics ()
+@property (copy) NSString *pendingLine;
+@end
+
 /* How often it considers being curious, and how long it waits between antics.
    Often enough to feel alive, rare enough not to be a colleague who taps you on
    the shoulder every minute. */
@@ -20,6 +24,7 @@ static const NSTimeInterval NekoAnticsWaitSpread = 150.0;
 static const NSTimeInterval NekoAnticsAway = 150.0;
 
 @implementation NekoAntics
+@synthesize pendingLine;
 
 + (NekoAntics *)sharedAntics
 {
@@ -222,11 +227,11 @@ static const CGFloat NekoAnticsSideMax = 70.0;
 		   which is why pendingLine was set before asking. */
 		if(![NekoSense isWorthSaying:line])
 			return;
-		self->pendingLine = [line copy];
+		self.pendingLine = line;
 	}];
 }
 
-/* Small models bold their one sentence or wrap it in quotation marks, which
+/*! Small models bold their one sentence or wrap it in quotation marks, which
    inside a speech bubble reads as somebody quoting somebody else. */
 - (NSString *)cleanUp:(NSString *)answer
 {
@@ -258,7 +263,7 @@ static const CGFloat NekoAnticsSideMax = 70.0;
 	cooldown = NekoAnticsMinWait + (NSTimeInterval)arc4random_uniform(
 		(unsigned)NekoAnticsWaitSpread);
 
-	pendingLine = [line copy];
+	self.pendingLine = line;
 	[panel errandTo:spot thenState:pose forTicks:ticks];
 	if(line != nil)
 		[self askForLineInsteadOf:line];
@@ -293,14 +298,14 @@ static const CGFloat NekoAnticsSideMax = 70.0;
 		/* It came over, saw the typing had not stopped, and went away without
 		   saying anything. Nothing is spoken, so nothing counts against the
 		   day's remarks either — this was a visit, not an interruption. */
-		pendingLine = nil;
+		self.pendingLine = nil;
 		[self withdrawFrom:[NSEvent mouseLocation]];
 		return;
 	}
 
 	if([pendingLine length] > 0)
 		[[NekoAsk sharedAsk] sayUnprompted:pendingLine];
-	pendingLine = nil;
+	self.pendingLine = nil;
 }
 
 /* Which antic suits the moment. Typing hard is the interesting one — that is

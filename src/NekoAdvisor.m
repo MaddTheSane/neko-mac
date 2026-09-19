@@ -11,11 +11,11 @@
 
 NSString * const NekoSuggestLastKey = @"NekoSuggestLast";
 
-/* How often the cat looks up from what it is doing. Cheap: two lookups and a
+/*! How often the cat looks up from what it is doing. Cheap: two lookups and a
    couple of comparisons, nothing that touches the disk or the network. */
 static const NSTimeInterval NekoAdvisorHeartbeat = 20.0;
 
-/* Long enough in one application to call it an activity worth commenting on. */
+/*! Long enough in one application to call it an activity worth commenting on. */
 static const NSTimeInterval NekoAdvisorSettled = 25.0;
 
 /* Nobody there, or someone in the middle of a word. */
@@ -79,14 +79,14 @@ static const NSTimeInterval NekoAdvisorTyping = 3.0;
 
 #pragma mark Watching, shallowly
 
-/* All of it lives in NekoDesktop now, which the antics read too: one place that
+/*! All of it lives in NekoDesktop now, which the antics read too: one place that
    knows what is going on, rather than two that each keep half of it. */
 - (NSString *)context
 {
 	return [[NekoDesktop sharedDesktop] summary];
 }
 
-/* Small models wrap their one sentence in quotation marks or bold it, both of
+/*! Small models wrap their one sentence in quotation marks or bold it, both of
    which read as somebody quoting somebody else inside a speech bubble. */
 - (NSString *)cleanUp:(NSString *)answer
 {
@@ -107,7 +107,7 @@ static const NSTimeInterval NekoAdvisorTyping = 3.0;
 
 #pragma mark Deciding to speak
 
-/* Every reason not to, in the order that costs least to check. A suggestion is
+/*! Every reason not to, in the order that costs least to check. A suggestion is
    an interruption, and the whole feature dies if it interrupts badly. */
 - (BOOL)shouldSpeakNow
 {
