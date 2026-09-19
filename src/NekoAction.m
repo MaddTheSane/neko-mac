@@ -337,7 +337,7 @@ NSString *NekoWithoutMarkdown(NSString *line)
 		[task setArguments:@[@"run", target]];
 		@try {
 			[task launch];
-		} @catch(id nothing) {
+		} @catch(NSException *raised) {
 			if(error != NULL)
 				*error = [NSError errorWithDomain:NekoAskErrorDomain
 											 code:NekoAskErrorTransport
@@ -367,10 +367,10 @@ NSString *NekoWithoutMarkdown(NSString *line)
 		NSString *name = [self fileInFolderURL:from isAmbiguous:&ambiguous];
 		if(ambiguous)
 			complaint = [NSString stringWithFormat:
-				NSLocalizedString(@"There is more than one “%@” there.", @"There is more than one “%@” there."), target];
+				NSLocalizedString(@"There is more than one “%@” there.", @"There is more than one \"%@\" there."), target];
 		else if(name == nil)
 			complaint = [NSString stringWithFormat:
-				NSLocalizedString(@"I cannot find “%@” there.", @"I cannot find “%@” there."), target];
+				NSLocalizedString(@"I cannot find “%@” there.", @"I cannot find \"%@\" there."), target];
 		else {
 			NSURL *source = [from URLByAppendingPathComponent:name];
 			NSNumber *directory = nil;

@@ -41,7 +41,7 @@ private let NekoAnticsSideMax: CGFloat = 70.0
 /// What it goes on comes from NekoDesktop: counters the system hands out with no
 /// permission at all — keys and mouse moves since boot, seconds since the last
 /// one — plus, if that switch is on, the text being worked on.
-
+///
 /// What it says comes from whichever engine Ask Neko is set to, asked while the
 /// cat is still walking over, with written-in lines as the fallback for when
 /// there is no engine or it does not answer in time.
@@ -159,7 +159,7 @@ public final class NekoAntics : NSObject {
 		let lines = [
 			NSLocalizedString("Got it. It was getting away.", comment: "Got it. It was getting away."),
 			NSLocalizedString("This arrow keeps moving. Suspicious.", comment: "This arrow keeps moving. Suspicious."),
-			NSLocalizedString("Caught your cursor. You may have it back.", comment: "Caught your cursor. You may have it back.")];
+			NSLocalizedString("Caught your cursor. You may have it back.", comment: "Caught your cursor. You may have it back.")]
 		
 		return lines.randomElement()!
 	}
@@ -420,7 +420,7 @@ public final class NekoAntics : NSObject {
 
 /// Small models bold their one sentence or wrap it in quotation marks, which
 /// inside a speech bubble reads as somebody quoting somebody else.
-private func cleanUp(_ answer: inout String) {
+internal func cleanUp(_ answer: inout String) {
 	var line = answer
 	if #available(macOS 13.0, *) {
 		line.replace("**", with: "")

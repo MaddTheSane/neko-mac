@@ -5168,7 +5168,7 @@
       }
     },
     "I cannot find “%@” there." : {
-      "comment" : "I cannot find “%@” there.",
+      "comment" : "I cannot find \"%@\" there.",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -14080,7 +14080,7 @@
       }
     },
     "There is more than one “%@” there." : {
-      "comment" : "There is more than one “%@” there.",
+      "comment" : "There is more than one \"%@\" there.",
       "localizations" : {
         "en" : {
           "stringUnit" : {

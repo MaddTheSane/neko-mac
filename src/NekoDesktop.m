@@ -572,7 +572,7 @@ static NSString *tidy(NSString *text)
 	if(text != nil)
 		[lines appendFormat:@"The text I am working on ends like this: %@\n", text];
 	[lines appendFormat:@"\nThe one thing that stands out: %@\n", [self highlight]];
-	return lines;
+	return [lines copy];
 }
 
 @end

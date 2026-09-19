@@ -95,7 +95,7 @@ typedef NS_ENUM(int, NekoBreakpoint) {
    it is gone. */
 - (NekoBreakpoint)breakpointNow;
 - (NSTimeInterval)secondsSinceBreakpoint;
-- (NSString *)describeBreakpoint;
+@property (nonatomic, readonly, copy) NSString *describeBreakpoint;
 
 /*! Times when nothing should be said at all, whatever the interval says, with the
    reason for the preferences to show. Focus and Do Not Disturb are deliberately
