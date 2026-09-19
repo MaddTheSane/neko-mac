@@ -122,7 +122,7 @@ public final class NekoAntics : NSObject {
 		if panel.isOnErrand || panel.isHeld {
 			return false
 		}
-		guard NekoAsk.shared.canSpeakUnprompted() else {
+		guard NekoAsk.shared.canSpeakUnprompted else {
 			return false
 		}
 		if idleSeconds > NekoAnticsAway {
@@ -253,7 +253,7 @@ public final class NekoAntics : NSObject {
 			return
 		}
 		let instructions = NekoCuriosityInstructionsFor(character.persona)
-		let context = NekoDesktop.shared.summary()!
+		let context = NekoDesktop.shared.summary()
 		let asked = Date()
 		
 		provider.askQuestion(context, instructions: instructions) { [self] answer, error in
@@ -365,12 +365,12 @@ public final class NekoAntics : NSObject {
 	/// do, for the status line.
 	@discardableResult
 	@objc public func anticNow() -> String {
-		NekoDesktop.shared?.sample()
+		NekoDesktop.shared.sample()
 		guard let panel = NekoController.shared.panel, panel.isRoaming else {
 			return NSLocalizedString("Only while roaming.", comment: "Only while roaming.")
 		}
 		
-		let desktop = NekoDesktop.shared!
+		let desktop = NekoDesktop.shared
 		let idle = desktop.idleSeconds
 		
 		if desktop.keysPerMinute > 40 {

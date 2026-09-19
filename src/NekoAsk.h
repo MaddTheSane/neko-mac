@@ -5,7 +5,7 @@
 
 @class NekoHotKey, NekoListener, NekoBubble, NekoLine;
 @class NekoShortcutProvider, NekoModelProvider, NekoAppleProvider;
-@class NekoOpenAIProvider, NekoLocalProvider;
+@class NekoOpenAIProvider, NekoLocalProvider, AVSpeechSynthesizer;
 
 /* NSUserDefaults keys */
 extern NSString * const NekoAskEnabledKey;
@@ -36,7 +36,7 @@ extern NSString * const NekoLastUnpromptedKey;
 	NekoListener *listener;
 	NekoBubble *bubble;
 	NekoLine *typedLine;         /*!< the typed half of the conversation */
-	id voice;                    /*!< AVSpeechSynthesizer, kept so it can be cut off */
+	AVSpeechSynthesizer *voice;  /*!< kept so it can be cut off */
 	BOOL beatPending;            /*!< a reply to wait for, once the voice is done */
 	BOOL saidUnasked;            /*!< what is on screen, nobody asked for */
 	BOOL fromTheWeb;             /*!< this answer was built on somebody else's words */
@@ -60,7 +60,6 @@ extern NSString * const NekoLastUnpromptedKey;
 	NekoAppleProvider *appleProvider;
 	NekoOpenAIProvider *openaiProvider;
 	NekoLocalProvider *localProvider;
-	int phase;
 	NSDate *lastDrawn;           /*!< throttles the streaming redraw */
 	NSTimer *thinking;
 	BOOL drawing;                /* the spinner is an hourglass, not a paw */           /* the animation while it waits */
@@ -84,8 +83,8 @@ extern NSString * const NekoLastUnpromptedKey;
 @property (readonly) BOOL hotKeyUnavailable;
 
 @property (readonly, assign) id<NekoAnswerProvider> provider;
-@property (readonly, retain) NekoModelProvider *modelProvider;   /*!< the preferences hold its key */
-@property (readonly, retain) NekoOpenAIProvider *openaiProvider;
+@property (readonly, strong) NekoModelProvider *modelProvider;   /*!< the preferences hold its key */
+@property (readonly, strong) NekoOpenAIProvider *openaiProvider;
 
 /*! Starts a question, or abandons the one in progress. Held rather than tapped,
    the same keystroke opens a line to type in instead. */
@@ -111,7 +110,7 @@ extern NSString * const NekoLastUnpromptedKey;
    Nothing is delayed that was already on screen, and nothing longer than a
    sentence or two, because those streamed in as they arrived. Zero when the
    switch is off. */
-- (NSTimeInterval)tempoFor:(NSString *)text;
+- (NSTimeInterval)tempoForPrompt:(NSString *)text;
 
 /*! The turn just before this one, as it goes into the next prompt, and how it
    gets there. Empty once a few minutes have passed. */
@@ -122,7 +121,7 @@ extern NSString * const NekoLastUnpromptedKey;
 - (void)proposeVerb:(NSDictionary *)verb;
 
 /*! What a plugin's route fetched, quoted to a model as somebody else's words. */
-- (void)followRoute:(NSDictionary *)route;
+- (void)followRoute:(NSDictionary<NSString*,NSString*> *)route;
 
 /*! The whole of asking, from a question that is already text: what the typed line
    and the microphone both end in, and what the Services entry uses. */
@@ -137,7 +136,7 @@ extern NSString * const NekoLastUnpromptedKey;
 /*! An appointment, read back in full — the day in words, the hours, the title —
    before anything is written. Read back and not simply done, unlike the timer:
    this one lands in a calendar, where a wrong entry outlives the mistake. */
-- (void)proposeAppointment:(NSDictionary *)appointment;
+- (void)proposeAppointment:(NSDictionary<NSString*,id> *)appointment;
 
 /*! The two halves either side of a plugin having a look at the words: the second
    is what actually asks, and what actually says. */
@@ -166,16 +165,16 @@ extern NSString * const NekoLastUnpromptedKey;
    conversation the gap between turns runs about a tenth of a second while the
    reply takes six times that to plan, and what fills it is the listener
    reacting. */
-- (void)acknowledgeHearing:(NSString *)heard;
+- (void)acknowledgeHearingString:(NSString *)heard;
 
 /*! What the microphone reports during those few seconds. Called by the listener,
    and by the tests, which have no microphone. */
 - (void)replyHeard:(NSString *)text final:(BOOL)final error:(NSError *)error;
 
-/*! For the cat's own remarks, which nobody asked for. NO while it is listening,
+/*! For the cat's own remarks, which nobody asked for. `NO` while it is listening,
    thinking, answering or already saying something: an interruption of an
    interruption is worse than a missed suggestion. */
-- (BOOL)canSpeakUnprompted;
+@property (nonatomic, readonly) BOOL canSpeakUnprompted;
 
 /*! Seconds since the last unasked remark of any kind, and whether the quiet
    period from the Suggestions tab has passed. Both count suggestions and

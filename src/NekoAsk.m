@@ -44,29 +44,38 @@ NSString * const NekoAskFollowUpKey       = @"NekoAskFollowUp";
 NSString * const NekoAskTempoKey          = @"NekoAskTempo";
 static NSString * const NekoAskExplainedKey = @"NekoAskExplained";
 
-enum { NekoPhaseIdle = 0, NekoPhaseListening, NekoPhaseThinking,
-       NekoPhaseAnswering, NekoPhaseWaiting };
+typedef NS_ENUM(int, NekoPhase) {
+	NekoPhaseIdle = 0,
+	NekoPhaseListening,
+	NekoPhaseThinking,
+	NekoPhaseAnswering,
+	NekoPhaseWaiting
+};
 
-/* How long the microphone stays open after the cat has spoken. Long enough to
+/*! How long the microphone stays open after the cat has spoken. Long enough to
    draw breath and answer, short enough that nobody forgets it is there. */
 static const NSTimeInterval NekoBeatPatience = 6.0;
 
-/* How long the previous turn is worth pointing back at. Say something ten
+/*! How long the previous turn is worth pointing back at. Say something ten
    minutes later and it is a new conversation, not a follow-up. */
 static const NSTimeInterval NekoThreadLife = 180.0;
 
-/* How many turns back it can see, and how much of them a model is given. Three
+/*! How many turns back it can see, and how much of them a model is given. Three
    because the diary says a third turn is common and a fourth is not; six hundred
    characters because the whole instruction block is about a thousand and the
    character, the rules and the diary have to fit beside this. */
 static const NSUInteger NekoThreadTurns = 3;
 static const NSUInteger NekoThreadChars = 600;
 
-/* A remark nobody asked for is worth something only if it is possible to tell
+/*! A remark nobody asked for is worth something only if it is possible to tell
    how it landed. Answered moves the pace up, let go moves it down, clicked away
    moves it down twice as far — and when nothing was listening for a reply, no
    verdict at all: guessing from silence would teach the wrong thing. */
-enum { NekoVerdictAnswered = 1, NekoVerdictIgnored, NekoVerdictDismissed };
+typedef NS_ENUM(int, NekoVerdict) {
+	NekoVerdictAnswered = 1,
+	NekoVerdictIgnored,
+	NekoVerdictDismissed
+};
 
 /* Held for this long, the keystroke means "let me type it". Below it, a tap. */
 static const NSTimeInterval NekoHoldToType = 0.5;
@@ -77,23 +86,27 @@ static const NSTimeInterval NekoHoldToType = 0.5;
 @end
 
 @implementation NekoAsk
+{
+	NekoPhase phase;
+}
 
 + (void)initialize
 {
 	if(self != [NekoAsk class])
 		return;
 	[[NSUserDefaults standardUserDefaults] registerDefaults:
-		[NSDictionary dictionaryWithObjectsAndKeys:
-			[NSNumber numberWithBool:NO], NekoAskEnabledKey,
-			[NSNumber numberWithInt:0x2D], NekoAskHotKeyCodeKey,
-			[NSNumber numberWithInt:(int)(NSEventModifierFlagControl
-			                              | NSEventModifierFlagOption)],
-				NekoAskHotKeyModifiersKey,
-			@"apple", NekoAskProviderKey,   /* free, private, and already there */
-			@"Ask Neko", NekoAskShortcutNameKey,
-			[NSNumber numberWithBool:NO], NekoAskSpeakKey,
-			[NSNumber numberWithBool:YES], NekoAskFollowUpKey,
-			[NSNumber numberWithBool:YES], NekoAskTempoKey, nil]];
+		 @{
+		NekoAskEnabledKey: @NO,
+		NekoAskHotKeyCodeKey: @0x2D,
+		NekoAskHotKeyModifiersKey: @(NSEventModifierFlagControl
+			| NSEventModifierFlagOption),
+		NekoAskProviderKey: @"apple", /* free, private, and already there */
+		NekoAskShortcutNameKey: @"Ask Neko",
+		NekoAskSpeakKey: @NO,
+		NekoAskFollowUpKey: @YES,
+		NekoAskTempoKey: @YES
+	}
+	];
 }
 
 + (NekoAsk *)sharedAsk
@@ -214,7 +227,7 @@ static const NSTimeInterval NekoHoldToType = 0.5;
 	return [[NekoController sharedController] panel];
 }
 
-- (void)showBubble:(NSString *)text dismissAfter:(NSTimeInterval)seconds
+- (void)showBubble:(NSString *)text dismissAfterSeconds:(NSTimeInterval)seconds
 {
 	MyPanel *panel = [self panel];
 	NSRect where = panel != nil ? [panel frame]
@@ -269,7 +282,7 @@ static const NSTimeInterval NekoHoldToType = 0.5;
 	[self typeALine];
 }
 
-/* The other way in. Nothing here needs the microphone, which is the point: a
+/*! The other way in. Nothing here needs the microphone, which is the point: a
    Mac that has refused it, a meeting, a word no recogniser will ever get right. */
 - (void)typeALine
 {
@@ -335,7 +348,7 @@ static const NSTimeInterval NekoHoldToType = 0.5;
 	   other way is a remark from a machine; the turn is what makes it the cat's.
 	   The words wait for it — a bubble is placed against the cat's frame when it
 	   is shown, so speaking mid-step would leave it behind. */
-	unsigned turning = turnedForRemark ? 0 : [[self panel] turnToward:[NSEvent mouseLocation]];
+	unsigned turning = turnedForRemark ? 0 : [[self panel] turnTowardPoint:[NSEvent mouseLocation]];
 	if(turning > 0) {
 		turnedForRemark = YES;   /* once, whatever the pointer does next */
 		pendingRemark = [text copy];
@@ -359,7 +372,7 @@ static const NSTimeInterval NekoHoldToType = 0.5;
 	NSTimeInterval showing = [NekoBubble readingTimeFor:text];
 	phase = NekoPhaseAnswering;
 	[[self panel] holdWithState:NekoStateStop];
-	[self showBubble:text dismissAfter:showing];
+	[self showBubble:text dismissAfterSeconds:showing];
 	[self speak:text];
 	[self performSelector:@selector(finish) withObject:nil afterDelay:showing];
 	/* Nobody asked, so there is no question to point back at — only what was
@@ -368,7 +381,7 @@ static const NSTimeInterval NekoHoldToType = 0.5;
 	[self wantAReply];
 }
 
-/* The other half of -sayUnprompted:, after the cat has turned. */
+/*! The other half of ``-sayUnprompted:``, after the cat has turned. */
 - (void)sayItNow
 {
 	NSString *text = pendingRemark;
@@ -405,7 +418,7 @@ static const NSTimeInterval NekoHoldToType = 0.5;
 	[bubble hide];
 }
 
-/* Back to being a cat. */
+/*! Back to being a cat. */
 - (void)finish
 {
 	heardSomething = NO;
@@ -454,7 +467,7 @@ static const NSTimeInterval NekoHoldToType = 0.5;
 	[self startCapture];
 }
 
-/* The system prompt on its own is a surprise; this says what is about to
+/*! The system prompt on its own is a surprise; this says what is about to
    happen, once. */
 - (void)explainThenAuthorise
 {
@@ -486,7 +499,7 @@ static const NSTimeInterval NekoHoldToType = 0.5;
 
 	/* Turn toward whoever is talking before settling down to listen. Done first
 	   because holding the cat still is what stops it turning at all. */
-	[[self panel] turnToward:[NSEvent mouseLocation]];
+	[[self panel] turnTowardPoint:[NSEvent mouseLocation]];
 
 	phase = NekoPhaseListening;
 	heardSomething = NO;
@@ -494,7 +507,7 @@ static const NSTimeInterval NekoHoldToType = 0.5;
 	   is a different thing from the microphone being open and now looks like
 	   one. */
 	[[self panel] holdWithState:NekoStateStop];
-	[self showBubble:NSLocalizedString(@"Listening…", @"Listening…") dismissAfter:0.0];
+	[self showBubble:NSLocalizedString(@"Listening…", @"Listening…") dismissAfterSeconds:0.0];
 
 	BOOL started = NO;
 	@try {
@@ -537,8 +550,8 @@ static const NSTimeInterval NekoHoldToType = 0.5;
 	}
 
 	if(!final) {
-		[self acknowledgeHearing:text];
-		[self showBubble:text dismissAfter:0.0];   /* the question as it forms */
+		[self acknowledgeHearingString:text];
+		[self showBubble:text dismissAfterSeconds:0.0];   /* the question as it forms */
 		return;
 	}
 
@@ -547,7 +560,7 @@ static const NSTimeInterval NekoHoldToType = 0.5;
 
 #pragma mark What became of a remark
 
-- (void)judgeUnasked:(int)verdict
+- (void)judgeUnasked:(NekoVerdict)verdict
 {
 	if(!saidUnasked)
 		return;
@@ -564,7 +577,7 @@ static const NSTimeInterval NekoHoldToType = 0.5;
 
 #pragma mark A moment to reply
 
-/* Whether the cat may hold the microphone open after it has spoken. Three
+/*! Whether the cat may hold the microphone open after it has spoken. Three
    things have to be true, and the third is the one that matters: speech must
    already have been allowed for a question. A remark nobody asked for is not an
    occasion to ask for a microphone. */
@@ -588,7 +601,7 @@ static const NSTimeInterval NekoHoldToType = 0.5;
 	return phase == NekoPhaseWaiting;
 }
 
-/* Asked for as soon as something has been said. If the cat is reading it out
+/*! Asked for as soon as something has been said. If the cat is reading it out
    loud, the microphone waits for the voice to stop rather than listening to
    it — one machine talking to itself is not a conversation. */
 - (void)wantAReply
@@ -633,7 +646,7 @@ static const NSTimeInterval NekoHoldToType = 0.5;
 		[self endBeatQuietly];
 }
 
-/* Nobody said anything. Close the microphone, take the sign down, and let
+/*! Nobody said anything. Close the microphone, take the sign down, and let
    whatever was on screen finish the way it was going to. */
 - (void)endBeatQuietly
 {
@@ -659,7 +672,7 @@ static const NSTimeInterval NekoHoldToType = 0.5;
 		}];
 }
 
-/* Words arriving while the cat is still being read: that is the barge-in. The
+/*! Words arriving while the cat is still being read: that is the barge-in. The
    voice stops mid-sentence, the bubble stops counting down, and what was a
    remark becomes a conversation. */
 - (void)replyHeard:(NSString *)text final:(BOOL)final error:(NSError *)error
@@ -679,9 +692,9 @@ static const NSTimeInterval NekoHoldToType = 0.5;
 	[bubble keepUpFor:0.0];
 
 	if(!final) {
-		[self acknowledgeHearing:text];
+		[self acknowledgeHearingString:text];
 		[bubble setHint:NSLocalizedString(@"● listening", @"* listening")];
-		[self showBubble:text dismissAfter:0.0];
+		[self showBubble:text dismissAfterSeconds:0.0];
 		return;
 	}
 	[bubble setHint:nil];
@@ -692,7 +705,7 @@ static const NSTimeInterval NekoHoldToType = 0.5;
 /* Ears up. Once per sentence — a cat that re-reacted to every partial result
    would twitch its way through a question — and only for a partial with
    something in it, since the recogniser reports empty ones. */
-- (void)acknowledgeHearing:(NSString *)heard
+- (void)acknowledgeHearingString:(NSString *)heard
 {
 	if(heardSomething)
 		return;
@@ -792,10 +805,10 @@ static const NSTimeInterval NekoHoldToType = 0.5;
 
 #pragma mark Waiting, visibly
 
-/* Something has to happen between the question and the answer. A spinner would
+/*! Something has to happen between the question and the answer. A spinner would
    do; a cat that is visibly busy doing cat things is better, and the wait is
    where the character has the most room. */
-- (NSArray *)thinkingLines
+- (NSArray<NSString*> *)thinkingLines
 {
 	return @[
 		NSLocalizedString(@"sniffing the question", @"sniffing the question"),
@@ -818,10 +831,10 @@ static const NSTimeInterval NekoHoldToType = 0.5;
 	[self thinkingTick:nil];
 }
 
-/* The drawing takes fifteen seconds or so, which is a long time to look at one
+/*! The drawing takes fifteen seconds or so, which is a long time to look at one
    unchanging sentence. Same machinery as the thinking spinner, a different set
    of occupations, and an hourglass that turns over instead of a walking paw. */
-- (NSArray *)drawingLines
+- (NSArray<NSString*> *)drawingLines
 {
 	return @[
 		NSLocalizedString(@"mixing the colours", @"mixing the colours"),
@@ -855,7 +868,7 @@ static const NSTimeInterval NekoHoldToType = 0.5;
 		NSString *glass = (thinkingTick % 2) == 0 ? @"\u231b" : @"\u23f3";
 		NSString *dots = [@"..." substringToIndex:1 + (thinkingTick % 3)];
 		[self showBubble:[NSString stringWithFormat:@"%@\n\n%@ %@%@",
-			thinkingQuestion, glass, line, dots] dismissAfter:0.0];
+			thinkingQuestion, glass, line, dots] dismissAfterSeconds:0.0];
 		thinkingTick++;
 		return;
 	}
@@ -863,12 +876,12 @@ static const NSTimeInterval NekoHoldToType = 0.5;
 	NSArray *lines = [self thinkingLines];
 	/* A new occupation every couple of seconds, and the tail grows in between. */
 	NSString *line = [lines objectAtIndex:(thinkingTick / 8) % [lines count]];
-	static const char *paws[] = {"🐾", "🐾 ", "🐾  ", "🐾   "};
+	static const char * const paws[] = {"🐾", "🐾 ", "🐾  ", "🐾   "};
 	NSString *paw = [NSString stringWithUTF8String:paws[thinkingTick % 4]];
 	NSString *dots = [@"..." substringToIndex:1 + (thinkingTick % 3)];
 
 	[self showBubble:[NSString stringWithFormat:@"%@\n\n%@%@%@",
-		thinkingQuestion, paw, line, dots] dismissAfter:0.0];
+		thinkingQuestion, paw, line, dots] dismissAfterSeconds:0.0];
 	thinkingTick++;
 }
 
@@ -1125,7 +1138,7 @@ static const NSTimeInterval NekoHoldToType = 0.5;
 			[self failed:error];
 	};
 
-	[self ask:question of:provider with:instructions then:finished];
+	[self askQuestion:question ofProvider:provider withInstructions:instructions completion:finished];
 }
 
 /* Every question goes through here, whichever door it came in by, so that a
@@ -1133,10 +1146,10 @@ static const NSTimeInterval NekoHoldToType = 0.5;
    quickly as one answered straight away. Those two used to wait for the whole
    answer — which is precisely backwards, since they are the slowest paths in the
    application: they fetch something first and only then start thinking. */
-- (void)ask:(NSString *)question
-         of:(id<NekoAnswerProvider>)provider
-       with:(NSString *)instructions
-       then:(void (^)(NSString *answer, NSError *error))finished
+- (void)askQuestion:(NSString *)question
+		 ofProvider:(id<NekoAnswerProvider>)provider
+   withInstructions:(NSString *)instructions
+		 completion:(void (^)(NSString *answer, NSError *error))finished
 {
 	/* Streaming when the provider can: the first words land in about half a
 	   second, which reads as quick even though the whole answer takes longer.
@@ -1157,7 +1170,7 @@ static const NSTimeInterval NekoHoldToType = 0.5;
 				return;
 			self->lastDrawn = [NSDate date];
 			[[self panel] holdWithState:NekoStateStop];
-			[self showBubble:sofar dismissAfter:0.0];
+			[self showBubble:sofar dismissAfterSeconds:0.0];
 		}
 		          completion:finished];
 		return;
@@ -1172,12 +1185,12 @@ static const NSTimeInterval NekoHoldToType = 0.5;
    Two passes: the model names one of the sources, the app fetches it, and the
    model answers with the lines in front of it. The app does the naming of
    addresses, always — see NekoWeb for why that is the whole of the safety. */
-/* What a plugin's route fetched, handed to a model the way a feed is: quoted
+/*! What a plugin's route fetched, handed to a model the way a feed is: quoted
    under the name of whoever wrote it, and with fromTheWeb set, which is what
    stops an answer built on it from performing anything. A route is the only way
    a plugin can put words in front of a model, and they arrive as somebody
    else's. */
-- (void)followRoute:(NSDictionary *)route
+- (void)followRoute:(NSDictionary<NSString*,NSString*> *)route
 {
 	NSString *asked = [askingAbout copy];
 	NSString *says = [route objectForKey:@"Says"] ?: @"";
@@ -1204,8 +1217,8 @@ static const NSTimeInterval NekoHoldToType = 0.5;
 		[self startThinkingAbout:asked ?: says];
 		NSString *instructions = [[self instructionsForAsking]
 			stringByAppendingString:[NekoWeb blockFrom:says lines:lines]];
-		[self ask:(asked ?: says) of:provider with:instructions
-		     then:^(NSString *answer, NSError *whyNot) {
+		[self askQuestion:(asked ?: says) ofProvider:provider withInstructions:instructions
+		     completion:^(NSString *answer, NSError *whyNot) {
 			[self stopThinking];
 			if([answer length] > 0)
 				[self answer:answer];
@@ -1284,8 +1297,8 @@ static const NSTimeInterval NekoHoldToType = 0.5;
 		[self startThinkingAbout:asked ?: [source name]];
 		NSString *instructions = [[self instructionsForAsking]
 			stringByAppendingString:[NekoWeb blockFrom:[source name] lines:headlines]];
-		[self ask:(asked ?: [source name]) of:provider with:instructions
-		     then:^(NSString *answer, NSError *whyNot) {
+		[self askQuestion:(asked ?: [source name]) ofProvider:provider withInstructions:instructions
+		     completion:^(NSString *answer, NSError *whyNot) {
 			[self stopThinking];
 			if([answer length] > 0)
 				[self answer:answer];
@@ -1500,7 +1513,7 @@ static const NSTimeInterval NekoHoldToType = 0.5;
 	/* A beat before it speaks, if the answer is short enough that it appeared
 	   all at once. The spinner keeps walking meanwhile, which is what the
 	   studies used to make a wait read as thinking rather than as lag. */
-	NSTimeInterval tempo = [self tempoFor:text];
+	NSTimeInterval tempo = [self tempoForPrompt:text];
 	if(tempo > 0.0) {
 		[self startThinkingAbout:(askingAbout ?: @"")];
 		pendingAnswer = [text copy];
@@ -1543,7 +1556,7 @@ static const NSTimeInterval NekoHoldToType = 0.5;
 {
 	phase = NekoPhaseAnswering;
 	[[self panel] holdWithState:NekoStateStop];
-	[self showBubble:text dismissAfter:[NekoBubble readingTimeFor:text]];
+	[self showBubble:text dismissAfterSeconds:[NekoBubble readingTimeFor:text]];
 	[self speak:text];
 	[self performSelector:@selector(finish)
 	           withObject:nil
@@ -1597,7 +1610,7 @@ static const NSTimeInterval NekoTempoPerCharacter = 0.012;
 static const NSTimeInterval NekoTempoMost = 0.9;
 static const NSUInteger NekoTempoLongEnough = 160;
 
-- (NSTimeInterval)tempoFor:(NSString *)text
+- (NSTimeInterval)tempoForPrompt:(NSString *)text
 {
 	if(![[NSUserDefaults standardUserDefaults] boolForKey:NekoAskTempoKey])
 		return 0.0;
@@ -1625,7 +1638,7 @@ static const NSUInteger NekoTempoLongEnough = 160;
 {
 	[[self panel] holdWithState:NekoStateAkubi];
 	phase = NekoPhaseAnswering;
-	[self showBubble:text dismissAfter:4.0];
+	[self showBubble:text dismissAfterSeconds:4.0];
 	[self speak:text];
 	[self performSelector:@selector(finish) withObject:nil afterDelay:4.0];
 	/* The app's own sentences are not turns to point back at — "Done." explains

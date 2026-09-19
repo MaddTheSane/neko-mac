@@ -56,7 +56,7 @@
    there — the curious antics are built out of this. Pass NekoStateCount to
    arrive and carry on as normal. Roaming only: the other two behaviours have
    their own ideas about where the cat belongs. */
-- (void)errandTo:(NSPoint)point thenState:(NekoState)state forTicks:(unsigned)ticks;
+- (void)errandToPoint:(NSPoint)point thenState:(NekoState)state forTicks:(unsigned)ticks;
 
 /* Turns toward something and takes a step or two, ending sitting up alert.
 
@@ -68,11 +68,11 @@
    Returns how many ticks it will take, or 0 when it is close enough already and
    nothing needs to happen. Unlike an errand this ignores whether the cat is
    busy speaking: whoever calls it is the reason it is about to speak. */
-- (unsigned)turnToward:(NSPoint)point;
+- (unsigned)turnTowardPoint:(NSPoint)point;
 @property (readonly, getter=isOnErrand) BOOL onErrand;
 
 /*! Put down at a remembered spot, kept on a screen that still exists. */
-- (void)placeAt:(NSPoint)origin;
+- (void)placeAtPoint:(NSPoint)origin;
 
 /*! Where a sprite of this size belongs when the screens are these. Pure, and
    separate from NSScreen, because the case worth testing is the one this Mac

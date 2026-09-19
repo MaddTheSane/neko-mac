@@ -156,7 +156,7 @@ static unsigned NekoIdleTicksFor(NekoState state)
 			NSString *saved = [[NSUserDefaults standardUserDefaults]
 				stringForKey:NekoStayPointKey];
 			if([saved length] > 0)
-				[self placeAt:NSPointFromString(saved)];
+				[self placeAtPoint:NSPointFromString(saved)];
 		}
 	}
 	else
@@ -402,7 +402,7 @@ static const CGFloat NekoFleeFar  = 4.0;
 static const CGFloat NekoTurnSlack = 40.0f;
 static const CGFloat NekoTurnStep = 30.0f;
 
-- (unsigned)turnToward:(NSPoint)point
+- (unsigned)turnTowardPoint:(NSPoint)point
 {
 	if(!roamMode || staying || held)
 		return 0;
@@ -446,7 +446,7 @@ static const CGFloat NekoTurnStep = 30.0f;
 	return walking + errandHold + 4;
 }
 
-- (void)errandTo:(NSPoint)point thenState:(NekoState)state forTicks:(unsigned)ticks
+- (void)errandToPoint:(NSPoint)point thenState:(NekoState)state forTicks:(unsigned)ticks
 {
 	if(!roamMode || staying || held || [self isSpeaking])
 		return;
@@ -760,7 +760,7 @@ NSPoint NekoOriginOnAScreen(NSPoint origin, CGFloat side, NSArray<NSValue*> *vis
 /* A spot somebody asked it to keep, from a launch that may have had a different
    set of displays: clamped to the room and then onto a screen that is actually
    there, rather than trusted as written. */
-- (void)placeAt:(NSPoint)origin
+- (void)placeAtPoint:(NSPoint)origin
 {
 //	CGFloat side = [self frame].size.width;
 	CGFloat x = origin.x, y = origin.y;

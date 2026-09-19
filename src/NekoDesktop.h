@@ -57,14 +57,13 @@ typedef NS_ENUM(int, NekoBreakpoint) {
 	NSDate *breakpointAt;
 }
 
-+ (NekoDesktop *)sharedDesktop;
-@property (class, readonly, retain) NekoDesktop *sharedDesktop;
+@property (class, readonly, retain, nonnull) NekoDesktop *sharedDesktop;
 
 /*! Cheap: two counters and a couple of dates. Call it on whatever timer you
    already have. */
 - (void)sample;
 
-- (NSString *)frontApp;
+- (NSString *_Nonnull)frontApp;
 - (NSTimeInterval)secondsInFront;
 - (NSUInteger)switchesInTheLastQuarterHour;
 
@@ -76,7 +75,7 @@ typedef NS_ENUM(int, NekoBreakpoint) {
 
 /*! Only when screen recording was already granted for some other reason; never
    asked for. */
-- (NSString *)windowTitleIfAllowed;
+- (NSString *_Nullable)windowTitleIfAllowed;
 
 /*! The switch and the permission together. */
 @property (readonly) BOOL readsText;
@@ -88,14 +87,14 @@ typedef NS_ENUM(int, NekoBreakpoint) {
 
 /*! The text being worked on, or nil: switch off, permission missing, secure
    input, a password field, or simply nothing there. */
-- (NSString *)nearbyText;
+- (NSString *_Nullable)nearbyText;
 
 /*! The best breakpoint seen in the last few seconds, and how long ago it was.
    A breakpoint is a moment, not a state: it is worth acting on briefly and then
    it is gone. */
-- (NekoBreakpoint)breakpointNow;
-- (NSTimeInterval)secondsSinceBreakpoint;
-@property (nonatomic, readonly, copy) NSString *describeBreakpoint;
+@property (nonatomic, readonly) NekoBreakpoint breakpointNow;
+@property (nonatomic, readonly) NSTimeInterval secondsSinceBreakpoint;
+@property (nonatomic, readonly, copy, nonnull) NSString *describeBreakpoint;
 
 /*! Times when nothing should be said at all, whatever the interval says, with the
    reason for the preferences to show. Focus and Do Not Disturb are deliberately
@@ -104,7 +103,7 @@ typedef NS_ENUM(int, NekoBreakpoint) {
    (which is what a password field turns on), somebody talking, and nobody being
    there at all. */
 @property (readonly) BOOL isBusyElsewhere;
-- (NSString *)whyBusyElsewhere;
+- (NSString *_Nullable)whyBusyElsewhere;
 
 /*! Is the microphone open in some application. Not *what* is being said and not
    *which* application: one flag from CoreAudio that needs no permission and
@@ -113,14 +112,14 @@ typedef NS_ENUM(int, NekoBreakpoint) {
 
    Measured before it went in: cold, then hot while a tap was open on the input,
    then cold again a second after it closed. */
-- (BOOL)microphoneInUse;
+@property (nonatomic, readonly) BOOL microphoneInUse;
 
 /*! Nobody is there: the screen is locked, or the display has gone to sleep. Not
    the same thing as a bad moment — a bad moment passes in seconds, and this does
    not. What is waiting to be said should wait, rather than being said to an empty
    room and counted as said. */
 - (BOOL)nobodyIsThere;
-- (NSString *)whyNobodyIsThere;
+- (NSString *_Nullable)whyNobodyIsThere;
 
 /*! Whether the highlight is anything more than "an ordinary few minutes". The
    bar a remark has to clear along with the breakpoint. */
@@ -128,9 +127,9 @@ typedef NS_ENUM(int, NekoBreakpoint) {
 
 /*! The single fact worth a remark right now — a long stretch in one program, a
    lot of jumping about, the small hours — in one English sentence. */
-- (NSString *)highlight;
+- (NSString *_Nonnull)highlight;
 
 /*! Everything above as the plain text a model is given. */
-- (NSString *)summary;
+- (NSString *_Nonnull)summary;
 
 @end
